@@ -6,4 +6,6 @@ module org.example.panaderiadam1b {
 
     opens org.example.panaderiadam1b to javafx.fxml;
     exports org.example.panaderiadam1b;
+    exports Controladores;
+    opens Controladores to javafx.fxml;
 }

@@ -1,4 +1,4 @@
-package org.example.panaderiadam1b;
+package Controladores;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
