@@ -24,9 +24,9 @@ public class Main extends Application {
     }
 
     public void pruebaConexion(){
-        String url = "jdbc:mysql://localhost:3306/BDPANADERIA";
+        String url = "jdbc:mysql://10.168.58.3:3306/BDPANADERIA";
         String username = "root";
-        String password = "root";
+        String password = "Dam1bSql01";
 
         Connection connection = null;
         Statement st = null;
