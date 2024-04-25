@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.panaderiadam1b.AnadirView">
+   <children>
+      <Label text="Elige el tipo que añadir:" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="50.0" />
+      <HBox prefHeight="24.0" prefWidth="200.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="80.0">
+         <children>
+            <RadioButton mnemonicParsing="false" text="Producto" />
+            <RadioButton mnemonicParsing="false" text="Ingrediente">
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </RadioButton>
+         </children>
+      </HBox>
+      <Label text="Nombre:" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="110.0" />
+   </children>
+</AnchorPane>
