@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.panaderiadam1b.Login">
+   <children>
+      <Text id="txtTit1" cache="true" fill="#ffcc00" layoutX="207.0" layoutY="46.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="3.0" text="Panadería" textAlignment="CENTER" wrappingWidth="185.0">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+      <Text id="txtTit2" cache="true" fill="#ffcc00" layoutX="179.0" layoutY="90.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="3.0" text="(Título de Ejemplo)" textAlignment="CENTER" wrappingWidth="250.0">
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>
