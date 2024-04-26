@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="Login" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #FFFE66;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorLogin">
+   <children>
+      <Text id="txtTit1" cache="true" fill="#ffcc00" layoutX="108.0" layoutY="46.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="3.0" text="PANADERÍA" textAlignment="CENTER" wrappingWidth="185.0">
+         <font>
+            <Font size="28.0" />
+         </font></Text>
+      <Text id="txtTit2" cache="true" fill="#ffcc00" layoutX="53.0" layoutY="91.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="3.0" text="LA GRAN ARTESANA" textAlignment="CENTER" wrappingWidth="296.0">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Text>
+      <Text layoutX="75.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Usuario:" wrappingWidth="88.947265625">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Text>
+      <TextField fx:id="txtFldUsr" layoutX="75.0" layoutY="150.0" prefHeight="25.0" prefWidth="250.0" />
+      <Text layoutX="75.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Contraseña:" wrappingWidth="89.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Text>
+      <TextField fx:id="txtFldCont" layoutX="75.0" layoutY="225.0" prefHeight="25.0" prefWidth="250.0" />
+      <Button fx:id="btnLogin" layoutX="155.0" layoutY="282.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="89.0" text="Login">
+         <font>
+            <Font size="16.0" />
+         </font></Button>
+   </children>
+</AnchorPane>
