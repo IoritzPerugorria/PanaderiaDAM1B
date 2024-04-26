@@ -1,22 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.panaderiadam1b.AnadirView">
    <children>
-      <Label text="Elige el tipo que añadir:" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="50.0" />
-      <HBox prefHeight="24.0" prefWidth="200.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="80.0">
+      <Label alignment="CENTER" contentDisplay="CENTER" text="Añadir al Inventario" textAlignment="CENTER" underline="true" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="222.0" AnchorPane.topAnchor="15.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="360.0" AnchorPane.topAnchor="70.0">
          <children>
-            <RadioButton mnemonicParsing="false" text="Producto" />
-            <RadioButton mnemonicParsing="false" text="Ingrediente">
-               <HBox.margin>
-                  <Insets left="20.0" />
-               </HBox.margin>
-            </RadioButton>
+            <Label text="Añadir Producto">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="50.0" />
+               </VBox.margin>
+            </Label>
+            <Label text="Nombre:">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Label>
+            <ComboBox prefWidth="150.0">
+               <items>
+                  <FXCollections fx:factory="observableArrayList">
+                        <String fx:id="panBag" fx:value="Pan Baguette" />
+                        <String fx:id="panArt" fx:value="Pan Artesano" />
+                        <String fx:id="crois" fx:value="Croissant" />
+                        <String fx:id="napol" fx:value="Napolitana" />
+                        <String fx:id="bizc" fx:value="Bizcocho" />
+                        <String fx:id="trnz" fx:value="Trenza de Hojaldre" />
+                        <String fx:id="psts" fx:value="Pastas" />
+                  </FXCollections>
+               </items>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </ComboBox>
+            <Label text="Cantidad:">
+               <VBox.margin>
+                  <Insets top="25.0" />
+               </VBox.margin>
+            </Label>
+            <TextField>
+               <VBox.margin>
+                  <Insets right="60.0" top="15.0" />
+               </VBox.margin>
+            </TextField>
+            <Button mnemonicParsing="false" text="Añadir">
+               <VBox.margin>
+                  <Insets left="150.0" top="35.0" />
+               </VBox.margin>
+            </Button>
          </children>
-      </HBox>
-      <Label text="Nombre:" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="110.0" />
+      </VBox>
+      <Separator orientation="VERTICAL" prefHeight="200.0" AnchorPane.leftAnchor="285.0" AnchorPane.topAnchor="80.0">
+         <effect>
+            <Blend mode="DARKEN" />
+         </effect>
+      </Separator>
+      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="115.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="70.0">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Añadir Ingrediente" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="50.0" />
+               </VBox.margin>
+            </Label>
+            <Label text="Nombre:">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Label>
+            <ComboBox prefWidth="150.0">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <items>
+                  <FXCollections fx:factory="observableArrayList">
+                     <String fx:id="har" fx:value="Harina" />
+                     <String fx:id="lev" fx:value="Levadura" />
+                     <String fx:id="azc" fx:value="Azucar" />
+                     <String fx:id="choc" fx:value="Chocolate" />
+                     <String fx:id="hoj" fx:value="Hojaldre" />
+                     <String fx:id="lech" fx:value="Leche" />
+                     <String fx:id="hue" fx:value="Huevos" />
+                  </FXCollections>
+               </items>
+            </ComboBox>
+            <Label text="Cantidad:">
+               <VBox.margin>
+                  <Insets top="25.0" />
+               </VBox.margin>
+            </Label>
+            <TextField>
+               <VBox.margin>
+                  <Insets right="80.0" top="15.0" />
+               </VBox.margin>
+            </TextField>
+            <Button alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" text="Añadir">
+               <VBox.margin>
+                  <Insets left="150.0" top="35.0" />
+               </VBox.margin>
+            </Button>
+         </children></VBox>
    </children>
 </AnchorPane>
