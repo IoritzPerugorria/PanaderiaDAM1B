@@ -11,8 +11,8 @@ import java.sql.*;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Login.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 800);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
@@ -24,9 +24,9 @@ public class Main extends Application {
     }
 
     public void pruebaConexion(){
-        String url = "jdbc:mysql://localhost:3306/BDPANADERIA";
+        String url = "jdbc:mysql://10.168.58.3:3306/BDPANADERIA";
         String username = "root";
-        String password = "root";
+        String password = "Dam1bSql01";
 
         Connection connection = null;
         Statement st = null;

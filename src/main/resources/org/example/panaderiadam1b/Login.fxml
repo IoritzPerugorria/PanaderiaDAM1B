@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="Login" prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #FFFE66;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorLogin">
+<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorLogin">
    <VBox alignment="TOP_CENTER" layoutX="51.0" layoutY="14.0">
       <children>
          <Text cache="true" fill="#ffcc00" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="3.0" text="PANADERÍA" textAlignment="CENTER" wrappingWidth="185.0">
