@@ -19,15 +19,15 @@
             </Label>
          </children>
       </HBox>
-      <TabPane prefHeight="582.0" prefWidth="960.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <tabs>
           <Tab text="Untitled Tab 1">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="583.0" prefWidth="960.0">
+              <AnchorPane prefWidth="900.0">
                      <children>
-                        <ScrollPane hbarPolicy="NEVER" layoutX="12.0" layoutY="11.0" prefHeight="532.0" prefWidth="937.0" vbarPolicy="ALWAYS">
+                        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="12.0" layoutY="11.0" pannable="true" prefWidth="900.0" vbarPolicy="ALWAYS">
                            <content>
-                              <VBox fx:id="contenedorV" prefHeight="199.0" prefWidth="923.0" />
+                              <VBox fx:id="Tienda" />
                            </content>
                         </ScrollPane>
                      </children></AnchorPane>
@@ -35,7 +35,17 @@
           </Tab>
           <Tab text="Untitled Tab 2">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ScrollPane layoutX="14.0" layoutY="14.0" prefHeight="533.0" prefWidth="934.0">
+                          <content>
+                            <AnchorPane minHeight="-Infinity" minWidth="-Infinity">
+                                 <children>
+                                    <VBox fx:id="Inventario" prefHeight="200.0" prefWidth="916.0" />
+                                 </children></AnchorPane>
+                          </content>
+                        </ScrollPane>
+                     </children></AnchorPane>
             </content>
           </Tab>
         </tabs>

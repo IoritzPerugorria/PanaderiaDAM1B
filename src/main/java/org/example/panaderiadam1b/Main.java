@@ -11,12 +11,18 @@ import java.sql.*;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 800);
+        stage.setTitle("Panaderia");
         stage.setScene(scene);
+        stage.setMinHeight(400);
+        stage.setMinWidth(400);
         stage.show();
         this.pruebaConexion();
+    }
+
+    public void setTitle(String title){
+
     }
 
     public static void main(String[] args) {
@@ -25,8 +31,10 @@ public class Main extends Application {
 
     public void pruebaConexion(){
         String url = "jdbc:mysql://10.168.58.3:3306/BDPANADERIA";
+        String urlLocal = "jdbc:mysql://localhost:3306/BDPANADERIA";
         String username = "root";
         String password = "Dam1bSql01";
+        String passwordLocal = "root";
 
         Connection connection = null;
         Statement st = null;
