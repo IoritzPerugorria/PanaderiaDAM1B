@@ -59,6 +59,7 @@ public class ControladorLogin implements Initializable {
      */
 
     public boolean accesoUsuario() throws SQLException {
+        //ArrayList de las credenciales de cada uno de los usuarios registrados en la BBDD
         ArrayList<ArrayList<String>> listaDatosUsuario = new ArrayList<>();
 
         Connection conexion = this.conexionBBDD();
@@ -66,12 +67,29 @@ public class ControladorLogin implements Initializable {
         ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
 
         while (resultado.next()) {
-
+            ArrayList<String> datosUsuario = new ArrayList<>();
+            datosUsuario.add(resultado.getString("USUARIO"));
+            datosUsuario.add(resultado.getString("CONTRASENA"));
+            listaDatosUsuario.add(datosUsuario);
         }
 
-        if (txtFldCredencial1 == null || txtFldCredencial2 == null){
+        //ArrayList de las credenciales introducidas por el usuario.
+        ArrayList<String> credencialesIntroducidas = new ArrayList<>();
+        credencialesIntroducidas.add(txtFldCredencial1.getText());
+        credencialesIntroducidas.add(txtFldCredencial2.getText());
 
+        if (!this.revisionCorrecta(credencialesIntroducidas,listaDatosUsuario)){
+            this.txtCredencialesIncorrectas.setText("* Usuario o contraseña incorrectos");
         }
+
+        if (txtFldCredencial1 == null){
+            this.indicarCampoObligatorio(txtUsrObligatorio);
+        }
+
+        if (txtFldCredencial2 == null){
+            this.indicarCampoObligatorio(txtCtrObligatorio);
+        }
+
 
         this.desconexionBBDD(conexion);
         return false;
@@ -79,12 +97,19 @@ public class ControladorLogin implements Initializable {
 
 
 
-    private void indicarCampoObligatorio(Text texto){
-        texto.setText("* Este campo es obligatorio");
+
+    /**
+     * Comprobar si las credenciales introducidas e implementadas en la ArrayList "credenciales" coinciden con alguna de las credenciales de los usuarios del ArrayList "listaDatosUsuario"
+     * @param credencialesIntroducidos
+     * @param listaDatosUsuario
+     * @return boolean
+     */
+    private boolean revisionCorrecta(ArrayList<String> credencialesIntroducidos, ArrayList<ArrayList<String>> listaDatosUsuario) {
+        return listaDatosUsuario.contains(credencialesIntroducidos);
     }
 
-    private void indicarCredencialesIncorrectas(){
-        this.txtCredencialesIncorrectas.setText("* Usuario o contraseña incorrectos");
+    private void indicarCampoObligatorio(Text texto){
+        texto.setText("* Este campo es obligatorio");
     }
 
 
