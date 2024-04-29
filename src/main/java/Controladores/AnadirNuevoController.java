@@ -1,8 +1,12 @@
 package Controladores;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -38,4 +42,19 @@ public class AnadirNuevoController {
             throw new IllegalStateException("Error al insertar Ingrediente");
         }
     }
+
+    @FXML
+    protected void cargarImagen(ActionEvent event){
+        FileChooser cargador = new FileChooser();
+        cargador.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Archivos png", "*.png")
+        );
+
+        Node node = (Node) event.getSource();
+        File archivo = cargador.showOpenDialog(node.getScene().getWindow());
+
+
+    }
+
+
 }
