@@ -18,7 +18,7 @@ public class Main extends Application {
         stage.setMinHeight(400);
         stage.setMinWidth(400);
         stage.show();
-        this.pruebaConexion();
+
     }
 
     public void setTitle(String title){
@@ -41,7 +41,7 @@ public class Main extends Application {
         ResultSet rs = null;
 
         try {
-            connection = DriverManager.getConnection(url, username, password);
+            connection = DriverManager.getConnection(urlLocal, username, passwordLocal);
             st = connection.createStatement();
             rs = st.executeQuery("SELECT * FROM PRODUCTOS");
 
