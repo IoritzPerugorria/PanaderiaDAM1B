@@ -64,7 +64,7 @@
       </children>
    </VBox>
    <Text fx:id="txtCredsIncorrectas" fill="#ae0000" layoutX="99.0" layoutY="271.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Usuario o contraseña incorrectos" visible="false" />
-   <Button fx:id="btnLogin" layoutX="155.0" layoutY="282.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="89.0" text="Login">
+   <Button fx:id="btnLogin" layoutX="155.0" layoutY="282.0" mnemonicParsing="false" onAction="#login" prefHeight="37.0" prefWidth="89.0" text="Login">
       <font>
          <Font size="16.0" />
       </font>

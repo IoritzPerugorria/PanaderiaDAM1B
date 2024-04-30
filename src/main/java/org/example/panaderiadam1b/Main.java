@@ -1,5 +1,6 @@
 package org.example.panaderiadam1b;
 
+import Controladores.ControladorLogin;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,73 +11,16 @@ import java.sql.*;
 
 public class Main extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, SQLException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 800);
-        stage.setTitle("Hello!");
+        Scene scene = new Scene(fxmlLoader.load(), 600, 600);
+        stage.setTitle("Iniciar Sesion");
         stage.setScene(scene);
         stage.show();
-        this.pruebaConexion();
     }
 
     public static void main(String[] args) {
         launch();
     }
 
-    public void pruebaConexion(){
-        String url = "jdbc:mysql://10.168.58.3:3306/BDPANADERIA";
-        String username = "root";
-        String password = "Dam1bSql01";
-
-        Connection connection = null;
-        Statement st = null;
-        ResultSet rs = null;
-
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-            st = connection.createStatement();
-            rs = st.executeQuery("SELECT * FROM PRODUCTOS");
-
-            System.out.println("PRODUCTOS:\n");
-            while (rs.next()) {
-                System.out.print(rs.getString("ID"));
-                System.out.print("\t\t");
-                System.out.print(rs.getString("NOMBRE"));
-                System.out.print("\t\t");
-                System.out.print(rs.getString("PRECIO"));
-                System.out.print("\t\t");
-                System.out.println(rs.getString("STOCK"));
-
-            }
-            System.out.print("\n\n");
-
-            rs = st.executeQuery("SELECT * FROM INGREDIENTES");
-
-            System.out.println("INGREDIENTES:\n");
-            while (rs.next()) {
-                System.out.print(rs.getString("ID"));
-                System.out.print("\t\t");
-                System.out.print(rs.getString("NOMBRE"));
-                System.out.print("\t\t");
-                System.out.print(rs.getString("PRECIO"));
-                System.out.print("\t\t");
-                System.out.println(rs.getString("STOCK"));
-            }
-
-        } catch (SQLException e) {
-            throw new IllegalStateException("aLGO HA IDO MAL XD", e);
-        } finally {
-            try{
-                if (connection != null && st != null && rs != null){
-                    connection.close();
-                    st.close();
-                    rs.close();
-                }
-
-            } catch (SQLException e){
-                throw new IllegalStateException("error xd", e);
-            }
-
-        }
-    }
 }

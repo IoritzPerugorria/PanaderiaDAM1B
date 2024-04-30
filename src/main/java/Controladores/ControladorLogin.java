@@ -9,6 +9,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
@@ -42,49 +43,16 @@ public class ControladorLogin implements Initializable {
 
     }
 
-    //Conexion con la Base de Datos de la Panadería
-    public Connection conexionBBDD() throws SQLException {
-        Connection conexion = null;
-        conexion = ConexionBBDD.conectar(conexion);
-        return conexion;
+    public void presionarLogin(){
+        btnLogin.fire();
     }
 
-    /**
-     * Metodo que define si un usuario tiene acceso o no a la panaderia que devuelve true o false
-     * <p>
-     * Dependiendo de los resultados, se mostraran unos mensajes de error u otros.
-     *
-     * El método crea una variable que consiste en un Array de Arrays donde cada Array se corresponde
-     * con las credenciales de cada uno de los usuarios registrados (Nombre de usuario y contraseña).
-     * Para crear dicho Array necesitamos acceder previamente a la BBDD.
-     */
-
-    public boolean accesoUsuario() throws SQLException {
-        //ArrayList de las credenciales de cada uno de los usuarios registrados en la BBDD
-        ArrayList<ArrayList<String>> listaDatosUsuario = new ArrayList<>();
-
-        Connection conexion = this.conexionBBDD();
-        Statement accion = conexion.createStatement();
-        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
-
-        while (resultado.next()) {
-            ArrayList<String> datosUsuario = new ArrayList<>();
-            datosUsuario.add(resultado.getString("USUARIO"));
-            datosUsuario.add(resultado.getString("CONTRASENA"));
-            listaDatosUsuario.add(datosUsuario);
-        }
-
-        //ArrayList de las credenciales introducidas por el usuario.
-        ArrayList<String> credencialesIntroducidas = new ArrayList<>();
-        credencialesIntroducidas.add(txtFldCredencial1.getText());
-        credencialesIntroducidas.add(txtFldCredencial2.getText());
-
-        //Se comprueba si las credenciales son correctas
-        boolean acceso = this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuario);
-
-
-        conexion.close();
-        return acceso;
+    //Conexion con la Base de Datos de la Panadería
+    public static Connection conexionBBDD() throws SQLException {
+        Connection connection = null;
+        Statement st = null;
+        ResultSet rs = null;
+        return DriverManager.getConnection("jdbc:mysql://localhost:3306/controlador", "root", "Dam1bSql01");
     }
 
 
@@ -122,6 +90,44 @@ public class ControladorLogin implements Initializable {
 
     }
 
+    /**
+     * Metodo que define si un usuario tiene acceso o no a la panaderia que devuelve true o false
+     * <p>
+     * Dependiendo de los resultados, se mostraran unos mensajes de error u otros.
+     *
+     * El método crea una variable que consiste en un Array de Arrays donde cada Array se corresponde
+     * con las credenciales de cada uno de los usuarios registrados (Nombre de usuario y contraseña).
+     * Para crear dicho Array necesitamos acceder previamente a la BBDD.
+     */
+
+    public boolean accesoUsuario() throws SQLException {
+        //ArrayList de las credenciales de cada uno de los usuarios registrados en la BBDD
+        ArrayList<ArrayList<String>> listaDatosUsuario = new ArrayList<>();
+
+        Connection conexion = conexionBBDD();
+        Statement accion = conexion.createStatement();
+        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
+
+        while (resultado.next()) {
+            ArrayList<String> datosUsuario = new ArrayList<>();
+            datosUsuario.add(resultado.getString("USUARIO"));
+            datosUsuario.add(resultado.getString("CONTRASENA"));
+            listaDatosUsuario.add(datosUsuario);
+        }
+
+        //ArrayList de las credenciales introducidas por el usuario.
+        ArrayList<String> credencialesIntroducidas = new ArrayList<>();
+        credencialesIntroducidas.add(txtFldCredencial1.getText());
+        credencialesIntroducidas.add(txtFldCredencial2.getText());
+
+        //Se comprueba si las credenciales son correctas
+        boolean acceso = this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuario);
+
+
+        conexion.close();
+        return acceso;
+    }
+
     private void indicarCampoObligatorio(Text texto){
         txtCredsIncorrectas.setVisible(false);
         texto.setVisible(true);
@@ -141,5 +147,20 @@ public class ControladorLogin implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+    }
+
+    public void login(javafx.event.ActionEvent actionEvent) throws SQLException {
+        ArrayList<String> credencialesIntroducidas = new ArrayList<>();
+        credencialesIntroducidas.add(txtFldCredencial1.getText());
+        credencialesIntroducidas.add(txtFldCredencial2.getText());
+    /**
+        Connection conexion = conexionBBDD();
+        Statement accion = conexion.createStatement();
+        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
+
+        Connection conexionBBDD = null;
+        Statement accion = null;
+        ResultSet resultado = null;
+     **/
     }
 }
