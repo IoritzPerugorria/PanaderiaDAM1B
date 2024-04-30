@@ -69,12 +69,12 @@ public class AnadirNuevoController {
 
         Node node = (Node) event.getSource();
         File archivo = cargador.showOpenDialog(node.getScene().getWindow());
-        imagen = archivo.getName();
-
-        Path testFile = Files.createFile(Paths.get(archivo.getPath()));
-
-        testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\resources\\imagenes\\" + imagen));
-
+        
+        if(archivo != null){
+            imagen = archivo.getName();
+            Path testFile = Files.createFile(Paths.get(archivo.getPath()));
+            testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\resources\\imagenes\\" + imagen));
+        }
     }
 
 
