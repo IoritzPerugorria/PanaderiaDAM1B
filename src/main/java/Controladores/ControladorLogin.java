@@ -16,11 +16,11 @@ import java.util.ResourceBundle;
 
 public class ControladorLogin implements Initializable {
     @FXML
-    private Text txtCredencialesIncorrectas;
+    private Text txtCredsIncorrectas;
     @FXML
-    private Text txtUsrObligatorio;
+    private Text txtCred1Obligatorio;
     @FXML
-    private Text txtCtrObligatorio;
+    private Text txtCred2Obligatorio;
     @FXML
     private TextField txtFldCredencial1;
     @FXML
@@ -32,9 +32,14 @@ public class ControladorLogin implements Initializable {
     public ControladorLogin(){
         txtFldCredencial1 = new TextField();
         txtFldCredencial2 = new PasswordField();
-        txtCredencialesIncorrectas = new Text();
-        txtUsrObligatorio = new Text();
-        txtCtrObligatorio = new Text();
+        txtCredsIncorrectas = new Text("* Usuario o contraseña incorrectos");
+        txtCred1Obligatorio = new Text("* Este campo es obligatorio");
+        txtCred2Obligatorio = new Text("* Este campo es obligatorio");
+
+        txtCredsIncorrectas.setVisible(false);
+        txtCred1Obligatorio.setVisible(false);
+        txtCred2Obligatorio.setVisible(false);
+
     }
 
     //Conexion con la Base de Datos de la Panadería
@@ -44,13 +49,9 @@ public class ControladorLogin implements Initializable {
         return conexion;
     }
 
-    public void desconexionBBDD(Connection conexion) throws SQLException {
-        conexion.close();
-    }
-
     /**
      * Metodo que define si un usuario tiene acceso o no a la panaderia que devuelve true o false
-     *
+     * <p>
      * Dependiendo de los resultados, se mostraran unos mensajes de error u otros.
      *
      * El método crea una variable que consiste en un Array de Arrays donde cada Array se corresponde
@@ -78,40 +79,64 @@ public class ControladorLogin implements Initializable {
         credencialesIntroducidas.add(txtFldCredencial1.getText());
         credencialesIntroducidas.add(txtFldCredencial2.getText());
 
-        if (!this.revisionCorrecta(credencialesIntroducidas,listaDatosUsuario)){
-            this.txtCredencialesIncorrectas.setText("* Usuario o contraseña incorrectos");
-        }
-
-        if (txtFldCredencial1 == null){
-            this.indicarCampoObligatorio(txtUsrObligatorio);
-        }
-
-        if (txtFldCredencial2 == null){
-            this.indicarCampoObligatorio(txtCtrObligatorio);
-        }
+        //Se comprueba si las credenciales son correctas
+        boolean acceso = this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuario);
 
 
-        this.desconexionBBDD(conexion);
-        return false;
+        conexion.close();
+        return acceso;
     }
-
-
 
 
     /**
      * Comprobar si las credenciales introducidas e implementadas en la ArrayList "credenciales" coinciden con alguna de las credenciales de los usuarios del ArrayList "listaDatosUsuario"
-     * @param credencialesIntroducidos
-     * @param listaDatosUsuario
      * @return boolean
      */
-    private boolean revisionCorrecta(ArrayList<String> credencialesIntroducidos, ArrayList<ArrayList<String>> listaDatosUsuario) {
-        return listaDatosUsuario.contains(credencialesIntroducidos);
+    private boolean revisionDeLogin(ArrayList<String> credencialesIntroducidas, ArrayList<ArrayList<String>> listaDatosUsuario) {
+
+        //Si alguno de las credenciales introducidas estan vacias:
+        if (txtFldCredencial1 == null || txtFldCredencial2 == null){
+            if (txtFldCredencial1 == null){
+                this.indicarCampoObligatorio(txtCred1Obligatorio);
+            }
+            if (txtFldCredencial2 == null){
+                this.indicarCampoObligatorio(txtCred2Obligatorio);
+            }
+            this.vaciarCampos();
+            return false;
+        }
+        else {
+            //Si las credenciales introducidas son correctas (si estan en la BD ya registradas):
+            if (listaDatosUsuario.contains(credencialesIntroducidas)){
+                return true;
+            }
+            //En caso contrario:
+            else {
+                this.indicarCredencialesIncorrectas();
+                this.vaciarCampos();
+                return false;
+            }
+        }
+
+
+
     }
 
     private void indicarCampoObligatorio(Text texto){
-        texto.setText("* Este campo es obligatorio");
+        txtCredsIncorrectas.setVisible(false);
+        texto.setVisible(true);
     }
 
+    private void indicarCredencialesIncorrectas(){
+        txtCred1Obligatorio.setVisible(false);
+        txtCred2Obligatorio.setVisible(false);
+        txtCredsIncorrectas.setVisible(true);
+    }
+
+    private void vaciarCampos(){
+        txtFldCredencial1.setText("");
+        txtFldCredencial2.setText("");
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

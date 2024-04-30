@@ -32,7 +32,7 @@
                      <Insets right="10.0" />
                   </HBox.margin>
                </Label>
-               <Text fx:id="txtUsrObligatorio" disable="true" fill="#ae0000" strokeType="OUTSIDE" strokeWidth="0.0">
+               <Text fx:id="txtCred1Obligatorio" fill="#ae0000" strokeType="OUTSIDE" strokeWidth="0.0" text="* Este campo es obligatorio" visible="false">
                   <HBox.margin>
                      <Insets top="5.0" />
                   </HBox.margin>
@@ -53,7 +53,7 @@
                      <Insets right="10.0" />
                   </HBox.margin>
                </Label>
-               <Text fx:id="txtCtrObligatorio" disable="true" fill="#ae0000" strokeType="OUTSIDE" strokeWidth="0.0">
+               <Text fx:id="txtCred2Obligatorio" fill="#ae0000" strokeType="OUTSIDE" strokeWidth="0.0" text="* Este campo es obligatorio" visible="false">
                   <HBox.margin>
                      <Insets top="5.0" />
                   </HBox.margin>
@@ -63,7 +63,7 @@
          <PasswordField fx:id="txtFldCredencial2" prefHeight="25.0" prefWidth="250.0" />
       </children>
    </VBox>
-   <Text fx:id="txtCredencialesIncorrectas" disable="true" fill="#ae0000" layoutX="188.0" layoutY="271.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+   <Text fx:id="txtCredsIncorrectas" fill="#ae0000" layoutX="99.0" layoutY="271.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Usuario o contraseña incorrectos" visible="false" />
    <Button fx:id="btnLogin" layoutX="155.0" layoutY="282.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="89.0" text="Login">
       <font>
          <Font size="16.0" />
