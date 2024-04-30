@@ -7,6 +7,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -57,7 +61,7 @@ public class AnadirNuevoController {
     }
 
     @FXML
-    protected void cargarImagen(ActionEvent event) {
+    protected void cargarImagen(ActionEvent event) throws IOException {
         FileChooser cargador = new FileChooser();
         cargador.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Archivos png", "*.png")
@@ -67,6 +71,9 @@ public class AnadirNuevoController {
         File archivo = cargador.showOpenDialog(node.getScene().getWindow());
         imagen = archivo.getName();
 
+        Path testFile = Files.createFile(Paths.get(archivo.getPath()));
+
+        testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\resources\\imagenes\\" + imagen));
 
     }
 
