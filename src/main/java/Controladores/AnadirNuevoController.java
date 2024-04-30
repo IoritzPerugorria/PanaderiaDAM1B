@@ -21,6 +21,7 @@ public class AnadirNuevoController {
     private TextField txtFldCant;
     @FXML
     private TextField txtFldPrec;
+    private String imagen;
 
     @FXML
     protected void anadirNuevo(){
@@ -29,14 +30,26 @@ public class AnadirNuevoController {
 
         String nombre = txtFldNom.getText();
         int cant = Integer.parseInt(txtFldCant.getText());
-        int precio = Integer.parseInt(txtFldPrec.getText());
+        Double precio = Double.parseDouble(txtFldPrec.getText());
 
         try{
             PreparedStatement st = conexion.prepareStatement("INSERT INTO INGREDIENTES(NOMBRE, PRECIO, STOCK) VALUES (?, ?, ?)");
             st.setString(1, nombre);
-            st.setInt(2, precio);
+            st.setDouble(2, precio);
             st.setInt(3, cant);
             st.executeUpdate();
+
+            if(imagen != null){
+                try{
+                    PreparedStatement st1 = conexion.prepareStatement("UPDATE INGREDIENTES SET IMAGEN = ? WHERE NOMBRE = ?");
+                    st1.setString(1, imagen);
+                    st1.setString(2, txtFldNom.getText());
+                    st1.executeUpdate();
+                }
+                catch(SQLException e){
+                    throw new IllegalStateException("Error al insertar imagen");
+                }
+            }
         }
         catch(SQLException e){
             throw new IllegalStateException("Error al insertar Ingrediente");
@@ -44,7 +57,7 @@ public class AnadirNuevoController {
     }
 
     @FXML
-    protected void cargarImagen(ActionEvent event){
+    protected void cargarImagen(ActionEvent event) {
         FileChooser cargador = new FileChooser();
         cargador.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Archivos png", "*.png")
@@ -52,6 +65,7 @@ public class AnadirNuevoController {
 
         Node node = (Node) event.getSource();
         File archivo = cargador.showOpenDialog(node.getScene().getWindow());
+        imagen = archivo.getName();
 
 
     }
