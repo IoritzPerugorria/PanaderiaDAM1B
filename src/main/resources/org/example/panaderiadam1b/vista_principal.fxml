@@ -12,7 +12,7 @@
 
     <HBox prefHeight="153.0" prefWidth="960.0">
       <Button fx:id="anadirCant" mnemonicParsing="false" onAction="#anadirStock" text="Añadir stock" />
-      <Button fx:id="anadirIngre" mnemonicParsing="false" onAction="#anadir" text=" Añadir Ingrediente" />
+      <Button fx:id="anadirIngre" mnemonicParsing="false" onAction="#anadir" text=" Añadir ingrediente" />
         <Label prefHeight="92.0" prefWidth="366.0" text="Panaderia">
             <font>
                 <Font size="69.0" />
