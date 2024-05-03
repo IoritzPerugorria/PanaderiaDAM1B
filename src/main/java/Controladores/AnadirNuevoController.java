@@ -15,7 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static BBDD.ConexionBBDD.conectar;
+import static Modulo.ConexionBBDD.conectar;
 
 public class AnadirNuevoController {
 

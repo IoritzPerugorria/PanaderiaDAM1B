@@ -1,13 +1,15 @@
 package Controladores;
 
 
-import BBDD.ConexionBBDD;
+import Modulo.ConexionBBDD;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
@@ -19,7 +21,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import org.example.panaderiadam1b.Main;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
@@ -130,7 +135,7 @@ public class ControladorVP implements Initializable {
                         boton.setOnAction(new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent event) {
-                                comprar(boton.getId());
+                                anadir(event);
                             }
                         });
                     } else if (contador == 2) {
@@ -234,6 +239,23 @@ public class ControladorVP implements Initializable {
         }
         finally {
             conexion = ConexionBBDD.desconectar(conexion);
+        }
+    }
+    @FXML
+    public void anadir(ActionEvent actionEvent){
+        try{
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadirNuevo-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            stage.setTitle("Panaderia");
+            stage.setScene(scene);
+
+
+            stage.show();
+        }
+        catch (IOException e){
+            System.out.println("ERROR");
         }
     }
 }

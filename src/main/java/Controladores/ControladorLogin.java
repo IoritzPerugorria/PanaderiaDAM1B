@@ -1,15 +1,21 @@
 package Controladores;
 
 
-import BBDD.ConexionBBDD;
+import Modulo.ConexionBBDD;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import org.example.panaderiadam1b.Main;
 
-import java.awt.event.ActionEvent;
+
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
@@ -74,7 +80,7 @@ public class ControladorLogin implements Initializable {
             return false;
         }
         else {
-            //Si las credenciales introducidas son correctas (si estan en la BD ya registradas):
+            //Si las  introducidas son correctas (si estan en la BD ya registradas):
             if (listaDatosUsuario.contains(credencialesIntroducidas)){
                 return true;
             }
@@ -85,8 +91,6 @@ public class ControladorLogin implements Initializable {
                 return false;
             }
         }
-
-
 
     }
 
@@ -150,17 +154,41 @@ public class ControladorLogin implements Initializable {
     }
 
     public void login(javafx.event.ActionEvent actionEvent) throws SQLException {
+
         ArrayList<String> credencialesIntroducidas = new ArrayList<>();
         credencialesIntroducidas.add(txtFldCredencial1.getText());
         credencialesIntroducidas.add(txtFldCredencial2.getText());
-    /**
-        Connection conexion = conexionBBDD();
+
+        Connection conexion = null;
+        conexion = ConexionBBDD.conectar(conexion);
         Statement accion = conexion.createStatement();
         ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
+        ArrayList<ArrayList<String>> listaDatosUsuario = new ArrayList<>();
+        while (resultado.next()) {
+            ArrayList<String> datosUsuario = new ArrayList<>();
+            datosUsuario.add(resultado.getString("USUARIO"));
+            datosUsuario.add(resultado.getString("CONTRASENA"));
+            listaDatosUsuario.add(datosUsuario);
+        }
 
-        Connection conexionBBDD = null;
-        Statement accion = null;
-        ResultSet resultado = null;
-     **/
+        this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuario);
+
+        try{
+            Node node = (Node) actionEvent.getSource();
+            Stage currentStage = (Stage) node.getScene().getWindow();
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
+            stage.setTitle("Panaderia");
+            stage.setScene(scene);
+
+            currentStage.close();
+            stage.show();
+        }
+        catch (IOException e){
+            System.out.println("ERROR");
+        }
+
     }
 }
