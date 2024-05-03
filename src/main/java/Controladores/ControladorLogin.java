@@ -63,6 +63,67 @@ public class ControladorLogin implements Initializable {
 
 
     /**
+     * Metodo que define si un usuario tiene acceso o no a la panaderia que devuelve true o false
+     * <p>
+     * Dependiendo de los resultados, se mostraran unos mensajes de error u otros.
+     *
+     * El método crea una variable que consiste en un Array de Arrays donde cada Array se corresponde
+     * con las credenciales de cada uno de los usuarios registrados (Nombre de usuario y contraseña).
+     * Para crear dicho Array necesitamos acceder previamente a la BBDD.
+     */
+
+    public boolean comprobacionCredenciales() throws SQLException {
+        //ArrayList de las credenciales de cada uno de los usuarios registrados en la BBDD
+        ArrayList<ArrayList<String>> listaDatosUsuario = new ArrayList<>();
+
+        Connection conexion = conexionBBDD();
+        Statement accion = conexion.createStatement();
+        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
+
+        while (resultado.next()) {
+            ArrayList<String> datosUsuario = new ArrayList<>();
+            datosUsuario.add(resultado.getString("USUARIO"));
+            datosUsuario.add(resultado.getString("CONTRASENA"));
+            listaDatosUsuario.add(datosUsuario);
+        }
+
+        //ArrayList de las credenciales introducidas por el usuario.
+        ArrayList<String> credencialesIntroducidas = new ArrayList<>();
+        credencialesIntroducidas.add(txtFldCredencial1.getText());
+        credencialesIntroducidas.add(txtFldCredencial2.getText());
+
+        //Se comprueba si las credenciales son correctas
+        boolean acceso = this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuario);
+
+
+        conexion.close();
+        return acceso;
+    }
+
+    public void login(javafx.event.ActionEvent actionEvent) throws SQLException {
+
+        try{
+            if (this.comprobacionCredenciales()){
+                Node node = (Node) actionEvent.getSource();
+                Stage currentStage = (Stage) node.getScene().getWindow();
+
+                Stage stage = new Stage();
+                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                stage.setTitle("Panaderia");
+                stage.setScene(scene);
+
+                currentStage.close();
+                stage.show();
+            }
+        }
+        catch (IOException e){
+            System.out.println("ERROR");
+        }
+
+    }
+
+    /**
      * Comprobar si las credenciales introducidas e implementadas en la ArrayList "credenciales" coinciden con alguna de las credenciales de los usuarios del ArrayList "listaDatosUsuario"
      * @return boolean
      */
@@ -94,44 +155,6 @@ public class ControladorLogin implements Initializable {
 
     }
 
-    /**
-     * Metodo que define si un usuario tiene acceso o no a la panaderia que devuelve true o false
-     * <p>
-     * Dependiendo de los resultados, se mostraran unos mensajes de error u otros.
-     *
-     * El método crea una variable que consiste en un Array de Arrays donde cada Array se corresponde
-     * con las credenciales de cada uno de los usuarios registrados (Nombre de usuario y contraseña).
-     * Para crear dicho Array necesitamos acceder previamente a la BBDD.
-     */
-
-    public boolean accesoUsuario() throws SQLException {
-        //ArrayList de las credenciales de cada uno de los usuarios registrados en la BBDD
-        ArrayList<ArrayList<String>> listaDatosUsuario = new ArrayList<>();
-
-        Connection conexion = conexionBBDD();
-        Statement accion = conexion.createStatement();
-        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
-
-        while (resultado.next()) {
-            ArrayList<String> datosUsuario = new ArrayList<>();
-            datosUsuario.add(resultado.getString("USUARIO"));
-            datosUsuario.add(resultado.getString("CONTRASENA"));
-            listaDatosUsuario.add(datosUsuario);
-        }
-
-        //ArrayList de las credenciales introducidas por el usuario.
-        ArrayList<String> credencialesIntroducidas = new ArrayList<>();
-        credencialesIntroducidas.add(txtFldCredencial1.getText());
-        credencialesIntroducidas.add(txtFldCredencial2.getText());
-
-        //Se comprueba si las credenciales son correctas
-        boolean acceso = this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuario);
-
-
-        conexion.close();
-        return acceso;
-    }
-
     private void indicarCampoObligatorio(Text texto){
         txtCredsIncorrectas.setVisible(false);
         texto.setVisible(true);
@@ -150,45 +173,6 @@ public class ControladorLogin implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-    }
-
-    public void login(javafx.event.ActionEvent actionEvent) throws SQLException {
-
-        ArrayList<String> credencialesIntroducidas = new ArrayList<>();
-        credencialesIntroducidas.add(txtFldCredencial1.getText());
-        credencialesIntroducidas.add(txtFldCredencial2.getText());
-
-        Connection conexion = null;
-        conexion = ConexionBBDD.conectar(conexion);
-        Statement accion = conexion.createStatement();
-        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
-        ArrayList<ArrayList<String>> listaDatosUsuario = new ArrayList<>();
-        while (resultado.next()) {
-            ArrayList<String> datosUsuario = new ArrayList<>();
-            datosUsuario.add(resultado.getString("USUARIO"));
-            datosUsuario.add(resultado.getString("CONTRASENA"));
-            listaDatosUsuario.add(datosUsuario);
-        }
-
-        this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuario);
-
-        try{
-            Node node = (Node) actionEvent.getSource();
-            Stage currentStage = (Stage) node.getScene().getWindow();
-
-            Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
-            stage.setTitle("Panaderia");
-            stage.setScene(scene);
-
-            currentStage.close();
-            stage.show();
-        }
-        catch (IOException e){
-            System.out.println("ERROR");
-        }
 
     }
 }
