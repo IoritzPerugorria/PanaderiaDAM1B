@@ -1,37 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0"
-      xmlns="http://javafx.com/javafx/17.0.2-ea" fx:controller="Controladores.ControladorVP">
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorVP">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
 
     <HBox prefHeight="153.0" prefWidth="960.0">
+      <Button mnemonicParsing="false" text="Button" />
         <Label prefHeight="92.0" prefWidth="366.0" text="Panaderia">
             <font>
-                <Font size="69.0"/>
+                <Font size="69.0" />
             </font>
         </Label>
     </HBox>
     <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <Tab text="Tienda">
             <AnchorPane>
-                <ScrollPane fx:id="scrollTienda" fitToHeight="true" fitToWidth="true" layoutX="15.0"
-                            layoutY="15.0" pannable="true" vbarPolicy="ALWAYS">
-                    <VBox fx:id="Tienda"/>
+                <ScrollPane fx:id="scrollTienda" fitToHeight="true" fitToWidth="true" layoutX="15.0" layoutY="15.0" pannable="true" vbarPolicy="ALWAYS">
+                    <VBox fx:id="Tienda" />
                 </ScrollPane>
             </AnchorPane>
         </Tab>
 
         <Tab text="Almacen">
             <AnchorPane>
-                <ScrollPane fx:id="scrollAlmacen" fitToHeight="true" fitToWidth="true" layoutX="15.0"
-                            layoutY="15.0" pannable="true" vbarPolicy="ALWAYS">
-                    <VBox fx:id="Almacen"/>
+                <ScrollPane fx:id="scrollAlmacen" fitToHeight="true" fitToWidth="true" layoutX="15.0" layoutY="15.0" pannable="true" vbarPolicy="ALWAYS">
+                    <VBox fx:id="Almacen" />
                 </ScrollPane>
             </AnchorPane>
 
@@ -39,9 +38,8 @@
 
         <Tab text="Cocina">
             <AnchorPane>
-                <ScrollPane fx:id="scrollCocina" fitToHeight="true" fitToWidth="true" layoutX="15.0"
-                            layoutY="15.0" pannable="true" vbarPolicy="ALWAYS">
-                    <VBox fx:id="Cocina"/>
+                <ScrollPane fx:id="scrollCocina" fitToHeight="true" fitToWidth="true" layoutX="15.0" layoutY="15.0" pannable="true" vbarPolicy="ALWAYS">
+                    <VBox fx:id="Cocina" />
                 </ScrollPane>
             </AnchorPane>
 
