@@ -74,7 +74,7 @@ public class ControladorLogin implements Initializable {
             return false;
         }
         else {
-            //Si las credenciales introducidas son correctas (si estan en la BD ya registradas):
+            //Si las  introducidas son correctas (si estan en la BD ya registradas):
             if (listaDatosUsuario.contains(credencialesIntroducidas)){
                 return true;
             }
@@ -85,8 +85,6 @@ public class ControladorLogin implements Initializable {
                 return false;
             }
         }
-
-
 
     }
 
@@ -150,17 +148,23 @@ public class ControladorLogin implements Initializable {
     }
 
     public void login(javafx.event.ActionEvent actionEvent) throws SQLException {
+
         ArrayList<String> credencialesIntroducidas = new ArrayList<>();
         credencialesIntroducidas.add(txtFldCredencial1.getText());
         credencialesIntroducidas.add(txtFldCredencial2.getText());
-    /**
+
+
         Connection conexion = conexionBBDD();
         Statement accion = conexion.createStatement();
         ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
+        ArrayList<ArrayList<String>> listaDatosUsuario = new ArrayList<>();
+        while (resultado.next()) {
+            ArrayList<String> datosUsuario = new ArrayList<>();
+            datosUsuario.add(resultado.getString("USUARIO"));
+            datosUsuario.add(resultado.getString("CONTRASENA"));
+            listaDatosUsuario.add(datosUsuario);
+        }
 
-        Connection conexionBBDD = null;
-        Statement accion = null;
-        ResultSet resultado = null;
-     **/
+        this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuario);
     }
 }
