@@ -1,6 +1,7 @@
 package Controladores;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
@@ -39,8 +40,15 @@ public class AnadirController {
 
             cmbIng.setValue("");
             cantIng.clear();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Se ha añadido al stock del ingrediente correctamente");
+            alert.showAndWait();
         }
         catch(SQLException e){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Error al añadir al stock");
+            alert.showAndWait();
             throw new IllegalStateException("Error al insertar Ingrediente");
         }
     }

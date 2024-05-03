@@ -9,14 +9,14 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.AnadirController">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" text="Añadir al Inventario" textAlignment="CENTER" underline="true" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="222.0" AnchorPane.topAnchor="15.0">
+      <Label alignment="CENTER" contentDisplay="CENTER" text="Añadir al inventario" textAlignment="CENTER" underline="true" AnchorPane.leftAnchor="222.0" AnchorPane.rightAnchor="222.0" AnchorPane.topAnchor="15.0">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
       <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="115.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="70.0">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" text="Añadir Ingrediente" textAlignment="CENTER">
+            <Label alignment="CENTER" contentDisplay="CENTER" text="Añadir ingrediente" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>

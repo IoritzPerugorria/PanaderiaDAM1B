@@ -3,6 +3,7 @@ package Controladores;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 
@@ -54,9 +55,15 @@ public class AnadirNuevoController {
                     throw new IllegalStateException("Error al insertar imagen");
                 }
             }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Ingrediente insertado correctamente");
+            alert.showAndWait();
         }
         catch(SQLException e){
-            throw new IllegalStateException("Error al insertar Ingrediente");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Error al insertar ingrediente");
+            alert.showAndWait();
+            throw new IllegalStateException("Error al insertar ingrediente");
         }
     }
 
