@@ -258,4 +258,21 @@ public class ControladorVP implements Initializable {
             System.out.println("ERROR");
         }
     }
+
+    public void anadirStock(ActionEvent actionEvent){
+        try{
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadir-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            stage.setTitle("Panaderia");
+            stage.setScene(scene);
+
+
+            stage.show();
+        }
+        catch (IOException e){
+            System.out.println("ERROR");
+        }
+    }
 }
