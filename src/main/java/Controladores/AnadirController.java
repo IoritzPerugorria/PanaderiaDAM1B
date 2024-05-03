@@ -17,10 +17,10 @@ public class AnadirController {
     @FXML
     private TextField cantIng;
 
-    @FXML
-    private ComboBox<String> cmbPrd;
-    @FXML
-    private TextField cantPrd;
+//    @FXML
+//    private ComboBox<String> cmbPrd;
+//    @FXML
+//    private TextField cantPrd;
 
 
     @FXML
@@ -45,26 +45,26 @@ public class AnadirController {
         }
     }
 
-    @FXML
-    protected void anadirProducto(){
-        Connection conexion = null;
-        conexion = conectar(conexion);
-
-        String nom = cmbPrd.getValue();
-        int cant = Integer.parseInt(cantPrd.getText());
-
-        try{
-            PreparedStatement st = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK + ? WHERE NOMBRE = ?");
-            st.setInt(1, cant);
-            st.setString(2, nom);
-            st.executeUpdate();
-
-            cmbPrd.setValue("");
-            cantPrd.clear();
-        }
-        catch(SQLException e){
-            throw new IllegalStateException("Error al insertar Ingrediente");
-        }
-    }
+//    @FXML
+//    protected void anadirProducto(){
+//        Connection conexion = null;
+//        conexion = conectar(conexion);
+//
+//        String nom = cmbPrd.getValue();
+//        int cant = Integer.parseInt(cantPrd.getText());
+//
+//        try{
+//            PreparedStatement st = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK + ? WHERE NOMBRE = ?");
+//            st.setInt(1, cant);
+//            st.setString(2, nom);
+//            st.executeUpdate();
+//
+//            cmbPrd.setValue("");
+//            cantPrd.clear();
+//        }
+//        catch(SQLException e){
+//            throw new IllegalStateException("Error al insertar Ingrediente");
+//        }
+//    }
 
 }
