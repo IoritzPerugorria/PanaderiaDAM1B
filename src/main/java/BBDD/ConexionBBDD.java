@@ -14,7 +14,7 @@ public class ConexionBBDD {
 
     public static Connection conectar(Connection connection){
         try {
-            connection = DriverManager.getConnection(localUrl, username, localPassword);
+            connection = DriverManager.getConnection(url, username, password);
             System.out.println("Conexion establecida");
 
 

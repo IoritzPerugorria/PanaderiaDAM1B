@@ -93,57 +93,92 @@ public class ControladorVP implements Initializable {
         try {
             conexion = ConexionBBDD.conectar(conexion);
             script = conexion.createStatement();
-            rs = script.executeQuery("SELECT * FROM PRODUCTOS");
+
             int contador = 0;
 
-            while (rs.next()){
+            for (int rep = 0; rep < 3; rep ++) {
+                rs = script.executeQuery("SELECT * FROM PRODUCTOS");
 
-                Label label = new Label(rs.getString("NOMBRE")); // Nombre
-                label.setFont(new Font(30));
+                while (rs.next()) {
 
-                Label label2 = new Label("Precio: " + rs.getString("PRECIO")); // Precio
-                label2.setFont(new Font(30));
-                Label label3 = new Label("Stock: " + rs.getString("STOCK")); // Stock
-                label3.setFont(new Font(30));
+                    Label label = new Label(rs.getString("NOMBRE")); // Nombre
+                    label.setFont(new Font(30));
 
-                VBox contenedorInfo = new VBox(label2, label3); //Contenedor Vertical para precio y stock
-                contenedorInfo.setAlignment(Pos.CENTER); // Centrar verticalmente
+                    Label label2 = new Label("Precio: " + rs.getString("PRECIO")); // Precio
+                    label2.setFont(new Font(30));
+                    Label label3 = new Label("Stock: " + rs.getString("STOCK")); // Stock
+                    label3.setFont(new Font(30));
 
-                Button boton = new Button();
-                boton.setId(rs.getString("NOMBRE"));
+                    VBox contenedorInfo = new VBox(label2, label3); //Contenedor Vertical para precio y stock
+                    contenedorInfo.setAlignment(Pos.CENTER); // Centrar verticalmente
 
-                boton.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        comprar(boton.getId());
+                    Button boton = new Button();
+                    boton.setId(rs.getString("NOMBRE"));
+
+                    if (contador == 0) {
+                        boton.setText("Comprar");
+
+                        boton.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                comprar(boton.getId());
+                            }
+                        });
+                    } else if (contador == 1) {
+                        boton.setText("Editar");
+
+                        boton.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                comprar(boton.getId());
+                            }
+                        });
+                    } else if (contador == 2) {
+                        boton.setText("Cocinar");
+
+                        boton.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                comprar(boton.getId());
+                            }
+                        });
                     }
-                });
-
-                idBotones.add(boton); // se añade a la coleccion de todos los botones
-                boton.setText("Comprar");
 
 
-                // cargar imagen
-                Image imagen = new Image(getClass().getResource("/imagenes/" + rs.getString("IMAGEN")).toString());
-                ImageView imagenVista = new ImageView(imagen);
-
-                imagenVista.setFitHeight(100); // Ajustar altura
-                imagenVista.setFitWidth(100); // Ajustar anchura
-
-                HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
-
-                // Anadir los items al HBOX
-                contenedor.getChildren().add(imagenVista);
-                contenedor.getChildren().add(label);
-                contenedor.getChildren().add(contenedorInfo);
-                contenedor.getChildren().add(boton);
-                contenedor.setAlignment(Pos.CENTER);
-
-                contenedor.setSpacing(60);
+                    idBotones.add(boton); // se añade a la coleccion de todos los botones
 
 
-                Tienda.getChildren().add(contenedor);
-                contador ++;
+
+                    // cargar imagen
+                    Image imagen = new Image(getClass().getResource("/imagenes/" + rs.getString("IMAGEN")).toString());
+                    ImageView imagenVista = new ImageView(imagen);
+
+                    imagenVista.setFitHeight(100); // Ajustar altura
+                    imagenVista.setFitWidth(100); // Ajustar anchura
+
+                    HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
+
+                    // Anadir los items al HBOX
+                    contenedor.getChildren().add(imagenVista);
+                    contenedor.getChildren().add(label);
+                    contenedor.getChildren().add(contenedorInfo);
+                    contenedor.getChildren().add(boton);
+                    contenedor.setAlignment(Pos.CENTER);
+
+                    contenedor.setSpacing(60);
+
+                    if (contador == 0){
+                        Tienda.getChildren().add(contenedor);
+                    }
+                    else if(contador == 1){
+                        Almacen.getChildren().add(contenedor);
+                    } else if (contador == 2) {
+                        Cocina.getChildren().add(contenedor);
+                    }
+
+
+                }
+                contador++;
             }
         }
         catch (SQLException e){
