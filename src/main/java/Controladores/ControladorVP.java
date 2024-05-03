@@ -1,13 +1,15 @@
 package Controladores;
 
 
-import BBDD.ConexionBBDD;
+import Modelo.ConexionBBDD;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
@@ -19,7 +21,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import org.example.panaderiadam1b.Main;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
@@ -43,12 +49,18 @@ public class ControladorVP implements Initializable {
     @FXML
     ArrayList<Button> idBotones = new ArrayList<>(); // Coleccion de los ids de todos los botones de "comprar"
 
+    ArrayList<HBox> ProductosTienda = new ArrayList<>();
+    ArrayList<HBox> ProductosAlmacen = new ArrayList<>();
+    ArrayList<HBox> ProductosCocina = new ArrayList<>();
+
 
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.cargarProductos();
+        this.cargarTienda();
+        this.cargarAlmacen();
+        this.cargarCocina();
 
         this.ajustarAnclas();
     }
@@ -75,16 +87,36 @@ public class ControladorVP implements Initializable {
         AnchorPane.setRightAnchor(scrollCocina, 0.0);
     }
 
+    public void cargarTienda(){
+        Tienda.getChildren().clear();
+        ArrayList<HBox> contenedor = this.cargar("Tienda");
+
+        Tienda.getChildren().add(contenedor);
+
+    }
+    public void cargarAlmacen(){
+        Almacen.getChildren().clear();
+        ArrayList<HBox> contenedor = this.cargar("Tienda");
+        Almacen.getChildren().add(contenedor);
+
+    }
+    public void cargarCocina(){
+        Cocina.getChildren().clear();
+        ArrayList<HBox> contenedor = this.cargar("Tienda");
+
+
+        Cocina.getChildren().add(contenedor);
+
+    }
+
     /**
      * El metodo se conecta a la BBDD y crea HBox-es en los que se muestran
      * informacion de cada producto. Primero se llama a ConexionBBDD para
      * inicializar la conexion, y luego selecciona t0do de una tabla. Despues
      * imprime la informacion en la poscion que le corresponde.
      */
-    public void cargarProductos(){
-        Tienda.getChildren().clear();
-        Almacen.getChildren().clear();
-        Cocina.getChildren().clear();
+    public ArrayList<HBox> cargar(String apartado){
+
 
         Connection conexion = null;
         Statement script;
@@ -96,8 +128,13 @@ public class ControladorVP implements Initializable {
 
             int contador = 0;
 
-            for (int rep = 0; rep < 3; rep ++) {
-                rs = script.executeQuery("SELECT * FROM PRODUCTOS");
+            for (int rep = 0; rep < 4; rep ++) {
+                if (contador == 2){
+                    rs = script.executeQuery("SELECT * FROM INGREDIENTES");
+                }
+                else{
+                    rs = script.executeQuery("SELECT * FROM PRODUCTOS");
+                }
 
                 while (rs.next()) {
 
@@ -130,10 +167,22 @@ public class ControladorVP implements Initializable {
                         boton.setOnAction(new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent event) {
-                                comprar(boton.getId());
+                                anadir(event);
                             }
                         });
-                    } else if (contador == 2) {
+
+                    }else if (contador == 2) {
+                        boton.setText("Añadir Ingrediente");
+
+                        boton.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                anadir(event);
+                            }
+                        });
+
+                    }
+                    else if (contador == 3) {
                         boton.setText("Cocinar");
 
                         boton.setOnAction(new EventHandler<ActionEvent>() {
@@ -143,15 +192,12 @@ public class ControladorVP implements Initializable {
                             }
                         });
                     }
-
-
                     idBotones.add(boton); // se añade a la coleccion de todos los botones
-
-
 
                     // cargar imagen
                     Image imagen = new Image(getClass().getResource("/imagenes/" + rs.getString("IMAGEN")).toString());
-                    ImageView imagenVista = new ImageView(imagen);
+                    ImageView imagenVista = new ImageView(imagen);;
+
 
                     imagenVista.setFitHeight(100); // Ajustar altura
                     imagenVista.setFitWidth(100); // Ajustar anchura
@@ -168,20 +214,18 @@ public class ControladorVP implements Initializable {
                     contenedor.setSpacing(60);
 
                     if (contador == 0){
-                        Tienda.getChildren().add(contenedor);
+                        ProductosTienda.add(contenedor);
                     }
-                    else if(contador == 1){
-                        Almacen.getChildren().add(contenedor);
-                    } else if (contador == 2) {
-                        Cocina.getChildren().add(contenedor);
+                    else if(contador == 1 || contador == 2){
+                        ProductosAlmacen.add(contenedor);
+                    } else if (contador == 3) {
+                        ProductosCocina.add(contenedor);
                     }
-
-
                 }
                 contador++;
             }
         }
-        catch (SQLException e){
+        catch (SQLException | NullPointerException e){
             // En caso de haber un error, cada pestaña muestra un mensaje de error
             Tienda.getChildren().add(new Label("ERROR: No se han podido cargar los datos"));
             Almacen.getChildren().add(new Label("ERROR: No se han podido cargar los datos"));
@@ -190,6 +234,7 @@ public class ControladorVP implements Initializable {
         finally {
             ConexionBBDD.desconectar(conexion);
         }
+        return contenedor;
     }
 
     public void comprar(String nombre){
@@ -234,6 +279,23 @@ public class ControladorVP implements Initializable {
         }
         finally {
             conexion = ConexionBBDD.desconectar(conexion);
+        }
+    }
+    @FXML
+    public void anadir(ActionEvent actionEvent){
+        try{
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadirNuevo-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            stage.setTitle("Panaderia");
+            stage.setScene(scene);
+
+
+            stage.show();
+        }
+        catch (IOException e){
+            System.out.println("ERROR");
         }
     }
 }

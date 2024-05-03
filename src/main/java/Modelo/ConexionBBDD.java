@@ -1,4 +1,4 @@
-package BBDD;
+package Modelo;
 
 import java.sql.*;
 

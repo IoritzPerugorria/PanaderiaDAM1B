@@ -11,7 +11,7 @@
     </padding>
 
     <HBox prefHeight="153.0" prefWidth="960.0">
-      <Button mnemonicParsing="false" text="Button" />
+      <Button fx:id="anadirIngre" mnemonicParsing="false" onAction="#anadir" text=" Añadir Ingrediente" />
         <Label prefHeight="92.0" prefWidth="366.0" text="Panaderia">
             <font>
                 <Font size="69.0" />
