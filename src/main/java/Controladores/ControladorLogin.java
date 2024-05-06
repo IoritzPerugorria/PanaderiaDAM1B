@@ -77,12 +77,12 @@ public class ControladorLogin implements Initializable {
         conexion = ConexionBBDD.conectar(conexion);
         Statement accion = conexion.createStatement();
         ArrayList<ArrayList<String>> listaDatosUsuarios = new ArrayList<>();
-        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
+        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA,ROL FROM USUARIO");
         while (resultado.next()) {
             ArrayList<String> datosUsuario = new ArrayList<>();
             datosUsuario.add(resultado.getString("USUARIO"));
             datosUsuario.add(resultado.getString("CONTRASENA"));
-            //datosUsuario.add(resultado.getString("ROL"));
+            datosUsuario.add(resultado.getString("ROL"));
             listaDatosUsuarios.add(datosUsuario);
         }
 
@@ -111,7 +111,7 @@ public class ControladorLogin implements Initializable {
      * Comprobar si las credenciales introducidas e implementadas en la ArrayList "credenciales" coinciden con alguna de las credenciales de los usuarios del ArrayList "listaDatosUsuario"
      * @return boolean
      */
-    private boolean revisionDeLogin(ArrayList<String> credencialesIntroducidas, ArrayList<ArrayList<String>> listaDatosUsuario) {
+    private boolean revisionDeLogin(ArrayList<String> credencialesIntroducidas, ArrayList<ArrayList<String>> listaDatosUsuarios) {
         this.ocultarAvisos();
         //Si alguno de las credenciales introducidas estan vacias:
         if (credencialesIntroducidas.get(0).isBlank() || credencialesIntroducidas.get(1).isBlank()){
@@ -128,17 +128,28 @@ public class ControladorLogin implements Initializable {
         }
         else {
             //Si las  introducidas son correctas (si estan en la BD ya registradas):
-            if (listaDatosUsuario.contains(credencialesIntroducidas)){
-                return true;
-            }
+                for (ArrayList<String> datosUsuario : listaDatosUsuarios) {
+                    if ((datosUsuario.subList(0,2)) .equals(credencialesIntroducidas)){
+                        return true;
+                    }
+                }
             //En caso contrario:
-            else {
-                this.indicarCredencialesIncorrectas();
-                this.vaciarCampos();
-                return false;
-            }
+            this.indicarCredencialesIncorrectas();
+            this.vaciarCampos();
+            return false;
         }
 
+    }
+
+    private int encontrarUsuario(ArrayList<ArrayList<String>> listaDatosUsuario, ArrayList<String> credencialesIntroducidas){
+        int contador = 0;
+        while (contador < listaDatosUsuario.size()){
+            if (listaDatosUsuario.get(contador).subList(0,1).equals(credencialesIntroducidas)){
+                return contador;
+            }
+            contador++;
+        }
+        return -1;
     }
 
     /**
