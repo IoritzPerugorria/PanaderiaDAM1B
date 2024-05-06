@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ControladorLogin implements Initializable {
@@ -77,25 +78,46 @@ public class ControladorLogin implements Initializable {
         conexion = ConexionBBDD.conectar(conexion);
         Statement accion = conexion.createStatement();
         ArrayList<ArrayList<String>> listaDatosUsuarios = new ArrayList<>();
-        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
+        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA,ROL FROM USUARIO");
         while (resultado.next()) {
             ArrayList<String> datosUsuario = new ArrayList<>();
             datosUsuario.add(resultado.getString("USUARIO"));
             datosUsuario.add(resultado.getString("CONTRASENA"));
-            //datosUsuario.add(resultado.getString("ROL"));
+            datosUsuario.add(resultado.getString("ROL"));
             listaDatosUsuarios.add(datosUsuario);
         }
 
         try{
-            if(this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuarios)){
+            int revision = this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuarios);
+
+            if(revision != -1){
                 Node node = (Node) actionEvent.getSource();
                 Stage currentStage = (Stage) node.getScene().getWindow();
-
                 Stage stage = new Stage();
-                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-                Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
-                stage.setTitle("Panaderia");
-                stage.setScene(scene);
+
+                String rolUsuario = listaDatosUsuarios.get(revision).get(2);
+                if (Objects.equals(rolUsuario, "ADMIN")){
+                    System.out.println("Iniciado sesion como Administrador");
+
+
+                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                    stage.setTitle("Panaderia");
+                    stage.setScene(scene);
+
+
+                }
+
+                else if (Objects.equals(rolUsuario, "LECTOR")){
+                    System.out.println("Iniciado sesion como Lector");
+
+
+                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                    stage.setTitle("Panaderia");
+                    stage.setScene(scene);
+
+                }
 
                 currentStage.close();
                 stage.show();
@@ -111,7 +133,7 @@ public class ControladorLogin implements Initializable {
      * Comprobar si las credenciales introducidas e implementadas en la ArrayList "credenciales" coinciden con alguna de las credenciales de los usuarios del ArrayList "listaDatosUsuario"
      * @return boolean
      */
-    private boolean revisionDeLogin(ArrayList<String> credencialesIntroducidas, ArrayList<ArrayList<String>> listaDatosUsuario) {
+    private int revisionDeLogin(ArrayList<String> credencialesIntroducidas, ArrayList<ArrayList<String>> listaDatosUsuarios) {
         this.ocultarAvisos();
         //Si alguno de las credenciales introducidas estan vacias:
         if (credencialesIntroducidas.get(0).isBlank() || credencialesIntroducidas.get(1).isBlank()){
@@ -124,21 +146,30 @@ public class ControladorLogin implements Initializable {
                 this.indicarCampoObligatorio(txtCred2Obligatorio);
             }
 
-            return false;
+            return -1;
         }
         else {
             //Si las  introducidas son correctas (si estan en la BD ya registradas):
-            if (listaDatosUsuario.contains(credencialesIntroducidas)){
-                return true;
-            }
+                if (this.encontrarUsuario(listaDatosUsuarios,credencialesIntroducidas) != -1){
+                    return this.encontrarUsuario(listaDatosUsuarios,credencialesIntroducidas);
+                }
             //En caso contrario:
-            else {
-                this.indicarCredencialesIncorrectas();
-                this.vaciarCampos();
-                return false;
-            }
+            this.indicarCredencialesIncorrectas();
+            this.vaciarCampos();
+            return -1;
         }
 
+    }
+
+    private int encontrarUsuario(ArrayList<ArrayList<String>> listaDatosUsuario, ArrayList<String> credencialesIntroducidas){
+        int contador = 0;
+        while (contador < listaDatosUsuario.size()){
+            if (listaDatosUsuario.get(contador).subList(0,2).equals(credencialesIntroducidas)){
+                return contador;
+            }
+            contador++;
+        }
+        return -1;
     }
 
     /**
