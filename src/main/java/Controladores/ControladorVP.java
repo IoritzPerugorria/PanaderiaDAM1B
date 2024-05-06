@@ -11,24 +11,23 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+
+
 import javafx.scene.control.Label;
-
-
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.example.panaderiadam1b.Main;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class ControladorVP implements Initializable {
@@ -49,18 +48,19 @@ public class ControladorVP implements Initializable {
     @FXML
     ArrayList<Button> idBotones = new ArrayList<>(); // Coleccion de los ids de todos los botones de "comprar"
 
-    ArrayList<HBox> ProductosTienda = new ArrayList<>();
-    ArrayList<HBox> ProductosAlmacen = new ArrayList<>();
-    ArrayList<HBox> ProductosCocina = new ArrayList<>();
-
-
-
+    ArrayList<HBox> productosTienda = new ArrayList<>();
+    ArrayList<HBox> productosAlmacen = new ArrayList<>();
+    ArrayList< HBox> productosCocina = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        ArrayList<ArrayList<Object>> tabla = this.cargar("producto");
+        this.cargarRegular(tabla, "Tienda");
+        this.cargarRegular(tabla, "AlmacenProductos");
+        tabla = this.cargar("ingrediente");
+        this.cargarRegular(tabla, "AlmacenIngredientes");
         this.cargarTienda();
         this.cargarAlmacen();
-        this.cargarCocina();
 
         this.ajustarAnclas();
     }
@@ -89,24 +89,21 @@ public class ControladorVP implements Initializable {
 
     public void cargarTienda(){
         Tienda.getChildren().clear();
-        ArrayList<HBox> contenedor = this.cargar("Tienda");
-
-        Tienda.getChildren().add(contenedor);
-
+        for (HBox contenedor : productosTienda){
+            Tienda.getChildren().add(contenedor);
+        }
     }
     public void cargarAlmacen(){
         Almacen.getChildren().clear();
-        ArrayList<HBox> contenedor = this.cargar("Tienda");
-        Almacen.getChildren().add(contenedor);
-
+        for(HBox contenedor : productosAlmacen){
+            Almacen.getChildren().add(contenedor);
+        }
     }
     public void cargarCocina(){
         Cocina.getChildren().clear();
-        ArrayList<HBox> contenedor = this.cargar("Tienda");
-
-
-        Cocina.getChildren().add(contenedor);
-
+        for(HBox contenedor : productosCocina){
+            Cocina.getChildren().add(contenedor);
+        }
     }
 
     /**
@@ -115,127 +112,116 @@ public class ControladorVP implements Initializable {
      * inicializar la conexion, y luego selecciona t0do de una tabla. Despues
      * imprime la informacion en la poscion que le corresponde.
      */
-    public ArrayList<HBox> cargar(String apartado){
-
-
+    public ArrayList<ArrayList<Object>> cargar(String tipo){
         Connection conexion = null;
         Statement script;
         ResultSet rs;
+
+        ArrayList<ArrayList<Object>> tabla = new ArrayList<>();
 
         try {
             conexion = ConexionBBDD.conectar(conexion);
             script = conexion.createStatement();
 
-            int contador = 0;
+            if (tipo.equals("ingrediente")){
+                rs = script.executeQuery("SELECT * FROM INGREDIENTES");
+            }
+            else{
+                rs = script.executeQuery("SELECT * FROM PRODUCTOS");
+            }
 
-            for (int rep = 0; rep < 4; rep ++) {
-                if (contador == 2){
-                    rs = script.executeQuery("SELECT * FROM INGREDIENTES");
-                }
-                else{
-                    rs = script.executeQuery("SELECT * FROM PRODUCTOS");
-                }
+            while (rs.next()) {
+                ArrayList<Object> valores = new ArrayList<>();
 
-                while (rs.next()) {
+                String id = rs.getString("ID"); //ID
 
-                    Label label = new Label(rs.getString("NOMBRE")); // Nombre
-                    label.setFont(new Font(30));
+                String nombre = (rs.getString("NOMBRE")); // Nombre
 
-                    Label label2 = new Label("Precio: " + rs.getString("PRECIO")); // Precio
-                    label2.setFont(new Font(30));
-                    Label label3 = new Label("Stock: " + rs.getString("STOCK")); // Stock
-                    label3.setFont(new Font(30));
+                double precio = (rs.getDouble("PRECIO")); // Precio
 
-                    VBox contenedorInfo = new VBox(label2, label3); //Contenedor Vertical para precio y stock
-                    contenedorInfo.setAlignment(Pos.CENTER); // Centrar verticalmente
+                String stock = (rs.getString("STOCK")); // Stock
 
-                    Button boton = new Button();
-                    boton.setId(rs.getString("NOMBRE"));
+                String imagen = (rs.getString("IMAGEN")); //Imagen
 
-                    if (contador == 0) {
-                        boton.setText("Comprar");
+                valores.add(id);
+                valores.add(nombre);
+                valores.add(precio);
+                valores.add(stock);
+                valores.add(imagen);
 
-                        boton.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                comprar(boton.getId());
-                            }
-                        });
-                    } else if (contador == 1) {
-                        boton.setText("Editar");
-
-                        boton.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                anadir(event);
-                            }
-                        });
-
-                    }else if (contador == 2) {
-                        boton.setText("Añadir Ingrediente");
-
-                        boton.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                anadir(event);
-                            }
-                        });
-
-                    }
-                    else if (contador == 3) {
-                        boton.setText("Cocinar");
-
-                        boton.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                comprar(boton.getId());
-                            }
-                        });
-                    }
-                    idBotones.add(boton); // se añade a la coleccion de todos los botones
-
-                    // cargar imagen
-                    Image imagen = new Image(getClass().getResource("/imagenes/" + rs.getString("IMAGEN")).toString());
-                    ImageView imagenVista = new ImageView(imagen);;
-
-
-                    imagenVista.setFitHeight(100); // Ajustar altura
-                    imagenVista.setFitWidth(100); // Ajustar anchura
-
-                    HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
-
-                    // Anadir los items al HBOX
-                    contenedor.getChildren().add(imagenVista);
-                    contenedor.getChildren().add(label);
-                    contenedor.getChildren().add(contenedorInfo);
-                    contenedor.getChildren().add(boton);
-                    contenedor.setAlignment(Pos.CENTER);
-
-                    contenedor.setSpacing(60);
-
-                    if (contador == 0){
-                        ProductosTienda.add(contenedor);
-                    }
-                    else if(contador == 1 || contador == 2){
-                        ProductosAlmacen.add(contenedor);
-                    } else if (contador == 3) {
-                        ProductosCocina.add(contenedor);
-                    }
-                }
-                contador++;
+                tabla.add(valores);
             }
         }
-        catch (SQLException | NullPointerException e){
-            // En caso de haber un error, cada pestaña muestra un mensaje de error
-            Tienda.getChildren().add(new Label("ERROR: No se han podido cargar los datos"));
-            Almacen.getChildren().add(new Label("ERROR: No se han podido cargar los datos"));
-            Cocina.getChildren().add(new Label("ERROR: No se han podido cargar los datos"));
+        catch (SQLException e){
+            System.out.println("No se ha podido conectar a la BBDD");
         }
         finally {
             ConexionBBDD.desconectar(conexion);
         }
-        return contenedor;
+        return tabla;
     }
+
+    public void cargarRegular(ArrayList<ArrayList<Object>> tabla, String pantalla){
+        for (ArrayList<Object> valores : tabla) {
+
+            // cargar Imagen
+            Image imagen = new Image(getClass().getResource("/imagenes/" + valores.get(4)).toString());
+            ImageView imagenVista = new ImageView(imagen);
+            ;
+            imagenVista.setFitHeight(100); // Ajustar altura
+            imagenVista.setFitWidth(100); // Ajustar anchura
+
+            // Cargar nombre
+            Label nombre = new Label((String) valores.get(1));
+            // Cargar precio
+            double precioNumero = (Double) valores.get(2);
+            String precioCadena = String.valueOf(precioNumero);
+            Label precio = new Label(precioCadena);
+            // Cargar stock
+            Label stock = new Label((String) valores.get(3));
+
+            //Añadir precio y stock a contenedor vertical
+            VBox precioStock = new VBox(precio, stock);
+
+            Button boton = new Button();
+            boton.setId((String) valores.get(1));
+
+            boton.setText("Comprar");
+
+            boton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    comprar(boton.getId());
+                }
+            });
+
+            HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
+
+            // Anadir los items al HBOX
+            contenedor.getChildren().add(imagenVista);
+            contenedor.getChildren().add(nombre);
+            contenedor.getChildren().add(precioStock);
+            contenedor.getChildren().add(boton);
+            contenedor.setAlignment(Pos.CENTER);
+
+            contenedor.setSpacing(60);
+
+            switch (pantalla){
+                case "Tienda":
+                    productosTienda.add(contenedor);
+                    break;
+                case "AlmacenProductos", "AlmacenIngredientes":
+                    productosAlmacen.add(contenedor);
+                    break;
+            }
+        }
+    }
+
+    public void cargarCocina(ArrayList<ArrayList<Object>> productos, ArrayList<ArrayList<Object>> ingrediente){
+
+    }
+
+
 
     public void comprar(String nombre){
         Connection conexion = null;
@@ -258,24 +244,19 @@ public class ControladorVP implements Initializable {
 
 
                 if (!(rs.getInt("STOCK") <= 0)) {
-                     ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK - 1 WHERE NOMBRE = ?");
+                    ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK - 1 WHERE NOMBRE = ?");
                     ps2.setString(1, nombre);
-
-                    
                 }
                 else{
                     ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = 0 WHERE NOMBRE = ?");
                     ps2.setString(1, nombre);
-                    
                 }
                 ps2.executeUpdate();
-
-                this.cargarProductos();
 
             }
         }
         catch (SQLException e){
-
+            System.out.println("Error al comprar");
         }
         finally {
             conexion = ConexionBBDD.desconectar(conexion);
