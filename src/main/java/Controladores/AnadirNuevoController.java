@@ -28,6 +28,12 @@ public class AnadirNuevoController {
     private TextField txtFldPrec;
     private String imagen;
 
+
+    /**
+     * Método que inserta en la BBDD
+     * un ingrediente nuevo con los
+     * datos introducidos en pantalla
+     * */
     @FXML
     protected void anadirNuevo(){
         Connection conexion = null;
@@ -43,13 +49,13 @@ public class AnadirNuevoController {
             st.setDouble(2, precio);
             st.setInt(3, cant);
 
-            if(imagen != null){
+            if(imagen != null){  //si se ha seleccionado bien la imagen, intenta introducir su nombre de archivo a la base de datos
                 try{
                     st.setString(4, imagen);
                     st.executeUpdate();
                 }
                 catch(SQLException e){
-                    st.setString(4, null);
+                    st.setString(4, null);  //si no consigue introducirla, ese atributo se vuelve null
                     st.executeUpdate();
                     throw new IllegalStateException("Error al insertar imagen");
                 }
@@ -66,6 +72,12 @@ public class AnadirNuevoController {
         }
     }
 
+    /**
+     * Método que muestra el explorador
+     * permitiendo seleccionar una imagen
+     * y una vez seleccionada, la copia a
+     * la carpeta imagenes del proyecto
+     * */
     @FXML
     protected void cargarImagen(ActionEvent event) throws IOException {
         FileChooser cargador = new FileChooser();

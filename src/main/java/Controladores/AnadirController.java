@@ -29,6 +29,11 @@ public class AnadirController {
 //    private TextField cantPrd;
 
 
+    /**
+    * Método para crear los items del ComboBox,
+    *  se le llama desde el metodo anadirStock()
+    * de la clase ControladorVP al crear la pantalla para añadir stock
+    * */
     protected void itemsCombo(){
         Connection conexion = null;
         conexion = conectar(conexion);
@@ -56,6 +61,12 @@ public class AnadirController {
         }
     }
 
+
+    /**
+     * Método que actualiza el stock
+     * del ingrediente seleccionado en la pantalla
+     * sumandole la cantidad introducida
+     * */
     @FXML
     protected void anadirIngrediente(){
         Connection conexion = null;
