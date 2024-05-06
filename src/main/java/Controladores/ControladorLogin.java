@@ -62,48 +62,32 @@ public class ControladorLogin implements Initializable {
     }
 
 
-    /**
-     * Metodo que define si un usuario tiene acceso o no a la panaderia que devuelve true o false
-     * <p>
-     * Dependiendo de los resultados, se mostraran unos mensajes de error u otros.
-     *
-     * El método crea una variable que consiste en un Array de Arrays donde cada Array se corresponde
-     * con las credenciales de cada uno de los usuarios registrados (Nombre de usuario y contraseña).
-     * Para crear dicho Array necesitamos acceder previamente a la BBDD.
-     */
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
 
-    public boolean comprobacionCredenciales() throws SQLException {
-        //ArrayList de las credenciales de cada uno de los usuarios registrados en la BBDD
-        ArrayList<ArrayList<String>> listaDatosUsuario = new ArrayList<>();
-
-        Connection conexion = conexionBBDD();
-        Statement accion = conexion.createStatement();
-        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
-
-        while (resultado.next()) {
-            ArrayList<String> datosUsuario = new ArrayList<>();
-            datosUsuario.add(resultado.getString("USUARIO"));
-            datosUsuario.add(resultado.getString("CONTRASENA"));
-            listaDatosUsuario.add(datosUsuario);
-        }
-
-        //ArrayList de las credenciales introducidas por el usuario.
-        ArrayList<String> credencialesIntroducidas = new ArrayList<>();
-        credencialesIntroducidas.add(txtFldCredencial1.getText());
-        credencialesIntroducidas.add(txtFldCredencial2.getText());
-
-        //Se comprueba si las credenciales son correctas
-        boolean acceso = this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuario);
-
-
-        conexion.close();
-        return acceso;
     }
 
     public void login(javafx.event.ActionEvent actionEvent) throws SQLException {
 
+        ArrayList<String> credencialesIntroducidas = new ArrayList<>();
+        credencialesIntroducidas.add(txtFldCredencial1.getText());
+        credencialesIntroducidas.add(txtFldCredencial2.getText());
+
+        Connection conexion = null;
+        conexion = ConexionBBDD.conectar(conexion);
+        Statement accion = conexion.createStatement();
+        ArrayList<ArrayList<String>> listaDatosUsuarios = new ArrayList<>();
+        ResultSet resultado = accion.executeQuery("SELECT USUARIO,CONTRASENA FROM USUARIO");
+        while (resultado.next()) {
+            ArrayList<String> datosUsuario = new ArrayList<>();
+            datosUsuario.add(resultado.getString("USUARIO"));
+            datosUsuario.add(resultado.getString("CONTRASENA"));
+            //datosUsuario.add(resultado.getString("ROL"));
+            listaDatosUsuarios.add(datosUsuario);
+        }
+
         try{
-            if (this.comprobacionCredenciales()){
+            if(this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuarios)){
                 Node node = (Node) actionEvent.getSource();
                 Stage currentStage = (Stage) node.getScene().getWindow();
 
@@ -128,16 +112,18 @@ public class ControladorLogin implements Initializable {
      * @return boolean
      */
     private boolean revisionDeLogin(ArrayList<String> credencialesIntroducidas, ArrayList<ArrayList<String>> listaDatosUsuario) {
-
+        this.ocultarAvisos();
         //Si alguno de las credenciales introducidas estan vacias:
-        if (txtFldCredencial1 == null || txtFldCredencial2 == null){
-            if (txtFldCredencial1 == null){
+        if (credencialesIntroducidas.get(0).isBlank() || credencialesIntroducidas.get(1).isBlank()){
+
+            if (credencialesIntroducidas.get(0).isBlank()){
                 this.indicarCampoObligatorio(txtCred1Obligatorio);
             }
-            if (txtFldCredencial2 == null){
+
+            if (credencialesIntroducidas.get(1).isBlank()){
                 this.indicarCampoObligatorio(txtCred2Obligatorio);
             }
-            this.vaciarCampos();
+
             return false;
         }
         else {
@@ -155,14 +141,22 @@ public class ControladorLogin implements Initializable {
 
     }
 
+    /**
+     * Metodo que define si un usuario tiene acceso o no a la panaderia que devuelve true o false
+     * <p>
+     * Dependiendo de los resultados, se mostraran unos mensajes de error u otros.
+     *
+     * El método crea una variable que consiste en un Array de Arrays donde cada Array se corresponde
+     * con las credenciales de cada uno de los usuarios registrados (Nombre de usuario y contraseña).
+     * Para crear dicho Array necesitamos acceder previamente a la BBDD.
+     */
+
+
     private void indicarCampoObligatorio(Text texto){
-        txtCredsIncorrectas.setVisible(false);
         texto.setVisible(true);
     }
 
     private void indicarCredencialesIncorrectas(){
-        txtCred1Obligatorio.setVisible(false);
-        txtCred2Obligatorio.setVisible(false);
         txtCredsIncorrectas.setVisible(true);
     }
 
@@ -171,8 +165,9 @@ public class ControladorLogin implements Initializable {
         txtFldCredencial2.setText("");
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
+    private void ocultarAvisos(){
+        txtCred1Obligatorio.setVisible(false);
+        txtCred2Obligatorio.setVisible(false);
+        txtCredsIncorrectas.setVisible(false);
     }
 }
