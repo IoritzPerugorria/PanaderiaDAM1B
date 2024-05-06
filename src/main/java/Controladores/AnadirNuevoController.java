@@ -38,20 +38,19 @@ public class AnadirNuevoController {
         Double precio = Double.parseDouble(txtFldPrec.getText());
 
         try{
-            PreparedStatement st = conexion.prepareStatement("INSERT INTO INGREDIENTES(NOMBRE, PRECIO, STOCK) VALUES (?, ?, ?)");
+            PreparedStatement st = conexion.prepareStatement("INSERT INTO INGREDIENTES(NOMBRE, PRECIO, STOCK, IMAGEN) VALUES (?, ?, ?, ?)");
             st.setString(1, nombre);
             st.setDouble(2, precio);
             st.setInt(3, cant);
-            st.executeUpdate();
 
             if(imagen != null){
                 try{
-                    PreparedStatement st1 = conexion.prepareStatement("UPDATE INGREDIENTES SET IMAGEN = ? WHERE NOMBRE = ?");
-                    st1.setString(1, imagen);
-                    st1.setString(2, txtFldNom.getText());
-                    st1.executeUpdate();
+                    st.setString(4, imagen);
+                    st.executeUpdate();
                 }
                 catch(SQLException e){
+                    st.setString(4, null);
+                    st.executeUpdate();
                     throw new IllegalStateException("Error al insertar imagen");
                 }
             }
@@ -79,8 +78,8 @@ public class AnadirNuevoController {
         
         if(archivo != null){
             imagen = archivo.getName();
-            Path testFile = Files.createFile(Paths.get(archivo.getPath()));
-            testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\resources\\imagenes\\" + imagen));
+            Path testFile = Path.of(archivo.getPath());
+            testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\\resources\\imagenes\\" + imagen));
         }
     }
 

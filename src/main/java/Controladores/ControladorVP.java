@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -261,14 +262,14 @@ public class ControladorVP implements Initializable {
 
     public void anadirStock(ActionEvent actionEvent){
         try{
-
-            Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadir-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            fxmlLoader.load();
+            AnadirController document = fxmlLoader.getController();
+            document.itemsCombo();
+            Parent p = fxmlLoader.getRoot();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(p));
             stage.setTitle("Panaderia");
-            stage.setScene(scene);
-
-
             stage.show();
         }
         catch (IOException e){
