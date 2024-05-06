@@ -1,5 +1,7 @@
 package Controladores;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
@@ -7,7 +9,10 @@ import javafx.scene.control.TextField;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static Modulo.ConexionBBDD.conectar;
 
@@ -24,6 +29,44 @@ public class AnadirController {
 //    private TextField cantPrd;
 
 
+    /**
+    * Método para crear los items del ComboBox,
+    *  se le llama desde el metodo anadirStock()
+    * de la clase ControladorVP al crear la pantalla para añadir stock
+    * */
+    protected void itemsCombo(){
+        Connection conexion = null;
+        conexion = conectar(conexion);
+
+        try{
+            PreparedStatement st = conexion.prepareStatement("SELECT NOMBRE FROM INGREDIENTES");
+            ResultSet rs = st.executeQuery();
+
+            List<String> lista = new ArrayList<>();
+            while(rs.next()){
+                lista.add(rs.getString("NOMBRE"));
+            }
+            ObservableList<String> combo = FXCollections.observableArrayList(lista);
+
+            for(String cmb: combo){
+                cmbIng.getItems().add(cmb);
+            }
+
+        }
+        catch(SQLException e){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Error al crear el combobox");
+            alert.showAndWait();
+            throw new IllegalStateException("Error al crear el combobox");
+        }
+    }
+
+
+    /**
+     * Método que actualiza el stock
+     * del ingrediente seleccionado en la pantalla
+     * sumandole la cantidad introducida
+     * */
     @FXML
     protected void anadirIngrediente(){
         Connection conexion = null;

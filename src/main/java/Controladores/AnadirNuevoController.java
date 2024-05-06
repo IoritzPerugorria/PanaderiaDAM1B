@@ -28,6 +28,12 @@ public class AnadirNuevoController {
     private TextField txtFldPrec;
     private String imagen;
 
+
+    /**
+     * Método que inserta en la BBDD
+     * un ingrediente nuevo con los
+     * datos introducidos en pantalla
+     * */
     @FXML
     protected void anadirNuevo(){
         Connection conexion = null;
@@ -38,20 +44,19 @@ public class AnadirNuevoController {
         Double precio = Double.parseDouble(txtFldPrec.getText());
 
         try{
-            PreparedStatement st = conexion.prepareStatement("INSERT INTO INGREDIENTES(NOMBRE, PRECIO, STOCK) VALUES (?, ?, ?)");
+            PreparedStatement st = conexion.prepareStatement("INSERT INTO INGREDIENTES(NOMBRE, PRECIO, STOCK, IMAGEN) VALUES (?, ?, ?, ?)");
             st.setString(1, nombre);
             st.setDouble(2, precio);
             st.setInt(3, cant);
-            st.executeUpdate();
 
-            if(imagen != null){
+            if(imagen != null){  //si se ha seleccionado bien la imagen, intenta introducir su nombre de archivo a la base de datos
                 try{
-                    PreparedStatement st1 = conexion.prepareStatement("UPDATE INGREDIENTES SET IMAGEN = ? WHERE NOMBRE = ?");
-                    st1.setString(1, imagen);
-                    st1.setString(2, txtFldNom.getText());
-                    st1.executeUpdate();
+                    st.setString(4, imagen);
+                    st.executeUpdate();
                 }
                 catch(SQLException e){
+                    st.setString(4, null);  //si no consigue introducirla, ese atributo se vuelve null
+                    st.executeUpdate();
                     throw new IllegalStateException("Error al insertar imagen");
                 }
             }
@@ -67,6 +72,12 @@ public class AnadirNuevoController {
         }
     }
 
+    /**
+     * Método que muestra el explorador
+     * permitiendo seleccionar una imagen
+     * y una vez seleccionada, la copia a
+     * la carpeta imagenes del proyecto
+     * */
     @FXML
     protected void cargarImagen(ActionEvent event) throws IOException {
         FileChooser cargador = new FileChooser();
@@ -79,8 +90,8 @@ public class AnadirNuevoController {
         
         if(archivo != null){
             imagen = archivo.getName();
-            Path testFile = Files.createFile(Paths.get(archivo.getPath()));
-            testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\resources\\imagenes\\" + imagen));
+            Path testFile = Path.of(archivo.getPath());
+            testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\\resources\\imagenes\\" + imagen));
         }
     }
 

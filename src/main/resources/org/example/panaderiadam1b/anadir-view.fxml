@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -33,17 +31,6 @@
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
-               <items>
-                  <FXCollections fx:factory="observableArrayList">
-                     <String fx:id="har" fx:value="Harina" />
-                     <String fx:id="lev" fx:value="Levadura" />
-                     <String fx:id="azc" fx:value="Azucar" />
-                     <String fx:id="choc" fx:value="Chocolate" />
-                     <String fx:id="hoj" fx:value="Hojaldre" />
-                     <String fx:id="lech" fx:value="Leche" />
-                     <String fx:id="hue" fx:value="Huevos" />
-                  </FXCollections>
-               </items>
             </ComboBox>
             <Label text="Cantidad:">
                <VBox.margin>
