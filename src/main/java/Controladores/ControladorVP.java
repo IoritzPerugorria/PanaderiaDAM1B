@@ -217,8 +217,37 @@ public class ControladorVP implements Initializable {
         }
     }
 
-    public void cargarCocina(ArrayList<ArrayList<Object>> productos, ArrayList<ArrayList<Object>> ingrediente){
+    public void cargarCocina(ArrayList<ArrayList<Object>> productos){
 
+    }
+
+    public ArrayList<ArrayList<Object>> obtenerIngredientes(String id){
+        ArrayList<ArrayList<Object>> tablas = new ArrayList<>();
+
+        Connection conexion = null;
+        PreparedStatement ps = null;
+
+        try{
+            conexion = ConexionBBDD.conectar(conexion);
+            ps = conexion.prepareStatement("SELECT I.IMAGEN, N.CANTIDAD FROM PRODUCTOS AS P INNER JOIN NECESITA AS N ON N.PR_ID = P.ID INNER JOIN INGREDIENTES AS I ON N.ING_ID = I.ID WHERE P.ID = ?");
+            ps.setString(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                ArrayList<Object> valores = new ArrayList<>();
+                valores.add(rs.getString("I.IMAGEN"));
+                valores.add(rs.getString("N.CANTIDAD"));
+                tablas.add(valores);
+            }
+        }
+        catch (SQLException e){
+            System.out.println("Error al consultar los ingredientes");
+        }
+        finally {
+            conexion = ConexionBBDD.desconectar(conexion);
+        }
+        return tablas;
     }
 
 
@@ -262,6 +291,10 @@ public class ControladorVP implements Initializable {
             conexion = ConexionBBDD.desconectar(conexion);
         }
     }
+
+
+
+
     @FXML
     public void anadir(ActionEvent actionEvent){
         try{
