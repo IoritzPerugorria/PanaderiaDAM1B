@@ -14,7 +14,9 @@ public class Cartera {
     private double monedero;
     private Rol rol;
 
-
+    /*
+    * Método que devuelve el dinero que tiene el usuario en su cartera
+    * */
     public Double getMonedero(String usuario){
         Connection conexion = null;
         conexion = conectar(conexion);
@@ -35,6 +37,10 @@ public class Cartera {
         }
     }
 
+
+    /*
+    * Método que devuelve el rol del usuario: Cliente, Alamacenero, o Panadero
+    * */
     public Rol getRol(String usuario){
         Connection conexion = null;
         conexion = conectar(conexion);
@@ -55,6 +61,12 @@ public class Cartera {
         }
     }
 
+
+    /*
+    * Método que resta el precio de la compra de la cartera del
+    * usuario si es cliente y lo suma al del panadero y el almacenero.
+    * Si es cualquiera de los otros dos roles la cartera se mantiene igual
+    * */
     public void compra(Double precio, String usuario){
         if(getRol(usuario).equals(Rol.CLIENTE)){
             monedero = getMonedero(usuario) - precio;
