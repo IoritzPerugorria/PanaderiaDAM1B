@@ -65,6 +65,11 @@ public class ControladorVP implements Initializable {
         this.cargarTienda();
         this.cargarAlmacen();
 
+        tabla = this.cargar("producto");
+        this.cargarProductosCocina(tabla);
+
+        this.cargarCocina();
+
         this.ajustarAnclas(); //Ajustar las posiciones del scrollpane
     }
 
@@ -156,21 +161,13 @@ public class ControladorVP implements Initializable {
         catch (SQLException e){
             System.out.println("No se ha podido conectar a la BBDD");
         }
-        finally {
-            ConexionBBDD.desconectar(conexion);
-        }
         return tabla;
     }
 
     public void cargarRegular(ArrayList<ArrayList<Object>> tabla, String pestana){
         for (ArrayList<Object> valores : tabla) {
 
-            // cargar Imagen
-            Image imagen = new Image(getClass().getResource("/imagenes/" + valores.get(4)).toString());
-            ImageView imagenVista = new ImageView(imagen);
-            ;
-            imagenVista.setFitHeight(100); // Ajustar altura
-            imagenVista.setFitWidth(100); // Ajustar anchura
+            ImageView imagenVista = this.cargarImagen((String) valores.get(4)); // Cargar imagen
 
             // Cargar nombre
             Label nombre = new Label((String) valores.get(1));
@@ -218,18 +215,45 @@ public class ControladorVP implements Initializable {
         }
     }
 
-    public void cargarCocina(ArrayList<ArrayList<Object>> productos){
+    public void cargarProductosCocina(ArrayList<ArrayList<Object>> productos){
 
+        for (ArrayList<Object> items : productos){
+            // cargar Imagen
+            ImageView imagenVista = this.cargarImagen((String) items.get(4));
+
+            Label nombre = new Label((String) items.get(1));
+
+            VBox contenedorProd = new VBox(imagenVista, nombre);
+
+            ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
+
+            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) items.get(0)); //Obtener los ingredientes del producto
+            for (ArrayList<Object> ingrediente : ingreCociona){
+                ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.getFirst());
+
+                Label nombreIngre = new Label((String) ingrediente.get(1));
+                Label cantidadIngre = new Label("Necesarios: " + ingrediente.get(2));
+
+                VBox contenedor = new VBox(imagenVistaIngre,nombreIngre , cantidadIngre);
+                contenedorIngredientes.add(contenedor);
+            }
+
+            HBox contenedor = new HBox(contenedorProd);
+            for (VBox ingres : contenedorIngredientes){
+                contenedor.getChildren().add(ingres);
+            }
+
+            productosCocina.add(contenedor);
+
+        }
     }
 
     public ArrayList<ArrayList<Object>> obtenerIngredientes(String id){
         ArrayList<ArrayList<Object>> tablas = new ArrayList<>();
-
-
-        PreparedStatement ps = null;
+        PreparedStatement ps;
 
         try{
-            ps = conexion.prepareStatement("SELECT I.IMAGEN, N.CANTIDAD FROM PRODUCTOS AS P INNER JOIN NECESITA AS N ON N.PR_ID = P.ID INNER JOIN INGREDIENTES AS I ON N.ING_ID = I.ID WHERE P.ID = ?");
+            ps = conexion.prepareStatement("SELECT I.IMAGEN, N.CANTIDAD, I.NOMBRE FROM PRODUCTOS AS P INNER JOIN NECESITA AS N ON N.PR_ID = P.ID INNER JOIN INGREDIENTES AS I ON N.ING_ID = I.ID WHERE P.ID = ?");
             ps.setString(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -237,7 +261,9 @@ public class ControladorVP implements Initializable {
             while (rs.next()){
                 ArrayList<Object> valores = new ArrayList<>();
                 valores.add(rs.getString("I.IMAGEN"));
+                valores.add(rs.getString("I.NOMBRE"));
                 valores.add(rs.getString("N.CANTIDAD"));
+
                 tablas.add(valores);
             }
         }
@@ -247,6 +273,15 @@ public class ControladorVP implements Initializable {
         return tablas;
     }
 
+
+    public ImageView cargarImagen(String ruta){
+        Image imagen = new Image(getClass().getResource("/imagenes/" + ruta).toString());
+        ImageView imagenVista = new ImageView(imagen);
+        imagenVista.setFitHeight(100); // Ajustar altura
+        imagenVista.setFitWidth(100); // Ajustar anchura
+
+        return imagenVista;
+    }
 
 
     public void comprar(String nombre){
@@ -282,9 +317,6 @@ public class ControladorVP implements Initializable {
             System.out.println("Error al comprar");
         }
     }
-
-
-
 
     @FXML
     public void anadir(ActionEvent actionEvent){
