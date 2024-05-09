@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ControladorVP implements Initializable {
@@ -186,7 +186,7 @@ public class ControladorVP implements Initializable {
 
             boton.setText("Comprar");
 
-            boton.setOnAction(new EventHandler<ActionEvent>() {
+            boton.setOnAction(new EventHandler<>() {
                 @Override
                 public void handle(ActionEvent event) {
                     comprar(boton.getId());
@@ -227,7 +227,7 @@ public class ControladorVP implements Initializable {
 
             ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) items.get(0)); //Obtener los ingredientes del producto
+            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) items.getFirst()); //Obtener los ingredientes del producto
             for (ArrayList<Object> ingrediente : ingreCociona){
                 ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.getFirst());
 
@@ -275,7 +275,7 @@ public class ControladorVP implements Initializable {
 
 
     public ImageView cargarImagen(String ruta){
-        Image imagen = new Image(getClass().getResource("/imagenes/" + ruta).toString());
+        Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
         ImageView imagenVista = new ImageView(imagen);
         imagenVista.setFitHeight(100); // Ajustar altura
         imagenVista.setFitWidth(100); // Ajustar anchura
@@ -287,7 +287,7 @@ public class ControladorVP implements Initializable {
     public void comprar(String nombre){
 
         PreparedStatement ps1;
-        PreparedStatement ps2 = null;
+        PreparedStatement ps2;
         ResultSet rs;
 
         try {
@@ -319,7 +319,7 @@ public class ControladorVP implements Initializable {
     }
 
     @FXML
-    public void anadir(ActionEvent actionEvent){
+    public void anadir(){
         try{
 
             Stage stage = new Stage();
