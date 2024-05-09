@@ -45,24 +45,27 @@ public class ControladorVP implements Initializable {
     ScrollPane scrollAlmacen = new ScrollPane();
     @FXML
     ScrollPane scrollCocina = new ScrollPane();
-    @FXML
-    ArrayList<Button> idBotones = new ArrayList<>(); // Coleccion de los ids de todos los botones de "comprar"
 
     ArrayList<HBox> productosTienda = new ArrayList<>();
     ArrayList<HBox> productosAlmacen = new ArrayList<>();
     ArrayList< HBox> productosCocina = new ArrayList<>();
 
+    Connection conexion;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        conexion = ConexionBBDD.conectar(conexion);
         ArrayList<ArrayList<Object>> tabla = this.cargar("producto");
+
         this.cargarRegular(tabla, "Tienda");
         this.cargarRegular(tabla, "AlmacenProductos");
         tabla = this.cargar("ingrediente");
         this.cargarRegular(tabla, "AlmacenIngredientes");
+
         this.cargarTienda();
         this.cargarAlmacen();
 
-        this.ajustarAnclas();
+        this.ajustarAnclas(); //Ajustar las posiciones del scrollpane
     }
 
 
@@ -113,14 +116,12 @@ public class ControladorVP implements Initializable {
      * imprime la informacion en la poscion que le corresponde.
      */
     public ArrayList<ArrayList<Object>> cargar(String tipo){
-        Connection conexion = null;
         Statement script;
         ResultSet rs;
 
         ArrayList<ArrayList<Object>> tabla = new ArrayList<>();
 
         try {
-            conexion = ConexionBBDD.conectar(conexion);
             script = conexion.createStatement();
 
             if (tipo.equals("ingrediente")){
@@ -161,7 +162,7 @@ public class ControladorVP implements Initializable {
         return tabla;
     }
 
-    public void cargarRegular(ArrayList<ArrayList<Object>> tabla, String pantalla){
+    public void cargarRegular(ArrayList<ArrayList<Object>> tabla, String pestana){
         for (ArrayList<Object> valores : tabla) {
 
             // cargar Imagen
@@ -206,7 +207,7 @@ public class ControladorVP implements Initializable {
 
             contenedor.setSpacing(60);
 
-            switch (pantalla){
+            switch (pestana){
                 case "Tienda":
                     productosTienda.add(contenedor);
                     break;
@@ -224,11 +225,10 @@ public class ControladorVP implements Initializable {
     public ArrayList<ArrayList<Object>> obtenerIngredientes(String id){
         ArrayList<ArrayList<Object>> tablas = new ArrayList<>();
 
-        Connection conexion = null;
+
         PreparedStatement ps = null;
 
         try{
-            conexion = ConexionBBDD.conectar(conexion);
             ps = conexion.prepareStatement("SELECT I.IMAGEN, N.CANTIDAD FROM PRODUCTOS AS P INNER JOIN NECESITA AS N ON N.PR_ID = P.ID INNER JOIN INGREDIENTES AS I ON N.ING_ID = I.ID WHERE P.ID = ?");
             ps.setString(1, id);
 
@@ -244,25 +244,19 @@ public class ControladorVP implements Initializable {
         catch (SQLException e){
             System.out.println("Error al consultar los ingredientes");
         }
-        finally {
-            conexion = ConexionBBDD.desconectar(conexion);
-        }
         return tablas;
     }
 
 
 
     public void comprar(String nombre){
-        Connection conexion = null;
+
         PreparedStatement ps1;
         PreparedStatement ps2 = null;
         ResultSet rs;
 
         try {
-            conexion = ConexionBBDD.conectar(conexion);
-
-
-             ps1 = conexion.prepareStatement("SELECT STOCK FROM PRODUCTOS WHERE NOMBRE = ?");
+            ps1 = conexion.prepareStatement("SELECT STOCK FROM PRODUCTOS WHERE NOMBRE = ?");
             ps1.setString(1, nombre);
 
             rs = ps1.executeQuery();
@@ -286,9 +280,6 @@ public class ControladorVP implements Initializable {
         }
         catch (SQLException e){
             System.out.println("Error al comprar");
-        }
-        finally {
-            conexion = ConexionBBDD.desconectar(conexion);
         }
     }
 
