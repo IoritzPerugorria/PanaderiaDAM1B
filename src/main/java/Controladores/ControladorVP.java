@@ -1,7 +1,7 @@
 package Controladores;
 
 
-import Modelo.ConexionBBDD;
+import BBDD.ConexionBBDD;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
