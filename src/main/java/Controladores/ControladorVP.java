@@ -1,7 +1,7 @@
 package Controladores;
 
 
-import Modulo.ConexionBBDD;
+import Modelo.ConexionBBDD;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -9,19 +9,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+
+
 import javafx.scene.control.Label;
-
-
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.example.panaderiadam1b.Main;
 
@@ -29,6 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class ControladorVP implements Initializable {
@@ -46,17 +45,27 @@ public class ControladorVP implements Initializable {
     ScrollPane scrollAlmacen = new ScrollPane();
     @FXML
     ScrollPane scrollCocina = new ScrollPane();
-    @FXML
-    ArrayList<Button> idBotones = new ArrayList<>(); // Coleccion de los ids de todos los botones de "comprar"
 
+    ArrayList<HBox> productosTienda = new ArrayList<>();
+    ArrayList<HBox> productosAlmacen = new ArrayList<>();
+    ArrayList< HBox> productosCocina = new ArrayList<>();
 
-
+    Connection conexion;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.cargarProductos();
+        conexion = ConexionBBDD.conectar(conexion);
+        ArrayList<ArrayList<Object>> tabla = this.cargar("producto");
 
-        this.ajustarAnclas();
+        this.cargarRegular(tabla, "Tienda");
+        this.cargarRegular(tabla, "AlmacenProductos");
+        tabla = this.cargar("ingrediente");
+        this.cargarRegular(tabla, "AlmacenIngredientes");
+
+        this.cargarTienda();
+        this.cargarAlmacen();
+
+        this.ajustarAnclas(); //Ajustar las posiciones del scrollpane
     }
 
 
@@ -81,134 +90,173 @@ public class ControladorVP implements Initializable {
         AnchorPane.setRightAnchor(scrollCocina, 0.0);
     }
 
+    public void cargarTienda(){
+        Tienda.getChildren().clear();
+        for (HBox contenedor : productosTienda){
+            Tienda.getChildren().add(contenedor);
+        }
+    }
+    public void cargarAlmacen(){
+        Almacen.getChildren().clear();
+        for(HBox contenedor : productosAlmacen){
+            Almacen.getChildren().add(contenedor);
+        }
+    }
+    public void cargarCocina(){
+        Cocina.getChildren().clear();
+        for(HBox contenedor : productosCocina){
+            Cocina.getChildren().add(contenedor);
+        }
+    }
+
     /**
      * El metodo se conecta a la BBDD y crea HBox-es en los que se muestran
      * informacion de cada producto. Primero se llama a ConexionBBDD para
      * inicializar la conexion, y luego selecciona t0do de una tabla. Despues
      * imprime la informacion en la poscion que le corresponde.
      */
-    public void cargarProductos(){
-        Tienda.getChildren().clear();
-        Almacen.getChildren().clear();
-        Cocina.getChildren().clear();
-
-        Connection conexion = null;
+    public ArrayList<ArrayList<Object>> cargar(String tipo){
         Statement script;
         ResultSet rs;
 
+        ArrayList<ArrayList<Object>> tabla = new ArrayList<>();
+
         try {
-            conexion = ConexionBBDD.conectar(conexion);
             script = conexion.createStatement();
 
-            int contador = 0;
-
-            for (int rep = 0; rep < 3; rep ++) {
+            if (tipo.equals("ingrediente")){
+                rs = script.executeQuery("SELECT * FROM INGREDIENTES");
+            }
+            else{
                 rs = script.executeQuery("SELECT * FROM PRODUCTOS");
+            }
 
-                while (rs.next()) {
+            while (rs.next()) {
+                ArrayList<Object> valores = new ArrayList<>();
 
-                    Label label = new Label(rs.getString("NOMBRE")); // Nombre
-                    label.setFont(new Font(30));
+                String id = rs.getString("ID"); //ID
 
-                    Label label2 = new Label("Precio: " + rs.getString("PRECIO")); // Precio
-                    label2.setFont(new Font(30));
-                    Label label3 = new Label("Stock: " + rs.getString("STOCK")); // Stock
-                    label3.setFont(new Font(30));
+                String nombre = (rs.getString("NOMBRE")); // Nombre
 
-                    VBox contenedorInfo = new VBox(label2, label3); //Contenedor Vertical para precio y stock
-                    contenedorInfo.setAlignment(Pos.CENTER); // Centrar verticalmente
+                double precio = (rs.getDouble("PRECIO")); // Precio
 
-                    Button boton = new Button();
-                    boton.setId(rs.getString("NOMBRE"));
+                String stock = (rs.getString("STOCK")); // Stock
 
-                    if (contador == 0) {
-                        boton.setText("Comprar");
+                String imagen = (rs.getString("IMAGEN")); //Imagen
 
-                        boton.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                comprar(boton.getId());
-                            }
-                        });
-                    } else if (contador == 1) {
-                        boton.setText("Editar");
+                valores.add(id);
+                valores.add(nombre);
+                valores.add(precio);
+                valores.add(stock);
+                valores.add(imagen);
 
-                        boton.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                anadir(event);
-                            }
-                        });
-                    } else if (contador == 2) {
-                        boton.setText("Cocinar");
-
-                        boton.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                comprar(boton.getId());
-                            }
-                        });
-                    }
-
-
-                    idBotones.add(boton); // se añade a la coleccion de todos los botones
-
-
-
-                    // cargar imagen
-                    Image imagen = new Image(getClass().getResource("/imagenes/" + rs.getString("IMAGEN")).toString());
-                    ImageView imagenVista = new ImageView(imagen);
-
-                    imagenVista.setFitHeight(100); // Ajustar altura
-                    imagenVista.setFitWidth(100); // Ajustar anchura
-
-                    HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
-
-                    // Anadir los items al HBOX
-                    contenedor.getChildren().add(imagenVista);
-                    contenedor.getChildren().add(label);
-                    contenedor.getChildren().add(contenedorInfo);
-                    contenedor.getChildren().add(boton);
-                    contenedor.setAlignment(Pos.CENTER);
-
-                    contenedor.setSpacing(60);
-
-                    if (contador == 0){
-                        Tienda.getChildren().add(contenedor);
-                    }
-                    else if(contador == 1){
-                        Almacen.getChildren().add(contenedor);
-                    } else if (contador == 2) {
-                        Cocina.getChildren().add(contenedor);
-                    }
-
-
-                }
-                contador++;
+                tabla.add(valores);
             }
         }
         catch (SQLException e){
-            // En caso de haber un error, cada pestaña muestra un mensaje de error
-            Tienda.getChildren().add(new Label("ERROR: No se han podido cargar los datos"));
-            Almacen.getChildren().add(new Label("ERROR: No se han podido cargar los datos"));
-            Cocina.getChildren().add(new Label("ERROR: No se han podido cargar los datos"));
+            System.out.println("No se ha podido conectar a la BBDD");
         }
         finally {
             ConexionBBDD.desconectar(conexion);
         }
+        return tabla;
     }
 
+    public void cargarRegular(ArrayList<ArrayList<Object>> tabla, String pestana){
+        for (ArrayList<Object> valores : tabla) {
+
+            // cargar Imagen
+            Image imagen = new Image(getClass().getResource("/imagenes/" + valores.get(4)).toString());
+            ImageView imagenVista = new ImageView(imagen);
+            ;
+            imagenVista.setFitHeight(100); // Ajustar altura
+            imagenVista.setFitWidth(100); // Ajustar anchura
+
+            // Cargar nombre
+            Label nombre = new Label((String) valores.get(1));
+            // Cargar precio
+            double precioNumero = (Double) valores.get(2);
+            String precioCadena = String.valueOf(precioNumero);
+            Label precio = new Label(precioCadena);
+            // Cargar stock
+            Label stock = new Label((String) valores.get(3));
+
+            //Añadir precio y stock a contenedor vertical
+            VBox precioStock = new VBox(precio, stock);
+
+            Button boton = new Button();
+            boton.setId((String) valores.get(1));
+
+            boton.setText("Comprar");
+
+            boton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    comprar(boton.getId());
+                }
+            });
+
+            HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
+
+            // Anadir los items al HBOX
+            contenedor.getChildren().add(imagenVista);
+            contenedor.getChildren().add(nombre);
+            contenedor.getChildren().add(precioStock);
+            contenedor.getChildren().add(boton);
+            contenedor.setAlignment(Pos.CENTER);
+
+            contenedor.setSpacing(60);
+
+            switch (pestana){
+                case "Tienda":
+                    productosTienda.add(contenedor);
+                    break;
+                case "AlmacenProductos", "AlmacenIngredientes":
+                    productosAlmacen.add(contenedor);
+                    break;
+            }
+        }
+    }
+
+    public void cargarCocina(ArrayList<ArrayList<Object>> productos){
+
+    }
+
+    public ArrayList<ArrayList<Object>> obtenerIngredientes(String id){
+        ArrayList<ArrayList<Object>> tablas = new ArrayList<>();
+
+
+        PreparedStatement ps = null;
+
+        try{
+            ps = conexion.prepareStatement("SELECT I.IMAGEN, N.CANTIDAD FROM PRODUCTOS AS P INNER JOIN NECESITA AS N ON N.PR_ID = P.ID INNER JOIN INGREDIENTES AS I ON N.ING_ID = I.ID WHERE P.ID = ?");
+            ps.setString(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                ArrayList<Object> valores = new ArrayList<>();
+                valores.add(rs.getString("I.IMAGEN"));
+                valores.add(rs.getString("N.CANTIDAD"));
+                tablas.add(valores);
+            }
+        }
+        catch (SQLException e){
+            System.out.println("Error al consultar los ingredientes");
+        }
+        return tablas;
+    }
+
+
+
     public void comprar(String nombre){
-        Connection conexion = null;
+
         PreparedStatement ps1;
         PreparedStatement ps2 = null;
         ResultSet rs;
 
         try {
-            conexion = ConexionBBDD.conectar(conexion);
-
-
-             ps1 = conexion.prepareStatement("SELECT STOCK FROM PRODUCTOS WHERE NOMBRE = ?");
+            ps1 = conexion.prepareStatement("SELECT STOCK FROM PRODUCTOS WHERE NOMBRE = ?");
             ps1.setString(1, nombre);
 
             rs = ps1.executeQuery();
@@ -219,29 +267,25 @@ public class ControladorVP implements Initializable {
 
 
                 if (!(rs.getInt("STOCK") <= 0)) {
-                     ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK - 1 WHERE NOMBRE = ?");
+                    ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK - 1 WHERE NOMBRE = ?");
                     ps2.setString(1, nombre);
-
-                    
                 }
                 else{
                     ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = 0 WHERE NOMBRE = ?");
                     ps2.setString(1, nombre);
-                    
                 }
                 ps2.executeUpdate();
-
-                this.cargarProductos();
 
             }
         }
         catch (SQLException e){
-
-        }
-        finally {
-            conexion = ConexionBBDD.desconectar(conexion);
+            System.out.println("Error al comprar");
         }
     }
+
+
+
+
     @FXML
     public void anadir(ActionEvent actionEvent){
         try{
@@ -253,23 +297,6 @@ public class ControladorVP implements Initializable {
             stage.setScene(scene);
 
 
-            stage.show();
-        }
-        catch (IOException e){
-            System.out.println("ERROR");
-        }
-    }
-
-    public void anadirStock(ActionEvent actionEvent){
-        try{
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadir-view.fxml"));
-            fxmlLoader.load();
-            AnadirController document = fxmlLoader.getController();
-            document.itemsCombo();
-            Parent p = fxmlLoader.getRoot();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(p));
-            stage.setTitle("Panaderia");
             stage.show();
         }
         catch (IOException e){
