@@ -1,7 +1,10 @@
 package Controladores;
 
 
+import Enumerados.Pestanas;
 import Modelo.ConexionBBDD;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -10,11 +13,9 @@ import javafx.fxml.Initializable;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 
 
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -27,100 +28,96 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+// gRACIAS NIDAE POR NADA
 
 public class ControladorVP implements Initializable {
 
 
     @FXML
-    VBox Tienda = new VBox(); //Contendero vertical de la Tienda
+    private VBox Tienda = new VBox(); //Contendero vertical de la Tienda
     @FXML
-    VBox Almacen = new VBox(); //Contendero vertical del Inventario
+    private VBox Almacen = new VBox(); //Contendero vertical del Inventario
     @FXML
-    VBox Cocina = new VBox(); //Contendero vertical de la Cocina
+    private VBox Cocina = new VBox(); //Contendero vertical de la Cocina
     @FXML
-    ScrollPane scrollTienda = new ScrollPane();
+    private ScrollPane scrollTienda = new ScrollPane();
     @FXML
-    ScrollPane scrollAlmacen = new ScrollPane();
+    private ScrollPane scrollAlmacen = new ScrollPane();
     @FXML
-    ScrollPane scrollCocina = new ScrollPane();
+    private ScrollPane scrollCocina = new ScrollPane();
 
-    ArrayList<HBox> productosTienda = new ArrayList<>();
-    ArrayList<HBox> productosAlmacen = new ArrayList<>();
-    ArrayList< HBox> productosCocina = new ArrayList<>();
+    private HashMap<String, Label> stockProductoTienda = new HashMap<>();
+    private HashMap<String, Label> stockProductoAlmacen = new HashMap<>();
 
-    Connection conexion;
+    private ArrayList<HBox> productosTienda = new ArrayList<>();
+    private ArrayList<HBox> productosAlmacen = new ArrayList<>();
+    private ArrayList< HBox> productosCocina = new ArrayList<>();
+
+    private Connection conexion; // La misma conexion se usa en tod0 el controlador para optimizar las cargas
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        conexion = ConexionBBDD.conectar(conexion);
-        ArrayList<ArrayList<Object>> tabla = this.cargar("producto");
+        this.cargar();
+    }
 
-        this.cargarRegular(tabla, "Tienda");
-        this.cargarRegular(tabla, "AlmacenProductos");
-        tabla = this.cargar("ingrediente");
-        this.cargarRegular(tabla, "AlmacenIngredientes");
+    public void cargar(){
+        productosTienda.clear();
+        productosAlmacen.clear();
+        productosCocina.clear();
+
+        conexion = ConexionBBDD.conectar(conexion); // Abrir la conexion
+
+        ArrayList<ArrayList<Object>> productos = this.cargarDatos("producto");
+        for(ArrayList<Object> producto : productos) {
+            this.anadirProductosOIngredientes(producto, Pestanas.TIENDA);
+            this.anadirProductosCocina(producto);
+            this.anadirProductosOIngredientes(producto, Pestanas.ALMACENPRODUCTOS);
+        }
+
+        ArrayList<ArrayList<Object>> ingredientes = this.cargarDatos("ingrediente");
+        for(ArrayList<Object> ingrediente : ingredientes){
+            this.anadirProductosOIngredientes(ingrediente, Pestanas.ALMACENINGREDIENTES);
+        }
 
         this.cargarTienda();
         this.cargarAlmacen();
-
-        tabla = this.cargar("producto");
-        this.cargarProductosCocina(tabla);
-
         this.cargarCocina();
 
         this.ajustarAnclas(); //Ajustar las posiciones del scrollpane
     }
 
-
-    /**
-     * Este metodo ajusta las anclas de los tabs para que los scrollpane
-     * de dentro se ajusten al tamaño del tab
-     */
-    public void ajustarAnclas(){
-        AnchorPane.setTopAnchor(scrollTienda, 0.0);
-        AnchorPane.setBottomAnchor(scrollTienda, 0.0);
-        AnchorPane.setLeftAnchor(scrollTienda, 0.0);
-        AnchorPane.setRightAnchor(scrollTienda, 0.0);
-
-        AnchorPane.setTopAnchor(scrollAlmacen, 0.0);
-        AnchorPane.setBottomAnchor(scrollAlmacen, 0.0);
-        AnchorPane.setLeftAnchor(scrollAlmacen, 0.0);
-        AnchorPane.setRightAnchor(scrollAlmacen, 0.0);
-
-        AnchorPane.setTopAnchor(scrollCocina, 0.0);
-        AnchorPane.setBottomAnchor(scrollCocina, 0.0);
-        AnchorPane.setLeftAnchor(scrollCocina, 0.0);
-        AnchorPane.setRightAnchor(scrollCocina, 0.0);
-    }
-
     public void cargarTienda(){
         Tienda.getChildren().clear();
+
         for (HBox contenedor : productosTienda){
             Tienda.getChildren().add(contenedor);
         }
+
     }
     public void cargarAlmacen(){
         Almacen.getChildren().clear();
+
         for(HBox contenedor : productosAlmacen){
             Almacen.getChildren().add(contenedor);
         }
     }
     public void cargarCocina(){
         Cocina.getChildren().clear();
+
         for(HBox contenedor : productosCocina){
             Cocina.getChildren().add(contenedor);
         }
     }
 
     /**
-     * El metodo se conecta a la BBDD y crea HBox-es en los que se muestran
-     * informacion de cada producto. Primero se llama a ConexionBBDD para
-     * inicializar la conexion, y luego selecciona t0do de una tabla. Despues
-     * imprime la informacion en la poscion que le corresponde.
+     * El metodo se conecta a la BBDD y extrae toda la informacion sobre
+     * ingredientes o productos, dependiendo el parametro de entrada.
      */
-    public ArrayList<ArrayList<Object>> cargar(String tipo){
+    public ArrayList<ArrayList<Object>> cargarDatos(String tipo){
         Statement script;
         ResultSet rs;
 
@@ -164,34 +161,37 @@ public class ControladorVP implements Initializable {
         return tabla;
     }
 
-    public void cargarRegular(ArrayList<ArrayList<Object>> tabla, String pestana){
-        for (ArrayList<Object> valores : tabla) {
+    /**
+     * Para cargar tienda y almacen
+     */
+    public void anadirProductosOIngredientes(ArrayList<Object> producto, Pestanas pestana){
 
-            ImageView imagenVista = this.cargarImagen((String) valores.get(4)); // Cargar imagen
 
-            // Cargar nombre
-            Label nombre = new Label((String) valores.get(1));
-            // Cargar precio
-            double precioNumero = (Double) valores.get(2);
-            String precioCadena = String.valueOf(precioNumero);
-            Label precio = new Label(precioCadena);
-            // Cargar stock
-            Label stock = new Label((String) valores.get(3));
+            ImageView imagenVista = this.cargarImagen((String) producto.get(4)); // Cargar imagen
 
-            //Añadir precio y stock a contenedor vertical
-            VBox precioStock = new VBox(precio, stock);
+            Label nombre = new Label((String) producto.get(1)); // Cargar nombre
 
-            Button boton = new Button();
-            boton.setId((String) valores.get(1));
+            double precioNumero = (Double) producto.get(2); // Cargar precio
 
-            boton.setText("Comprar");
+            String precioCadena = String.valueOf(precioNumero); // Pasar de double a String
+            Label precio = new Label("Precio: " + precioCadena); // Mostrar precio en Label
 
-            boton.setOnAction(new EventHandler<>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    comprar(boton.getId());
+            Label stock = new Label("Stock: " + (String) producto.get(3)); // Cargar stock
+
+            VBox precioStock = new VBox(precio, stock); //Añadir precio y stock a un contenedor vertical
+
+        TextField texto = new TextField();
+        texto.setPromptText("Cantidad...");
+
+        texto.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    texto.setText(newValue.replaceAll("\\D", ""));
                 }
-            });
+            }
+        });
 
             HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
 
@@ -199,35 +199,96 @@ public class ControladorVP implements Initializable {
             contenedor.getChildren().add(imagenVista);
             contenedor.getChildren().add(nombre);
             contenedor.getChildren().add(precioStock);
+            if (!(pestana == Pestanas.ALMACENPRODUCTOS)){
+                contenedor.getChildren().add(texto);
+            }
+
+            Button boton = new Button();
+
+            switch (pestana){
+                case TIENDA:
+                    boton.setText("Comprar");
+                    break;
+                case ALMACENPRODUCTOS:
+                    boton.setText("Editar");
+                    break;
+                case ALMACENINGREDIENTES:
+                    boton.setText("Comprar Ingrediente");
+                    break;
+                case COCINA:
+                    boton.setText("Cocinar");
+                    break;
+            }
+
+            boton.setOnAction(new EventHandler<>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    switch (pestana){
+                        case TIENDA:
+                            if (texto.getText().isBlank()){
+                                comprar(boton.getId(), "1");
+                            }
+                            else{
+                                comprar(boton.getId(), texto.getText());
+                            }
+
+                            break;
+                        case ALMACENPRODUCTOS:
+                            editar(boton.getId());
+                            break;
+                        case ALMACENINGREDIENTES:
+                            comprarIngrediente(boton.getId());
+                            break;
+                        case COCINA:
+                            cocinar(boton.getId());
+                            break;
+                    }
+                }
+            });
+
+
+            boton.setId((String) producto.get(1)); // El ID del boton sera el nombre del producto/ingrediente
+
             contenedor.getChildren().add(boton);
             contenedor.setAlignment(Pos.CENTER);
 
-            contenedor.setSpacing(60);
+            contenedor.setSpacing(60); //TODO ajustar bien el espaciado
 
+            // Dependiendo de la pestana, añade el contenedor a una pestana un otra
             switch (pestana){
-                case "Tienda":
+                case Pestanas.TIENDA:
                     productosTienda.add(contenedor);
+                    stockProductoTienda.put((String) producto.get(1),stock);
                     break;
-                case "AlmacenProductos", "AlmacenIngredientes":
+                case Pestanas.ALMACENINGREDIENTES, Pestanas.ALMACENPRODUCTOS:
                     productosAlmacen.add(contenedor);
+                    stockProductoAlmacen.put((String) producto.get(1),stock);
                     break;
             }
-        }
+
     }
 
-    public void cargarProductosCocina(ArrayList<ArrayList<Object>> productos){
 
-        for (ArrayList<Object> items : productos){
+    /**
+     * Este metodo añade un producto al ScrollPane de la cocina. Esta
+     * en un metodo separado al resto, ya que esta pantalla es muy
+     * diferente a las otras. Por cada producto se cargan los ingredientes
+     * que son necesarios para hacer el producto y los muestra tabien.
+     * @param producto: el producto a mostrar
+     */
+    public void anadirProductosCocina(ArrayList<Object> producto){
+
             // cargar Imagen
-            ImageView imagenVista = this.cargarImagen((String) items.get(4));
+            ImageView imagenVista = this.cargarImagen((String) producto.get(4));
 
-            Label nombre = new Label((String) items.get(1));
+            Label nombre = new Label((String) producto.get(1)); //Nombre del producto
 
-            VBox contenedorProd = new VBox(imagenVista, nombre);
+            VBox contenedorProd = new VBox(imagenVista, nombre); //Contenedor de la imagen y el nombre del producto
+
 
             ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) items.getFirst()); //Obtener los ingredientes del producto
+            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
             for (ArrayList<Object> ingrediente : ingreCociona){
                 ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.getFirst());
 
@@ -243,9 +304,26 @@ public class ControladorVP implements Initializable {
                 contenedor.getChildren().add(ingres);
             }
 
+            Button boton = new Button();
+            boton.setText("Cocinar");
+
+        boton.setOnAction(new EventHandler<>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                cocinar(boton.getId());
+
+            }
+        });
+
+
+            boton.setId((String) producto.get(1));
+
+            contenedor.getChildren().add(boton);
+
             productosCocina.add(contenedor);
 
-        }
+
     }
 
     public ArrayList<ArrayList<Object>> obtenerIngredientes(String id){
@@ -274,21 +352,45 @@ public class ControladorVP implements Initializable {
     }
 
 
+    /**
+     * Usado por los metodos que cargan las pestañas, crea las
+     * ImageView de los productos para mostrarlas
+     * @param ruta: el nombre del archivo
+     * TODO: aplicar un escalado de verdad.
+     */
     public ImageView cargarImagen(String ruta){
-        Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
-        ImageView imagenVista = new ImageView(imagen);
-        imagenVista.setFitHeight(100); // Ajustar altura
-        imagenVista.setFitWidth(100); // Ajustar anchura
+        ImageView imagenVista = null;
+        try{
+            Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
+            imagenVista = new ImageView(imagen);
+            imagenVista.setFitHeight(100); // Ajustar altura
+            imagenVista.setFitWidth(100); // Ajustar anchura
+
+        }
+        catch (NullPointerException n){
+            Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
+            imagenVista = new ImageView(imagen);
+            imagenVista.setFitHeight(100); // Ajustar altura
+            imagenVista.setFitWidth(100); // Ajustar anchura
+        }
+
 
         return imagenVista;
     }
 
 
-    public void comprar(String nombre){
+
+
+    /**
+     * Comprar un producto
+     */
+    public void comprar(String nombre, String cantidad){
 
         PreparedStatement ps1;
         PreparedStatement ps2;
         ResultSet rs;
+
+        String resultado = "";
 
         try {
             ps1 = conexion.prepareStatement("SELECT STOCK FROM PRODUCTOS WHERE NOMBRE = ?");
@@ -302,20 +404,52 @@ public class ControladorVP implements Initializable {
 
 
                 if (!(rs.getInt("STOCK") <= 0)) {
-                    ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK - 1 WHERE NOMBRE = ?");
-                    ps2.setString(1, nombre);
+                    ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK - ? WHERE NOMBRE = ?");
+                    ps2.setString(1, cantidad);
+                    ps2.setString(2, nombre);
                 }
                 else{
                     ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = 0 WHERE NOMBRE = ?");
                     ps2.setString(1, nombre);
                 }
                 ps2.executeUpdate();
-
+                resultado = "Compra finalizada Satisfactoriamente";
             }
         }
         catch (SQLException e){
-            System.out.println("Error al comprar");
+            resultado = "ERROR AL COMPRAR";
         }
+        finally {
+            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+            alerta.setTitle(resultado);
+            alerta.setContentText(resultado);
+            alerta.show();
+        }
+        this.cargar();
+    }
+
+    /**
+     * Para el boton editar
+     * @param nombre: el nombre del producto
+     */
+    public void editar(String nombre){
+        System.out.println("editar");
+    }
+
+    /**
+     * para el boton añadir Ingrediente
+     * @param nombre: el nombre del ingrediente
+     */
+    public void comprarIngrediente(String nombre){
+        System.out.println("ingrediente");
+    }
+
+    /**
+     * Para el boton cocinar
+     * @param nombre: el nombre del producto
+     */
+    public void cocinar(String nombre){
+        System.out.println("cocinar");
     }
 
     @FXML
@@ -334,5 +468,26 @@ public class ControladorVP implements Initializable {
         catch (IOException e){
             System.out.println("ERROR");
         }
+    }
+
+    /**
+     * Este metodo ajusta las anclas de los tabs para que los scrollpane
+     * de dentro se ajusten al tamaño del tab
+     */
+    public void ajustarAnclas(){
+        AnchorPane.setTopAnchor(scrollTienda, 0.0);
+        AnchorPane.setBottomAnchor(scrollTienda, 0.0);
+        AnchorPane.setLeftAnchor(scrollTienda, 0.0);
+        AnchorPane.setRightAnchor(scrollTienda, 0.0);
+
+        AnchorPane.setTopAnchor(scrollAlmacen, 0.0);
+        AnchorPane.setBottomAnchor(scrollAlmacen, 0.0);
+        AnchorPane.setLeftAnchor(scrollAlmacen, 0.0);
+        AnchorPane.setRightAnchor(scrollAlmacen, 0.0);
+
+        AnchorPane.setTopAnchor(scrollCocina, 0.0);
+        AnchorPane.setBottomAnchor(scrollCocina, 0.0);
+        AnchorPane.setLeftAnchor(scrollCocina, 0.0);
+        AnchorPane.setRightAnchor(scrollCocina, 0.0);
     }
 }
