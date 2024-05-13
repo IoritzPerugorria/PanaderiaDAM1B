@@ -1,7 +1,7 @@
 package Controladores;
 
 
-import BBDD.ConexionBBDD;
+import Modelo.ConexionBBDD;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ControladorVP implements Initializable {
@@ -58,12 +58,21 @@ public class ControladorVP implements Initializable {
         ArrayList<ArrayList<Object>> tabla = this.cargar("producto");
 
         this.cargarRegular(tabla, "Tienda");
+        this.cargarTienda();
+
+
         this.cargarRegular(tabla, "AlmacenProductos");
+
         tabla = this.cargar("ingrediente");
         this.cargarRegular(tabla, "AlmacenIngredientes");
 
-        this.cargarTienda();
         this.cargarAlmacen();
+
+
+        tabla = this.cargar("producto");
+        this.cargarProductosCocina(tabla);
+
+        this.cargarCocina();
 
         this.ajustarAnclas(); //Ajustar las posiciones del scrollpane
     }
@@ -110,10 +119,8 @@ public class ControladorVP implements Initializable {
     }
 
     /**
-     * El metodo se conecta a la BBDD y crea HBox-es en los que se muestran
-     * informacion de cada producto. Primero se llama a ConexionBBDD para
-     * inicializar la conexion, y luego selecciona t0do de una tabla. Despues
-     * imprime la informacion en la poscion que le corresponde.
+     * El metodo se conecta a la BBDD y extrae toda la informacion sobre
+     * ingredientes o productos, dependiendo el parametro de entrada.
      */
     public ArrayList<ArrayList<Object>> cargar(String tipo){
         Statement script;
@@ -156,21 +163,18 @@ public class ControladorVP implements Initializable {
         catch (SQLException e){
             System.out.println("No se ha podido conectar a la BBDD");
         }
-        finally {
-            ConexionBBDD.desconectar(conexion);
-        }
         return tabla;
     }
 
+    /**
+     * Para cargar tienda y almacen
+     * @param tabla
+     * @param pestana
+     */
     public void cargarRegular(ArrayList<ArrayList<Object>> tabla, String pestana){
         for (ArrayList<Object> valores : tabla) {
 
-            // cargar Imagen
-            Image imagen = new Image(getClass().getResource("/imagenes/" + valores.get(4)).toString());
-            ImageView imagenVista = new ImageView(imagen);
-            ;
-            imagenVista.setFitHeight(100); // Ajustar altura
-            imagenVista.setFitWidth(100); // Ajustar anchura
+            ImageView imagenVista = this.cargarImagen((String) valores.get(4)); // Cargar imagen
 
             // Cargar nombre
             Label nombre = new Label((String) valores.get(1));
@@ -184,17 +188,8 @@ public class ControladorVP implements Initializable {
             //Añadir precio y stock a contenedor vertical
             VBox precioStock = new VBox(precio, stock);
 
-            Button boton = new Button();
+            Button boton = this.cargarBoton(pestana);
             boton.setId((String) valores.get(1));
-
-            boton.setText("Comprar");
-
-            boton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    comprar(boton.getId());
-                }
-            });
 
             HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
 
@@ -218,18 +213,51 @@ public class ControladorVP implements Initializable {
         }
     }
 
-    public void cargarCocina(ArrayList<ArrayList<Object>> productos){
+    public void cargarProductosCocina(ArrayList<ArrayList<Object>> productos){
 
+        for (ArrayList<Object> items : productos){
+            // cargar Imagen
+            ImageView imagenVista = this.cargarImagen((String) items.get(4));
+
+            Label nombre = new Label((String) items.get(1)); //Nombre del producto
+
+            VBox contenedorProd = new VBox(imagenVista, nombre); //Contenedor de la imagen y el nombre del producto
+
+
+            ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
+
+            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) items.getFirst()); //Obtener los ingredientes del producto
+            for (ArrayList<Object> ingrediente : ingreCociona){
+                ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.getFirst());
+
+                Label nombreIngre = new Label((String) ingrediente.get(1));
+                Label cantidadIngre = new Label("Necesarios: " + ingrediente.get(2));
+
+                VBox contenedor = new VBox(imagenVistaIngre,nombreIngre , cantidadIngre);
+                contenedorIngredientes.add(contenedor);
+            }
+
+            HBox contenedor = new HBox(contenedorProd);
+            for (VBox ingres : contenedorIngredientes){
+                contenedor.getChildren().add(ingres);
+            }
+
+            Button boton = this.cargarBoton("Cocina");
+            boton.setId((String) items.get(1));
+
+            contenedor.getChildren().add(boton);
+
+            productosCocina.add(contenedor);
+
+        }
     }
 
     public ArrayList<ArrayList<Object>> obtenerIngredientes(String id){
         ArrayList<ArrayList<Object>> tablas = new ArrayList<>();
-
-
-        PreparedStatement ps = null;
+        PreparedStatement ps;
 
         try{
-            ps = conexion.prepareStatement("SELECT I.IMAGEN, N.CANTIDAD FROM PRODUCTOS AS P INNER JOIN NECESITA AS N ON N.PR_ID = P.ID INNER JOIN INGREDIENTES AS I ON N.ING_ID = I.ID WHERE P.ID = ?");
+            ps = conexion.prepareStatement("SELECT I.IMAGEN, N.CANTIDAD, I.NOMBRE FROM PRODUCTOS AS P INNER JOIN NECESITA AS N ON N.PR_ID = P.ID INNER JOIN INGREDIENTES AS I ON N.ING_ID = I.ID WHERE P.ID = ?");
             ps.setString(1, id);
 
             ResultSet rs = ps.executeQuery();
@@ -237,7 +265,9 @@ public class ControladorVP implements Initializable {
             while (rs.next()){
                 ArrayList<Object> valores = new ArrayList<>();
                 valores.add(rs.getString("I.IMAGEN"));
+                valores.add(rs.getString("I.NOMBRE"));
                 valores.add(rs.getString("N.CANTIDAD"));
+
                 tablas.add(valores);
             }
         }
@@ -248,11 +278,64 @@ public class ControladorVP implements Initializable {
     }
 
 
+    /**
+     * Usado por los metodos que cargan las pestañas, crea las
+     * ImageView de los productos para mostrarlas
+     * @param ruta: el nombre del archivo
+     * TODO: aplicar un escalado de verdad.
+     */
+    public ImageView cargarImagen(String ruta){
+        Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
+        ImageView imagenVista = new ImageView(imagen);
+        imagenVista.setFitHeight(100); // Ajustar altura
+        imagenVista.setFitWidth(100); // Ajustar anchura
 
+        return imagenVista;
+    }
+
+    /**
+     * Usado por los metodos que cargan las pestañas, crea los
+     * botones que los productos e ingredientes poseen para
+     * diversos usos. Cada boton llama a su repectivo metodo
+     * al ser clickado.
+     */
+    private Button cargarBoton(String pestana) {
+        Button boton = new Button();
+
+        boton.setOnAction(new EventHandler<>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switch (pestana){
+                    case "Tienda":
+                        comprar(boton.getId());
+                        boton.setText("Comprar");
+                        break;
+                    case "AlmacenProductos":
+                        editar(boton.getId());
+                        boton.setText("Editar");
+                        break;
+                    case "AlmacenIngredientes":
+                        comprarIngrediente(boton.getId());
+                        boton.setText("Comprar Ingrediente");
+                        break;
+                    case "Cocina":
+                        cocinar(boton.getId());
+                        boton.setText("Comprar Ingrediente");
+                        break;
+                }
+            }
+        });
+        return boton;
+    }
+
+    /**
+     * Comprar un producto
+     * @param nombre
+     */
     public void comprar(String nombre){
 
         PreparedStatement ps1;
-        PreparedStatement ps2 = null;
+        PreparedStatement ps2;
         ResultSet rs;
 
         try {
@@ -283,11 +366,32 @@ public class ControladorVP implements Initializable {
         }
     }
 
+    /**
+     * Para el boton editar
+     * @param nombre: el nombre del producto
+     */
+    public void editar(String nombre){
 
+    }
 
+    /**
+     * para el boton añadir Ingrediente
+     * @param nombre: el nombre del ingrediente
+     */
+    public void comprarIngrediente(String nombre){
+        
+    }
+
+    /**
+     * Para el boton cocinar
+     * @param nombre: el nombre del producto
+     */
+    public void cocinar(String nombre){
+
+    }
 
     @FXML
-    public void anadir(ActionEvent actionEvent){
+    public void anadir(){
         try{
 
             Stage stage = new Stage();
