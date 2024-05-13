@@ -2,7 +2,7 @@ package Controladores;
 
 
 import Enumerados.Pestanas;
-import Modelo.ConexionBBDD;
+import BBDD.ConexionBBDD;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-// gRACIAS NIDAE POR NADA
 
 public class ControladorVP implements Initializable {
 

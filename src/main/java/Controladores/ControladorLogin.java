@@ -122,6 +122,7 @@ public class ControladorLogin implements Initializable {
                         scene = new Scene(fxmlLoader.load(), 1000, 1000);
                         stage.setTitle("Panaderia");
                         stage.setScene(scene);
+                        break;
                 }
 
                 currentStage.close();
