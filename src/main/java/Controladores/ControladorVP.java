@@ -60,6 +60,9 @@ public class ControladorVP implements Initializable {
         this.cargarRegular(tabla, "Tienda");
         this.cargarTienda();
 
+        this.cargarProductosCocina(tabla);
+
+        this.cargarCocina();
 
         this.cargarRegular(tabla, "AlmacenProductos");
 
@@ -68,11 +71,6 @@ public class ControladorVP implements Initializable {
 
         this.cargarAlmacen();
 
-
-        tabla = this.cargar("producto");
-        this.cargarProductosCocina(tabla);
-
-        this.cargarCocina();
 
         this.ajustarAnclas(); //Ajustar las posiciones del scrollpane
     }
