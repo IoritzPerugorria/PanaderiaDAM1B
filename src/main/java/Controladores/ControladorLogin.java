@@ -2,6 +2,8 @@ package Controladores;
 
 
 import Modulo.ConexionBBDD;
+import Modulo.Rol;
+import Modulo.Usuario;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -35,6 +37,9 @@ public class ControladorLogin implements Initializable {
     private PasswordField txtFldCredencial2;
     @FXML
     private Button btnLogin;
+    private Rol rol;
+
+    private static Usuario usuario;
 
 
     public ControladorLogin(){
@@ -96,9 +101,10 @@ public class ControladorLogin implements Initializable {
                 Stage stage = new Stage();
 
                 String rolUsuario = listaDatosUsuarios.get(revision).get(2);
-                if (Objects.equals(rolUsuario, "ADMIN")){
+                rol = Rol.valueOf(rolUsuario);
+                if (Objects.equals(rolUsuario, "CLIENTE")){
                     System.out.println("Iniciado sesion como Administrador");
-
+                    usuario = new Usuario(txtFldCredencial1.getText(), rol);
 
                     FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
                     Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
@@ -108,9 +114,20 @@ public class ControladorLogin implements Initializable {
 
                 }
 
-                else if (Objects.equals(rolUsuario, "LECTOR")){
+                else if (Objects.equals(rolUsuario, "ALMACENERO")){
                     System.out.println("Iniciado sesion como Lector");
+                    usuario = new Usuario(txtFldCredencial1.getText(), rol);
 
+                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                    stage.setTitle("Panaderia");
+                    stage.setScene(scene);
+
+                }
+
+                else if (Objects.equals(rolUsuario, "PANADERO")){
+                    System.out.println("Iniciado sesion como Lector");
+                    usuario = new Usuario(txtFldCredencial1.getText(), rol);
 
                     FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
                     Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
@@ -201,4 +218,9 @@ public class ControladorLogin implements Initializable {
         txtCred2Obligatorio.setVisible(false);
         txtCredsIncorrectas.setVisible(false);
     }
+
+    public static Usuario getUsuario() {
+        return usuario;
+    }
+
 }

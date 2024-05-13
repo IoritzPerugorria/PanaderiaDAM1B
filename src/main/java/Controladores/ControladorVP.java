@@ -1,7 +1,9 @@
 package Controladores;
 
 
-import Modelo.ConexionBBDD;
+import BBDD.ConexionBBDD;
+import Modulo.Cartera;
+import Modulo.Usuario;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -60,9 +62,6 @@ public class ControladorVP implements Initializable {
         this.cargarRegular(tabla, "Tienda");
         this.cargarTienda();
 
-        this.cargarProductosCocina(tabla);
-
-        this.cargarCocina();
 
         this.cargarRegular(tabla, "AlmacenProductos");
 
@@ -71,6 +70,11 @@ public class ControladorVP implements Initializable {
 
         this.cargarAlmacen();
 
+
+        tabla = this.cargar("producto");
+        this.cargarProductosCocina(tabla);
+
+        this.cargarCocina();
 
         this.ajustarAnclas(); //Ajustar las posiciones del scrollpane
     }
@@ -224,9 +228,9 @@ public class ControladorVP implements Initializable {
 
             ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) items.getFirst()); //Obtener los ingredientes del producto
+            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) items.get(0)); //Obtener los ingredientes del producto
             for (ArrayList<Object> ingrediente : ingreCociona){
-                ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.getFirst());
+                ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.get(0));
 
                 Label nombreIngre = new Label((String) ingrediente.get(1));
                 Label cantidadIngre = new Label("Necesarios: " + ingrediente.get(2));
@@ -358,6 +362,14 @@ public class ControladorVP implements Initializable {
                 ps2.executeUpdate();
 
             }
+            PreparedStatement ps3 = conexion.prepareStatement("SELECT PRECIO FROM PRODUCTOS WHERE NOMBRE = ?");
+            ps3.setString(1, nombre);
+            ResultSet rs1 = ps3.executeQuery();
+            Double precio = rs1.getDouble("PRECIO");
+            Usuario usuario1 = ControladorLogin.getUsuario();
+
+            Cartera cartera = new Cartera();
+            cartera.compra(precio, usuario1.getUsuario());
         }
         catch (SQLException e){
             System.out.println("Error al comprar");
