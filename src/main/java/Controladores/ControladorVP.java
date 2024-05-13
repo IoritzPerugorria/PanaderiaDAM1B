@@ -3,6 +3,8 @@ package Controladores;
 
 import Enumerados.Pestanas;
 import BBDD.ConexionBBDD;
+import Modulo.Cartera;
+import Modulo.Usuario;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -255,11 +257,11 @@ public class ControladorVP implements Initializable {
 
             // Dependiendo de la pestana, añade el contenedor a una pestana un otra
             switch (pestana){
-                case Pestanas.TIENDA:
+                case TIENDA:
                     productosTienda.add(contenedor);
                     stockProductoTienda.put((String) producto.get(1),stock);
                     break;
-                case Pestanas.ALMACENINGREDIENTES, Pestanas.ALMACENPRODUCTOS:
+                case ALMACENINGREDIENTES, ALMACENPRODUCTOS:
                     productosAlmacen.add(contenedor);
                     stockProductoAlmacen.put((String) producto.get(1),stock);
                     break;
@@ -390,7 +392,14 @@ public class ControladorVP implements Initializable {
                 else{
                     resultado = "error?";
                 }
+                PreparedStatement ps3 = conexion.prepareStatement("SELECT PRECIO FROM PRODUCTOS WHERE NOMBRE = ?");
+                ps3.setString(1, nombre);
+                ResultSet rs1 = ps3.executeQuery();
+                Double precio = rs1.getDouble("PRECIO");
+                Usuario usuario1 = ControladorLogin.getUsuario();
 
+                Cartera cartera = new Cartera();
+                cartera.compra(precio, usuario1.getUsuario());
 
             }
         }
@@ -447,6 +456,25 @@ public class ControladorVP implements Initializable {
             System.out.println("ERROR");
         }
     }
+
+    @FXML
+    public void anadirStock(){
+        try{
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadir-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            stage.setTitle("Panaderia");
+            stage.setScene(scene);
+
+
+            stage.show();
+        }
+        catch (IOException e){
+            System.out.println("ERROR");
+        }
+    }
+
 
 
     /**
