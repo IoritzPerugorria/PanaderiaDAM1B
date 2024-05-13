@@ -27,10 +27,7 @@ import org.example.panaderiadam1b.Main;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 // gRACIAS NIDAE POR NADA
 
@@ -220,16 +217,27 @@ public class ControladorVP implements Initializable {
                     break;
             }
 
+
+
             boton.setOnAction(new EventHandler<>() {
                 @Override
                 public void handle(ActionEvent event) {
                     switch (pestana){
                         case TIENDA:
-                            if (texto.getText().isBlank()){
-                                comprar(boton.getId(), "1");
-                            }
-                            else{
-                                comprar(boton.getId(), texto.getText());
+                            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+                            alerta.setTitle("Confirmacion");
+                            alerta.setContentText("Seguro que quieres comprar " + texto.getText() + nombre + "?");
+                            Optional<ButtonType> result = alerta.showAndWait();
+
+
+                             if( result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()){
+                                 if (texto.getText().isBlank()){
+                                     comprar(boton.getId(), "1");
+                                 }
+                                 else{
+                                     comprar(boton.getId(), texto.getText());
+                                 }
+
                             }
 
                             break;
@@ -352,31 +360,7 @@ public class ControladorVP implements Initializable {
     }
 
 
-    /**
-     * Usado por los metodos que cargan las pestañas, crea las
-     * ImageView de los productos para mostrarlas
-     * @param ruta: el nombre del archivo
-     * TODO: aplicar un escalado de verdad.
-     */
-    public ImageView cargarImagen(String ruta){
-        ImageView imagenVista = null;
-        try{
-            Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
-            imagenVista = new ImageView(imagen);
-            imagenVista.setFitHeight(100); // Ajustar altura
-            imagenVista.setFitWidth(100); // Ajustar anchura
 
-        }
-        catch (NullPointerException n){
-            Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
-            imagenVista = new ImageView(imagen);
-            imagenVista.setFitHeight(100); // Ajustar altura
-            imagenVista.setFitWidth(100); // Ajustar anchura
-        }
-
-
-        return imagenVista;
-    }
 
 
 
@@ -385,6 +369,8 @@ public class ControladorVP implements Initializable {
      * Comprar un producto
      */
     public void comprar(String nombre, String cantidad){
+
+
 
         PreparedStatement ps1;
         PreparedStatement ps2;
@@ -402,18 +388,21 @@ public class ControladorVP implements Initializable {
 
                 System.out.println(rs.getInt("STOCK"));
 
-
-                if (!(rs.getInt("STOCK") <= 0)) {
+                if ((rs.getInt("STOCK") - Integer.parseInt(cantidad) < 0)) {
+                    resultado = "No hay Stock suficiente";
+                }
+                else if (rs.getInt("STOCK") > 0) {
                     ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK - ? WHERE NOMBRE = ?");
                     ps2.setString(1, cantidad);
                     ps2.setString(2, nombre);
+                    resultado = "Compra finalizada Satisfactoriamente";
+                    ps2.executeUpdate();
                 }
                 else{
-                    ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = 0 WHERE NOMBRE = ?");
-                    ps2.setString(1, nombre);
+                    resultado = "error?";
                 }
-                ps2.executeUpdate();
-                resultado = "Compra finalizada Satisfactoriamente";
+
+
             }
         }
         catch (SQLException e){
@@ -468,6 +457,33 @@ public class ControladorVP implements Initializable {
         catch (IOException e){
             System.out.println("ERROR");
         }
+    }
+
+
+    /**
+     * Usado por los metodos que cargan las pestañas, crea las
+     * ImageView de los productos para mostrarlas
+     * @param ruta: el nombre del archivo
+     * TODO: aplicar un escalado de verdad.
+     */
+    public ImageView cargarImagen(String ruta){
+        ImageView imagenVista = null;
+        try{
+            Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
+            imagenVista = new ImageView(imagen);
+            imagenVista.setFitHeight(100); // Ajustar altura
+            imagenVista.setFitWidth(100); // Ajustar anchura
+
+        }
+        catch (NullPointerException n){
+            Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
+            imagenVista = new ImageView(imagen);
+            imagenVista.setFitHeight(100); // Ajustar altura
+            imagenVista.setFitWidth(100); // Ajustar anchura
+        }
+
+
+        return imagenVista;
     }
 
     /**
