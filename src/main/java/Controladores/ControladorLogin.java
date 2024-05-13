@@ -36,7 +36,6 @@ public class ControladorLogin implements Initializable {
     @FXML
     private PasswordField txtFldCredencial2;
     @FXML
-    private Button btnLogin;
     private Rol rol;
 
     private static Usuario usuario;
@@ -55,17 +54,6 @@ public class ControladorLogin implements Initializable {
 
     }
 
-    public void presionarLogin(){
-        btnLogin.fire();
-    }
-
-    //Conexion con la Base de Datos de la Panadería
-    public static Connection conexionBBDD() throws SQLException {
-        Connection connection = null;
-        Statement st = null;
-        ResultSet rs = null;
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/controlador", "root", "Dam1bSql01");
-    }
 
 
     @Override
@@ -96,44 +84,44 @@ public class ControladorLogin implements Initializable {
             int revision = this.revisionDeLogin(credencialesIntroducidas, listaDatosUsuarios);
 
             if(revision != -1){
+                FXMLLoader fxmlLoader;
+                Scene scene;
                 Node node = (Node) actionEvent.getSource();
                 Stage currentStage = (Stage) node.getScene().getWindow();
                 Stage stage = new Stage();
 
                 String rolUsuario = listaDatosUsuarios.get(revision).get(2);
                 rol = Rol.valueOf(rolUsuario);
-                if (Objects.equals(rolUsuario, "CLIENTE")){
-                    System.out.println("Iniciado sesion como Administrador");
-                    usuario = new Usuario(txtFldCredencial1.getText(), rol);
 
-                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
-                    stage.setTitle("Panaderia");
-                    stage.setScene(scene);
+                switch (rol){
+                    case CLIENTE:
+                        System.out.println("Iniciado sesion como CLIENTE");
+                        usuario = new Usuario(txtFldCredencial1.getText(), rol);
 
+                        fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+                        scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                        stage.setTitle("Panaderia");
+                        stage.setScene(scene);
+                        break;
 
-                }
+                    case ALMACENERO:
+                        System.out.println("Iniciado sesion como ALMACENERO");
+                        usuario = new Usuario(txtFldCredencial1.getText(), rol);
 
-                else if (Objects.equals(rolUsuario, "ALMACENERO")){
-                    System.out.println("Iniciado sesion como Lector");
-                    usuario = new Usuario(txtFldCredencial1.getText(), rol);
+                        fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+                        scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                        stage.setTitle("Panaderia");
+                        stage.setScene(scene);
+                        break;
 
-                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
-                    stage.setTitle("Panaderia");
-                    stage.setScene(scene);
+                    case PANADERO:
+                        System.out.println("Iniciado sesion como PANADERO");
+                        usuario = new Usuario(txtFldCredencial1.getText(), rol);
 
-                }
-
-                else if (Objects.equals(rolUsuario, "PANADERO")){
-                    System.out.println("Iniciado sesion como Lector");
-                    usuario = new Usuario(txtFldCredencial1.getText(), rol);
-
-                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
-                    stage.setTitle("Panaderia");
-                    stage.setScene(scene);
-
+                        fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+                        scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                        stage.setTitle("Panaderia");
+                        stage.setScene(scene);
                 }
 
                 currentStage.close();
