@@ -1,7 +1,7 @@
 package Controladores;
 
 
-import Modulo.ConexionBBDD;
+import BBDD.ConexionBBDD;
 import Modulo.Rol;
 import Modulo.Usuario;
 import javafx.fxml.FXML;

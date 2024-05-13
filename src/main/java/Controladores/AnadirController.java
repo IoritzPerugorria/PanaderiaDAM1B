@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Modulo.ConexionBBDD.conectar;
+import static BBDD.ConexionBBDD.conectar;
 
 public class AnadirController {
 
