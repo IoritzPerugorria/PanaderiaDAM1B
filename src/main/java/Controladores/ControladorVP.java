@@ -10,12 +10,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -29,7 +26,7 @@ import java.net.URL;
 import java.sql.*;
 import java.util.*;
 
-// gRACIAS NIDAE POR NADA
+// GRACIAS NIDAE POR algo que no me acuerdo la verdad xd
 
 public class ControladorVP implements Initializable {
 
@@ -47,36 +44,33 @@ public class ControladorVP implements Initializable {
     @FXML
     private ScrollPane scrollCocina = new ScrollPane();
 
-    private HashMap<String, Label> stockProductoTienda = new HashMap<>();
-    private HashMap<String, Label> stockProductoAlmacen = new HashMap<>();
-
-    private ArrayList<HBox> productosTienda = new ArrayList<>();
-    private ArrayList<HBox> productosAlmacen = new ArrayList<>();
-    private ArrayList< HBox> productosCocina = new ArrayList<>();
+    private final ArrayList<HBox> productosTienda = new ArrayList<>();
+    private final ArrayList<HBox> productosAlmacen = new ArrayList<>();
+    private final ArrayList<HBox> productosCocina = new ArrayList<>();
 
     private Connection conexion; // La misma conexion se usa en tod0 el controlador para optimizar las cargas
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        conexion = ConexionBBDD.conectar(conexion); // Abrir la conexion
         this.cargar();
     }
 
-    public void cargar(){
+    public void cargar() {
         productosTienda.clear();
         productosAlmacen.clear();
         productosCocina.clear();
 
-        conexion = ConexionBBDD.conectar(conexion); // Abrir la conexion
 
         ArrayList<ArrayList<Object>> productos = this.cargarDatos("producto");
-        for(ArrayList<Object> producto : productos) {
+        for (ArrayList<Object> producto : productos) {
             this.anadirProductosOIngredientes(producto, Pestanas.TIENDA);
             this.anadirProductosCocina(producto);
             this.anadirProductosOIngredientes(producto, Pestanas.ALMACENPRODUCTOS);
         }
 
         ArrayList<ArrayList<Object>> ingredientes = this.cargarDatos("ingrediente");
-        for(ArrayList<Object> ingrediente : ingredientes){
+        for (ArrayList<Object> ingrediente : ingredientes) {
             this.anadirProductosOIngredientes(ingrediente, Pestanas.ALMACENINGREDIENTES);
         }
 
@@ -87,25 +81,27 @@ public class ControladorVP implements Initializable {
         this.ajustarAnclas(); //Ajustar las posiciones del scrollpane
     }
 
-    public void cargarTienda(){
+    public void cargarTienda() {
         Tienda.getChildren().clear();
 
-        for (HBox contenedor : productosTienda){
+        for (HBox contenedor : productosTienda) {
             Tienda.getChildren().add(contenedor);
         }
 
     }
-    public void cargarAlmacen(){
+
+    public void cargarAlmacen() {
         Almacen.getChildren().clear();
 
-        for(HBox contenedor : productosAlmacen){
+        for (HBox contenedor : productosAlmacen) {
             Almacen.getChildren().add(contenedor);
         }
     }
-    public void cargarCocina(){
+
+    public void cargarCocina() {
         Cocina.getChildren().clear();
 
-        for(HBox contenedor : productosCocina){
+        for (HBox contenedor : productosCocina) {
             Cocina.getChildren().add(contenedor);
         }
     }
@@ -114,7 +110,7 @@ public class ControladorVP implements Initializable {
      * El metodo se conecta a la BBDD y extrae toda la informacion sobre
      * ingredientes o productos, dependiendo el parametro de entrada.
      */
-    public ArrayList<ArrayList<Object>> cargarDatos(String tipo){
+    public ArrayList<ArrayList<Object>> cargarDatos(String tipo) {
         Statement script;
         ResultSet rs;
 
@@ -123,10 +119,9 @@ public class ControladorVP implements Initializable {
         try {
             script = conexion.createStatement();
 
-            if (tipo.equals("ingrediente")){
+            if (tipo.equals("ingrediente")) {
                 rs = script.executeQuery("SELECT * FROM INGREDIENTES");
-            }
-            else{
+            } else {
                 rs = script.executeQuery("SELECT * FROM PRODUCTOS");
             }
 
@@ -151,8 +146,7 @@ public class ControladorVP implements Initializable {
 
                 tabla.add(valores);
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("No se ha podido conectar a la BBDD");
         }
         return tabla;
@@ -161,24 +155,30 @@ public class ControladorVP implements Initializable {
     /**
      * Para cargar tienda y almacen
      */
-    public void anadirProductosOIngredientes(ArrayList<Object> producto, Pestanas pestana){
+    public void anadirProductosOIngredientes(ArrayList<Object> producto, Pestanas pestana) {
 
 
-            ImageView imagenVista = this.cargarImagen((String) producto.get(4)); // Cargar imagen
+        ImageView imagenVista = this.cargarImagen((String) producto.get(4)); // Cargar imagen
 
-            Label nombre = new Label((String) producto.get(1)); // Cargar nombre
+        Label nombre = new Label((String) producto.get(1)); // Cargar nombre
+        nombre.setMinWidth(100);
 
-            double precioNumero = (Double) producto.get(2); // Cargar precio
 
-            String precioCadena = String.valueOf(precioNumero); // Pasar de double a String
-            Label precio = new Label("Precio: " + precioCadena); // Mostrar precio en Label
+        double precioNumero = (Double) producto.get(2); // Cargar precio
 
-            Label stock = new Label("Stock: " + (String) producto.get(3)); // Cargar stock
+        String precioCadena = String.valueOf(precioNumero); // Pasar de double a String
+        Label precio = new Label("Precio: " + precioCadena + "€"); // Mostrar precio en Label
 
-            VBox precioStock = new VBox(precio, stock); //Añadir precio y stock a un contenedor vertical
+        Label stock = new Label("Stock: " + producto.get(3)); // Cargar stock
+
+        VBox precioStock = new VBox(precio, stock); //Añadir precio y stock a un contenedor vertical
+        precioStock.setSpacing(20);
+        precioStock.setAlignment(Pos.CENTER);
+        precioStock.setMinWidth(100);
 
         TextField texto = new TextField();
         texto.setPromptText("Cantidad...");
+        texto.setMaxWidth(100);
 
         texto.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -190,89 +190,87 @@ public class ControladorVP implements Initializable {
             }
         });
 
-            HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
+        HBox contenedor = new HBox(); // Contenedor horizontal (fila de producto)
+        contenedor.setAlignment(Pos.CENTER);
 
-            // Anadir los items al HBOX
-            contenedor.getChildren().add(imagenVista);
-            contenedor.getChildren().add(nombre);
-            contenedor.getChildren().add(precioStock);
-            if (!(pestana == Pestanas.ALMACENPRODUCTOS)){
-                contenedor.getChildren().add(texto);
-            }
-
-            Button boton = new Button();
-
-            switch (pestana){
-                case TIENDA:
-                    boton.setText("Comprar");
-                    break;
-                case ALMACENPRODUCTOS:
-                    boton.setText("Editar");
-                    break;
-                case ALMACENINGREDIENTES:
-                    boton.setText("Comprar Ingrediente");
-                    break;
-                case COCINA:
-                    boton.setText("Cocinar");
-                    break;
-            }
+        contenedor.setSpacing(60); //TODO ajustar dinamicamente el espaciado
 
 
+        // Anadir los items al HBOX
+        contenedor.getChildren().add(imagenVista);
+        contenedor.getChildren().add(nombre);
+        contenedor.getChildren().add(precioStock);
+        if (!(pestana == Pestanas.ALMACENPRODUCTOS)) {
+            contenedor.getChildren().add(texto);
+        }
 
-            boton.setOnAction(new EventHandler<>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    switch (pestana){
-                        case TIENDA:
-                            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-                            alerta.setTitle("Confirmacion");
-                            alerta.setContentText("Seguro que quieres comprar " + texto.getText() + nombre + "?");
-                            Optional<ButtonType> result = alerta.showAndWait();
+        Button boton = new Button();
+
+        switch (pestana) {
+            case TIENDA:
+                boton.setText("Comprar");
+                break;
+            case ALMACENPRODUCTOS:
+                boton.setText("Editar");
+                break;
+            case ALMACENINGREDIENTES:
+                boton.setText("Comprar Ingrediente");
+                break;
+            case COCINA:
+                boton.setText("Cocinar");
+                break;
+        }
 
 
-                             if( result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()){
-                                 if (texto.getText().isBlank()){
-                                     comprar(boton.getId(), "1");
-                                 }
-                                 else{
-                                     comprar(boton.getId(), texto.getText());
-                                 }
+        boton.setOnAction(new EventHandler<>() {
+            @Override
+            public void handle(ActionEvent event) {
+                switch (pestana) {
+                    case TIENDA:
+                        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+                        alerta.setTitle("Confirmacion");
+                        alerta.setContentText("Seguro que quieres comprar " + texto.getText() + " " + nombre.getText() + "?");
+                        Optional<ButtonType> result = alerta.showAndWait();
 
+
+                        if (result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()) {
+                            if (texto.getText().isBlank()) {
+                                comprar(boton.getId(), "1");
+                            } else {
+                                comprar(boton.getId(), texto.getText());
                             }
 
-                            break;
-                        case ALMACENPRODUCTOS:
-                            editar(boton.getId());
-                            break;
-                        case ALMACENINGREDIENTES:
-                            comprarIngrediente(boton.getId());
-                            break;
-                        case COCINA:
-                            cocinar(boton.getId());
-                            break;
-                    }
+                        }
+
+                        break;
+                    case ALMACENPRODUCTOS:
+                        editar(boton.getId());
+                        break;
+                    case ALMACENINGREDIENTES:
+                        comprarIngrediente(boton.getId());
+                        break;
+                    case COCINA:
+                        cocinar(boton.getId());
+                        break;
                 }
-            });
-
-
-            boton.setId((String) producto.get(1)); // El ID del boton sera el nombre del producto/ingrediente
-
-            contenedor.getChildren().add(boton);
-            contenedor.setAlignment(Pos.CENTER);
-
-            contenedor.setSpacing(60); //TODO ajustar bien el espaciado
-
-            // Dependiendo de la pestana, añade el contenedor a una pestana un otra
-            switch (pestana){
-                case Pestanas.TIENDA:
-                    productosTienda.add(contenedor);
-                    stockProductoTienda.put((String) producto.get(1),stock);
-                    break;
-                case Pestanas.ALMACENINGREDIENTES, Pestanas.ALMACENPRODUCTOS:
-                    productosAlmacen.add(contenedor);
-                    stockProductoAlmacen.put((String) producto.get(1),stock);
-                    break;
             }
+        });
+
+
+        boton.setId((String) producto.get(1)); // El ID del boton sera el nombre del producto/ingrediente
+
+        contenedor.getChildren().add(boton);
+
+
+        // Dependiendo de la pestana, añade el contenedor a una pestana un otra
+        switch (pestana) {
+            case Pestanas.TIENDA:
+                productosTienda.add(contenedor);
+                break;
+            case Pestanas.ALMACENINGREDIENTES, Pestanas.ALMACENPRODUCTOS:
+                productosAlmacen.add(contenedor);
+                break;
+        }
 
     }
 
@@ -282,38 +280,47 @@ public class ControladorVP implements Initializable {
      * en un metodo separado al resto, ya que esta pantalla es muy
      * diferente a las otras. Por cada producto se cargan los ingredientes
      * que son necesarios para hacer el producto y los muestra tabien.
+     *
      * @param producto: el producto a mostrar
      */
-    public void anadirProductosCocina(ArrayList<Object> producto){
+    public void anadirProductosCocina(ArrayList<Object> producto) {
 
-            // cargar Imagen
-            ImageView imagenVista = this.cargarImagen((String) producto.get(4));
+        // cargar Imagen
+        ImageView imagenVista = this.cargarImagen((String) producto.get(4));
 
-            Label nombre = new Label((String) producto.get(1)); //Nombre del producto
+        Label nombre = new Label((String) producto.get(1)); //Nombre del producto
 
-            VBox contenedorProd = new VBox(imagenVista, nombre); //Contenedor de la imagen y el nombre del producto
+        VBox contenedorProd = new VBox(imagenVista, nombre); //Contenedor de la imagen y el nombre del producto
+        contenedorProd.setAlignment(Pos.CENTER);
 
+        ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-            ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
+        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
+        for (ArrayList<Object> ingrediente : ingreCociona) {
+            ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.getFirst());
 
-            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
-            for (ArrayList<Object> ingrediente : ingreCociona){
-                ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.getFirst());
+            Label nombreIngre = new Label((String) ingrediente.get(1));
+            Label cantidadIngre = new Label("Necesarios: " + ingrediente.get(2));
 
-                Label nombreIngre = new Label((String) ingrediente.get(1));
-                Label cantidadIngre = new Label("Necesarios: " + ingrediente.get(2));
+            VBox contenedor = new VBox(imagenVistaIngre, nombreIngre, cantidadIngre);
+            contenedor.setAlignment(Pos.CENTER);
 
-                VBox contenedor = new VBox(imagenVistaIngre,nombreIngre , cantidadIngre);
-                contenedorIngredientes.add(contenedor);
-            }
+            contenedorIngredientes.add(contenedor);
+        }
 
-            HBox contenedor = new HBox(contenedorProd);
-            for (VBox ingres : contenedorIngredientes){
-                contenedor.getChildren().add(ingres);
-            }
+        HBox contenedor = new HBox(contenedorProd);
 
-            Button boton = new Button();
-            boton.setText("Cocinar");
+        contenedor.setAlignment(Pos.CENTER_LEFT);
+        contenedor.setSpacing(30); //TODO ajustar dinamicamente el espaciado
+
+        contenedor.getChildren().add(this.cargarImagen("equal.png"));
+
+        for (VBox ingres : contenedorIngredientes) {
+            contenedor.getChildren().add(ingres);
+        }
+
+        Button boton = new Button();
+        boton.setText("Cocinar");
 
         boton.setOnAction(new EventHandler<>() {
             @Override
@@ -325,26 +332,26 @@ public class ControladorVP implements Initializable {
         });
 
 
-            boton.setId((String) producto.get(1));
+        boton.setId((String) producto.get(1));
 
-            contenedor.getChildren().add(boton);
+        contenedor.getChildren().add(boton);
 
-            productosCocina.add(contenedor);
+        productosCocina.add(contenedor);
 
 
     }
 
-    public ArrayList<ArrayList<Object>> obtenerIngredientes(String id){
+    public ArrayList<ArrayList<Object>> obtenerIngredientes(String id) {
         ArrayList<ArrayList<Object>> tablas = new ArrayList<>();
         PreparedStatement ps;
 
-        try{
+        try {
             ps = conexion.prepareStatement("SELECT I.IMAGEN, N.CANTIDAD, I.NOMBRE FROM PRODUCTOS AS P INNER JOIN NECESITA AS N ON N.PR_ID = P.ID INNER JOIN INGREDIENTES AS I ON N.ING_ID = I.ID WHERE P.ID = ?");
             ps.setString(1, id);
 
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
+            while (rs.next()) {
                 ArrayList<Object> valores = new ArrayList<>();
                 valores.add(rs.getString("I.IMAGEN"));
                 valores.add(rs.getString("I.NOMBRE"));
@@ -352,25 +359,17 @@ public class ControladorVP implements Initializable {
 
                 tablas.add(valores);
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Error al consultar los ingredientes");
         }
         return tablas;
     }
 
 
-
-
-
-
-
     /**
      * Comprar un producto
      */
-    public void comprar(String nombre, String cantidad){
-
-
+    public void comprar(String nombre, String cantidad) {
 
         PreparedStatement ps1;
         PreparedStatement ps2;
@@ -390,25 +389,19 @@ public class ControladorVP implements Initializable {
 
                 if ((rs.getInt("STOCK") - Integer.parseInt(cantidad) < 0)) {
                     resultado = "No hay Stock suficiente";
-                }
-                else if (rs.getInt("STOCK") > 0) {
+                } else if (rs.getInt("STOCK") > 0) {
                     ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK - ? WHERE NOMBRE = ?");
                     ps2.setString(1, cantidad);
                     ps2.setString(2, nombre);
                     resultado = "Compra finalizada Satisfactoriamente";
                     ps2.executeUpdate();
-                }
-                else{
+                } else {
                     resultado = "error?";
                 }
-
-
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             resultado = "ERROR AL COMPRAR";
-        }
-        finally {
+        } finally {
             Alert alerta = new Alert(Alert.AlertType.INFORMATION);
             alerta.setTitle(resultado);
             alerta.setContentText(resultado);
@@ -419,31 +412,34 @@ public class ControladorVP implements Initializable {
 
     /**
      * Para el boton editar
+     *
      * @param nombre: el nombre del producto
      */
-    public void editar(String nombre){
-        System.out.println("editar");
+    public void editar(String nombre) {
+        System.out.println("editar" + nombre);
     }
 
     /**
      * para el boton añadir Ingrediente
+     *
      * @param nombre: el nombre del ingrediente
      */
-    public void comprarIngrediente(String nombre){
-        System.out.println("ingrediente");
+    public void comprarIngrediente(String nombre) {
+        System.out.println("ingrediente" + nombre);
     }
 
     /**
      * Para el boton cocinar
+     *
      * @param nombre: el nombre del producto
      */
-    public void cocinar(String nombre){
-        System.out.println("cocinar");
+    public void cocinar(String nombre) {
+        System.out.println("cocinar" + nombre);
     }
 
     @FXML
-    public void anadir(){
-        try{
+    public void anadir() {
+        try {
 
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadirNuevo-view.fxml"));
@@ -453,8 +449,7 @@ public class ControladorVP implements Initializable {
 
 
             stage.show();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             System.out.println("ERROR");
         }
     }
@@ -463,24 +458,25 @@ public class ControladorVP implements Initializable {
     /**
      * Usado por los metodos que cargan las pestañas, crea las
      * ImageView de los productos para mostrarlas
+     *
      * @param ruta: el nombre del archivo
-     * TODO: aplicar un escalado de verdad.
+     *              TODO: aplicar un escalado de verdad.
      */
-    public ImageView cargarImagen(String ruta){
+    public ImageView cargarImagen(String ruta) {
         ImageView imagenVista = null;
-        try{
-            Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
-            imagenVista = new ImageView(imagen);
-            imagenVista.setFitHeight(100); // Ajustar altura
-            imagenVista.setFitWidth(100); // Ajustar anchura
+        Image imagen;
+        try {
+             imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
+
+
+        } catch (NullPointerException n) {
+             imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
 
         }
-        catch (NullPointerException n){
-            Image imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
-            imagenVista = new ImageView(imagen);
-            imagenVista.setFitHeight(100); // Ajustar altura
-            imagenVista.setFitWidth(100); // Ajustar anchura
-        }
+
+        imagenVista = new ImageView(imagen);
+        imagenVista.setFitHeight(100); // Ajustar altura
+        imagenVista.setFitWidth(100); // Ajustar anchura
 
 
         return imagenVista;
@@ -490,7 +486,7 @@ public class ControladorVP implements Initializable {
      * Este metodo ajusta las anclas de los tabs para que los scrollpane
      * de dentro se ajusten al tamaño del tab
      */
-    public void ajustarAnclas(){
+    public void ajustarAnclas() {
         AnchorPane.setTopAnchor(scrollTienda, 0.0);
         AnchorPane.setBottomAnchor(scrollTienda, 0.0);
         AnchorPane.setLeftAnchor(scrollTienda, 0.0);
