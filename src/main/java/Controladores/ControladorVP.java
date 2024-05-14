@@ -255,11 +255,11 @@ public class ControladorVP implements Initializable {
 
             // Dependiendo de la pestana, añade el contenedor a una pestana un otra
             switch (pestana){
-                case Pestanas.TIENDA:
+                case TIENDA:
                     productosTienda.add(contenedor);
                     stockProductoTienda.put((String) producto.get(1),stock);
                     break;
-                case Pestanas.ALMACENINGREDIENTES, Pestanas.ALMACENPRODUCTOS:
+                case ALMACENINGREDIENTES, ALMACENPRODUCTOS:
                     productosAlmacen.add(contenedor);
                     stockProductoAlmacen.put((String) producto.get(1),stock);
                     break;
