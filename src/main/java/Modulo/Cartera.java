@@ -67,9 +67,10 @@ public class Cartera {
     * usuario si es cliente y lo suma al del panadero y el almacenero.
     * Si es cualquiera de los otros dos roles la cartera se mantiene igual
     * */
-    public void compra(Double precio, String usuario){
+    public void compra(Double precio, String usuario, String cantidad){
         if(getRol(usuario).equals(Rol.CLIENTE)){
-            monedero = getMonedero(usuario) - precio;
+            Double cant = Double.parseDouble(cantidad);
+            monedero = getMonedero(usuario) - precio * cant;
             Connection conexion = null;
             conexion = conectar(conexion);
 
@@ -105,5 +106,33 @@ public class Cartera {
             monedero = monedero;
         }
     }
+
+    public void compraStockIngredientes(Double precio, String usuario, String cantidad){
+        if(getRol(usuario).equals(Rol.ALMACENERO)){
+            Double cant = Double.parseDouble(cantidad);
+            monedero = getMonedero(usuario) - precio * cant;
+            Connection conexion = null;
+            conexion = conectar(conexion);
+
+            try{
+                PreparedStatement st = conexion.prepareStatement("UPDATE USUARIOS SET CARTERA = ? WHERE NOMBRE = ? ");
+                st.setDouble(1, monedero);
+                st.setString(2, usuario);
+                st.executeUpdate();
+                System.out.println("Stock comprado");
+
+            }
+            catch(SQLException e){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Error al restar el precio de la cartera del almacenero");
+                alert.showAndWait();
+                throw new IllegalStateException("Error al restar el precio de la cartera del almacenero");
+            }
+        }
+        else{
+            monedero = monedero;
+        }
+    }
+
 
 }

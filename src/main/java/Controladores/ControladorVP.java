@@ -238,7 +238,7 @@ public class ControladorVP implements Initializable {
                             editar(boton.getId());
                             break;
                         case ALMACENINGREDIENTES:
-                            comprarIngrediente(boton.getId());
+                            comprarIngrediente(boton.getId(), texto.getText());
                             break;
                         case COCINA:
                             cocinar(boton.getId());
@@ -289,9 +289,9 @@ public class ControladorVP implements Initializable {
 
             ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
+            ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.get(0)); //Obtener los ingredientes del producto
             for (ArrayList<Object> ingrediente : ingreCociona){
-                ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.getFirst());
+                ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.get(0));
 
                 Label nombreIngre = new Label((String) ingrediente.get(1));
                 Label cantidadIngre = new Label("Necesarios: " + ingrediente.get(2));
@@ -399,7 +399,7 @@ public class ControladorVP implements Initializable {
                 Usuario usuario1 = ControladorLogin.getUsuario();
 
                 Cartera cartera = new Cartera();
-                cartera.compra(precio, usuario1.getUsuario());
+                cartera.compra(precio, usuario1.getUsuario(), cantidad);
 
             }
         }
@@ -427,8 +427,58 @@ public class ControladorVP implements Initializable {
      * para el boton añadir Ingrediente
      * @param nombre: el nombre del ingrediente
      */
-    public void comprarIngrediente(String nombre){
+    public void comprarIngrediente(String nombre, String cantidad){
         System.out.println("ingrediente");
+        PreparedStatement ps1;
+        PreparedStatement ps2;
+        ResultSet rs;
+
+        String resultado = "";
+
+        try {
+            ps1 = conexion.prepareStatement("SELECT STOCK FROM INGREDIENTES WHERE NOMBRE = ?");
+            ps1.setString(1, nombre);
+
+            rs = ps1.executeQuery();
+            while (rs.next()) {
+
+
+                System.out.println(rs.getInt("STOCK"));
+
+
+                if (!(rs.getInt("STOCK") <= 0)) {
+                    ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK - ? WHERE NOMBRE = ?");
+                    ps2.setString(1, cantidad);
+                    ps2.setString(2, nombre);
+                    resultado = "Compra finalizada Satisfactoriamente";
+                    ps2.executeUpdate();
+                }else if ((rs.getInt("STOCK") - Integer.parseInt(cantidad) < 0)) {
+                    resultado = "No hay Stock suficiente";
+                }
+                else{
+                    resultado = "error?";
+                }
+                PreparedStatement ps3 = conexion.prepareStatement("SELECT PRECIO FROM INGREDIENTES WHERE NOMBRE = ?");
+                ps3.setString(1, nombre);
+                ResultSet rs1 = ps3.executeQuery();
+                Double precio = rs1.getDouble("PRECIO");
+                Usuario usuario1 = ControladorLogin.getUsuario();
+
+                Cartera cartera = new Cartera();
+                cartera.compraStockIngredientes(precio, usuario1.getUsuario(), cantidad);
+
+            }
+        }
+        catch (SQLException e){
+            resultado = "ERROR AL COMPRAR";
+        }
+        finally {
+            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+            alerta.setTitle(resultado);
+            alerta.setContentText(resultado);
+            alerta.show();
+        }
+        this.cargar();
     }
 
     /**
