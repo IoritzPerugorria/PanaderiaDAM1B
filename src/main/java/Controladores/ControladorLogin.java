@@ -123,6 +123,16 @@ public class ControladorLogin implements Initializable {
                         stage.setTitle("Panaderia");
                         stage.setScene(scene);
                         break;
+
+                    case ADMINISTRADOR:
+                        System.out.println("Iniciado sesion como ADMINISTRADOR");
+                        usuario = new Usuario(txtFldCredencial1.getText(), rol);
+
+                        fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+                        scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                        stage.setTitle("Panaderia");
+                        stage.setScene(scene);
+                        break;
                 }
 
                 currentStage.close();
