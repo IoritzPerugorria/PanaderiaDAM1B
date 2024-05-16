@@ -91,7 +91,7 @@ public class ControladorLogin implements Initializable {
                 Stage stage = new Stage();
 
                 String rolUsuario = listaDatosUsuarios.get(revision).get(2);
-                rol = Rol.valueOf(rolUsuario);
+                rol = Rol.valueOf(rolUsuario); //
 
                 switch (rol){
                     case CLIENTE:
