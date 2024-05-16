@@ -91,7 +91,7 @@ public class ControladorLogin implements Initializable {
                 Stage stage = new Stage();
 
                 String rolUsuario = listaDatosUsuarios.get(revision).get(2);
-                rol = Rol.valueOf(rolUsuario);
+                rol = Rol.valueOf(rolUsuario); //
 
                 switch (rol){
                     case CLIENTE:
@@ -116,6 +116,16 @@ public class ControladorLogin implements Initializable {
 
                     case PANADERO:
                         System.out.println("Iniciado sesion como PANADERO");
+                        usuario = new Usuario(txtFldCredencial1.getText(), rol);
+
+                        fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+                        scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                        stage.setTitle("Panaderia");
+                        stage.setScene(scene);
+                        break;
+
+                    case ADMINISTRADOR:
+                        System.out.println("Iniciado sesion como ADMINISTRADOR");
                         usuario = new Usuario(txtFldCredencial1.getText(), rol);
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
