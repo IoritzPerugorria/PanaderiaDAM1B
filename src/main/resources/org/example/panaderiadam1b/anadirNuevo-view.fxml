@@ -5,24 +5,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.AnadirNuevoController">
-   <top>
-      <Label text="Añadir nuevo ingrediente" underline="true" BorderPane.alignment="CENTER">
-         <font>
-            <Font size="18.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets top="20.0" />
-         </BorderPane.margin>
-      </Label>
-   </top>
-   <center>
-      <VBox alignment="BASELINE_LEFT" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="280.0" BorderPane.alignment="CENTER">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.AnadirNuevoController">
+      <VBox alignment="BASELINE_LEFT" fillWidth="false" layoutX="33.0" layoutY="32.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="311.0" prefWidth="261.0" BorderPane.alignment="CENTER_LEFT">
          <children>
+            <Label prefHeight="114.0" prefWidth="215.0" text="Añadir nuevo ingrediente" textAlignment="CENTER">
+            <font>
+               <Font size="18.0" />
+            </font>
+            <VBox.margin>
+               <Insets left="20.0" />
+            </VBox.margin></Label>
             <Label contentDisplay="CENTER" text="Nombre:" textAlignment="CENTER">
                <font>
                   <Font size="14.0" />
                </font>
+            <VBox.margin>
+               <Insets top="10.0" />
+            </VBox.margin>
             </Label>
             <TextField fx:id="txtFldNom">
                <VBox.margin>
@@ -66,6 +65,10 @@
                </VBox.margin>
             </Button>
          </children>
+         <BorderPane.margin>
+            <Insets left="20.0" />
+         </BorderPane.margin>
       </VBox>
-   </center>
-</BorderPane>
+   <VBox layoutX="356.0" layoutY="32.0" prefHeight="311.0" prefWidth="215.0" />
+
+</AnchorPane>
