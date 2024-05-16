@@ -1,5 +1,6 @@
 package Modulo;
 
+import Controladores.ControladorLogin;
 import javafx.scene.control.Alert;
 
 import java.sql.Connection;
@@ -11,21 +12,24 @@ import static BBDD.ConexionBBDD.conectar;
 
 public class Cartera {
 
-    private double monedero;
+    private Double monedero;
     private Rol rol;
 
     /*
     * Método que devuelve el dinero que tiene el usuario en su cartera
     * */
-    public Double getMonedero(String usuario){
+    public Double getMonedero(Usuario usuario){
         Connection conexion = null;
         conexion = conectar(conexion);
 
         try{
-            PreparedStatement st = conexion.prepareStatement("SELECT CARTERA FROM USUARIOS WHERE NOMBRE = ?");
-            st.setString(1, usuario);
+            PreparedStatement st = conexion.prepareStatement("SELECT CARTERA FROM USUARIO WHERE USUARIO = ?");
+            st.setString(1, usuario.getUsuario());
             ResultSet rs = st.executeQuery();
-            monedero = rs.getDouble("CARTERA");
+            while(rs.next()){
+                monedero = rs.getDouble("CARTERA");
+            }
+
             return monedero;
 
         }
@@ -41,13 +45,13 @@ public class Cartera {
     /*
     * Método que devuelve el rol del usuario: Cliente, Alamacenero, o Panadero
     * */
-    public Rol getRol(String usuario){
+    public Rol getRol(Usuario usuario){
         Connection conexion = null;
         conexion = conectar(conexion);
 
         try{
-            PreparedStatement st = conexion.prepareStatement("SELECT ROL FROM USUARIOS WHERE NOMBRE = ?");
-            st.setString(1, usuario);
+            PreparedStatement st = conexion.prepareStatement("SELECT ROL FROM USUARIO WHERE USUARIO = ?");
+            st.setString(1, usuario.getUsuario());
             ResultSet rs = st.executeQuery();
             rol = Rol.valueOf(rs.getString("ROL"));
             return rol;
@@ -67,21 +71,21 @@ public class Cartera {
     * usuario si es cliente y lo suma al del panadero y el almacenero.
     * Si es cualquiera de los otros dos roles la cartera se mantiene igual
     * */
-    public void compra(Double precio, String usuario, String cantidad){
-        if(getRol(usuario).equals(Rol.CLIENTE)){
+    public void compra(Double precio, Usuario usuario, String cantidad){
+        if(usuario.getRol().equals(Rol.CLIENTE)){
             Double cant = Double.parseDouble(cantidad);
             monedero = getMonedero(usuario) - precio * cant;
             Connection conexion = null;
             conexion = conectar(conexion);
 
             try{
-                PreparedStatement st = conexion.prepareStatement("UPDATE USUARIOS SET CARTERA = ? WHERE NOMBRE = ? ");
+                PreparedStatement st = conexion.prepareStatement("UPDATE USUARIO SET CARTERA = ? WHERE USUARIO = ? ");
                 st.setDouble(1, monedero);
-                st.setString(2, usuario);
+                st.setString(2, usuario.getUsuario());
                 st.executeUpdate();
 
                 try{
-                    PreparedStatement st1 = conexion.prepareStatement("UPDATE USUARIOS SET CARTERA = CARTERA + ? WHERE ROL = ALMACENERO OR ROL = PANADERO");
+                    PreparedStatement st1 = conexion.prepareStatement("UPDATE USUARIO SET CARTERA = CARTERA + ? WHERE ROL = ALMACENERO OR ROL = PANADERO");
                     precio = precio/2;
                     st.setDouble(1, precio);
                     st1.executeUpdate();
@@ -107,17 +111,17 @@ public class Cartera {
         }
     }
 
-    public void compraStockIngredientes(Double precio, String usuario, String cantidad){
-        if(getRol(usuario).equals(Rol.ALMACENERO)){
+    public void compraStockIngredientes(Double precio, Usuario usuario, String cantidad){
+        if(usuario.getRol().equals(Rol.ALMACENERO)){
             Double cant = Double.parseDouble(cantidad);
             monedero = getMonedero(usuario) - precio * cant;
             Connection conexion = null;
             conexion = conectar(conexion);
 
             try{
-                PreparedStatement st = conexion.prepareStatement("UPDATE USUARIOS SET CARTERA = ? WHERE NOMBRE = ? ");
+                PreparedStatement st = conexion.prepareStatement("UPDATE USUARIO SET CARTERA = ? WHERE USUARIO = ? ");
                 st.setDouble(1, monedero);
-                st.setString(2, usuario);
+                st.setString(2, usuario.getUsuario());
                 st.executeUpdate();
                 System.out.println("Stock comprado");
 

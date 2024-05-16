@@ -399,7 +399,7 @@ public class ControladorVP implements Initializable {
                 Usuario usuario1 = ControladorLogin.getUsuario();
 
                 Cartera cartera = new Cartera();
-                cartera.compra(precio, usuario1.getUsuario(), cantidad);
+                cartera.compra(precio, usuario1, cantidad);
 
             }
         }
@@ -442,30 +442,25 @@ public class ControladorVP implements Initializable {
             rs = ps1.executeQuery();
             while (rs.next()) {
 
-
                 System.out.println(rs.getInt("STOCK"));
 
-
-                if (!(rs.getInt("STOCK") <= 0)) {
-                    ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK - ? WHERE NOMBRE = ?");
+                    ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK + ? WHERE NOMBRE = ?");
                     ps2.setString(1, cantidad);
                     ps2.setString(2, nombre);
                     resultado = "Compra finalizada Satisfactoriamente";
                     ps2.executeUpdate();
-                }else if ((rs.getInt("STOCK") - Integer.parseInt(cantidad) < 0)) {
-                    resultado = "No hay Stock suficiente";
-                }
-                else{
-                    resultado = "error?";
-                }
+
                 PreparedStatement ps3 = conexion.prepareStatement("SELECT PRECIO FROM INGREDIENTES WHERE NOMBRE = ?");
                 ps3.setString(1, nombre);
                 ResultSet rs1 = ps3.executeQuery();
-                Double precio = rs1.getDouble("PRECIO");
-                Usuario usuario1 = ControladorLogin.getUsuario();
+                Double precio = null;
+                while(rs1.next()){
+                    precio = rs1.getDouble("PRECIO");
+                }
 
+                Usuario usuario1 = ControladorLogin.getUsuario();
                 Cartera cartera = new Cartera();
-                cartera.compraStockIngredientes(precio, usuario1.getUsuario(), cantidad);
+                cartera.compraStockIngredientes(precio, usuario1, cantidad);
 
             }
         }
