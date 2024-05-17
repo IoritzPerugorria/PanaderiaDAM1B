@@ -1,5 +1,6 @@
 package Controladores;
 
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -39,7 +40,11 @@ public class AnadirRecetaView {
     private ListView lstViewIng;
     private HashMap<String, Integer> ingredientes;
     private String imagen;
+    private List<String> listaElegidos;
 
+    public AnadirRecetaView(){
+        listaElegidos = new ArrayList<>();
+    }
 
     public void cargarComboBox(){
         Connection conexion = null;
@@ -48,9 +53,13 @@ public class AnadirRecetaView {
         try{
             PreparedStatement st = conexion.prepareStatement("SELECT NOMBRE FROM INGREDIENTES");
             ResultSet rs = st.executeQuery();
+            List<String> lista = new ArrayList<>();
             while(rs.next()){
-                cmbBoxIng.setValue(rs.getString("NOMBRE"));
+                lista.add(rs.getString("NOMBRE"));
+
             }
+            ObservableList<String> listaingredientes = FXCollections.observableArrayList(lista);
+            cmbBoxIng.setItems(listaingredientes);
         }
         catch(SQLException e){
             throw new IllegalStateException("No se ha podido cargar el combobox");
@@ -65,10 +74,11 @@ public class AnadirRecetaView {
     public void anadirIngredientes(){
         String ingre = cmbBoxIng.getValue();
         Integer cant = Integer.parseInt(txtFldCant.getText());
+        ingredientes = new HashMap<>();
         ingredientes.put(ingre, cant);
-        List<String> lista = new ArrayList<>();
-        lista.add(ingre);
-        ObservableList<String> listaingredientes = FXCollections.observableArrayList(lista);
+
+        listaElegidos.add(ingre);
+        ObservableList<String> listaingredientes = FXCollections.observableArrayList(listaElegidos);
         lstViewIng.setItems(listaingredientes);
     }
 
