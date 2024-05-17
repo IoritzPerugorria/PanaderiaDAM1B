@@ -6,7 +6,7 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.AnadirNuevoController">
-      <VBox alignment="BASELINE_LEFT" fillWidth="false" layoutX="33.0" layoutY="32.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="311.0" prefWidth="261.0" BorderPane.alignment="CENTER_LEFT">
+      <VBox fillWidth="false" layoutX="171.0" layoutY="32.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="337.0" prefWidth="259.0" BorderPane.alignment="CENTER_LEFT">
          <children>
             <Label prefHeight="114.0" prefWidth="215.0" text="Añadir nuevo ingrediente" textAlignment="CENTER">
             <font>
@@ -15,7 +15,7 @@
             <VBox.margin>
                <Insets left="20.0" />
             </VBox.margin></Label>
-            <Label contentDisplay="CENTER" text="Nombre:" textAlignment="CENTER">
+            <Label contentDisplay="CENTER" text="Nombre:">
                <font>
                   <Font size="14.0" />
                </font>
@@ -69,69 +69,6 @@
             <Insets left="20.0" />
          </BorderPane.margin>
       </VBox>
-   <Separator layoutX="293.0" layoutY="41.0" orientation="VERTICAL" prefHeight="327.0" prefWidth="5.0" />
-   <VBox layoutX="325.0" layoutY="37.0" prefHeight="327.0" prefWidth="261.0">
-      <children>
-         <Label prefHeight="114.0" prefWidth="215.0" text="Añadir nuevo producto" textAlignment="CENTER">
-            <font>
-               <Font size="18.0" />
-            </font>
-            <VBox.margin>
-               <Insets left="20.0" />
-            </VBox.margin></Label>
-         <Label contentDisplay="CENTER" text="Nombre:" textAlignment="CENTER">
-            <font>
-               <Font size="14.0" />
-            </font>
-            <VBox.margin>
-               <Insets top="10.0" />
-            </VBox.margin>
-         </Label>
-         <TextField fx:id="txtFldNomPrd" prefHeight="25.0" prefWidth="156.0">
-            <VBox.margin>
-               <Insets left="30.0" right="80.0" top="10.0" />
-            </VBox.margin>
-         </TextField>
-         <Label text="Cantidad:">
-            <VBox.margin>
-               <Insets top="20.0" />
-            </VBox.margin>
-            <font>
-               <Font size="14.0" />
-            </font>
-         </Label>
-         <TextField fx:id="txtFldCantPrd">
-            <VBox.margin>
-               <Insets left="30.0" right="80.0" top="10.0" />
-            </VBox.margin>
-         </TextField>
-         <Label text="Precio:">
-            <font>
-               <Font size="14.0" />
-            </font>
-            <VBox.margin>
-               <Insets top="20.0" />
-            </VBox.margin>
-         </Label>
-         <TextField fx:id="txtFldPrecPrd">
-            <VBox.margin>
-               <Insets left="30.0" right="80.0" top="10.0" />
-            </VBox.margin>
-         </TextField>
-         <Button mnemonicParsing="false" onAction="#cargarImagen" text="Cargar imagen">
-            <VBox.margin>
-               <Insets top="20.0" />
-            </VBox.margin>
-         </Button>
-         <Button mnemonicParsing="false" onAction="#anadirNuevo" text="Añadir">
-            <VBox.margin>
-               <Insets left="195.0" top="15.0" />
-            </VBox.margin>
-         </Button>
-      </children>
-      <BorderPane.margin>
-         <Insets left="20.0" />
-      </BorderPane.margin>
-   </VBox>
+
 
 </AnchorPane>

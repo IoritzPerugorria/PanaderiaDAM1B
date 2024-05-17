@@ -1,14 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Controladores.AnadirRecetaView"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.AnadirRecetaView">
+   <children>
+      <VBox layoutX="27.0" layoutY="62.0" prefHeight="314.0" prefWidth="219.0">
+         <children>
+            <Label text="Nombre:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtFldNom">
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin></TextField>
+            <Label text="Precio">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Label>
+            <TextField fx:id="txtFldPrecio">
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin></TextField>
+            <Button mnemonicParsing="false" onAction="#cargarImagen" text="Cargar Imagen">
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </Button>
+            <ListView fx:id="lstViewIng" prefHeight="114.0" prefWidth="219.0">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </ListView>
+         </children></VBox>
+      <Label layoutX="220.0" layoutY="23.0" prefHeight="27.0" prefWidth="161.0" text="Añadir nueva receta" textAlignment="CENTER">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <VBox layoutX="330.0" layoutY="62.0" prefHeight="324.0" prefWidth="241.0">
+         <children>
+            <Label text="Ingredientes necesarios">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="cmbBoxIng" prefWidth="150.0">
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </ComboBox>
+            <Label text="Cantidad:">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtFldCant" prefHeight="25.0" prefWidth="151.0">
+               <VBox.margin>
+                  <Insets top="15.0" />
+               </VBox.margin>
+            </TextField>
+            <Button mnemonicParsing="false" onAction="#anadirIngredientes" text="Añadir">
+               <VBox.margin>
+                  <Insets left="190.0" top="30.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </children>
 </AnchorPane>
