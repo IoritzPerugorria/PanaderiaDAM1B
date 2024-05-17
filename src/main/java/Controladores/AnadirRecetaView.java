@@ -40,6 +40,7 @@ public class AnadirRecetaView {
     private HashMap<String, Integer> ingredientes;
     private String imagen;
 
+
     public void cargarComboBox(){
         Connection conexion = null;
         conexion = conectar(conexion);

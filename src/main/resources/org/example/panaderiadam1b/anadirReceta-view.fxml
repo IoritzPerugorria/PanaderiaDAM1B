@@ -53,7 +53,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ComboBox fx:id="cmbBoxIng" prefWidth="150.0">
+            <ComboBox fx:id="cmbBoxIng" onMouseClicked="#cargarComboBox" prefWidth="150.0">
                <VBox.margin>
                   <Insets top="15.0" />
                </VBox.margin>

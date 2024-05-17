@@ -520,6 +520,24 @@ public class ControladorVP implements Initializable {
         }
     }
 
+    @FXML
+    public void anadirReceta(){
+        try{
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadirReceta-view.fxml"));
+
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            stage.setTitle("Panaderia");
+            stage.setScene(scene);
+
+            stage.show();
+
+        }
+        catch (IOException e){
+            System.out.println("ERROR");
+        }
+    }
 
 
 

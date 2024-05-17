@@ -39,7 +39,7 @@
 
         <Tab text="Cocina">
             <AnchorPane>
-                <Button mnemonicParsing="false" text="Añadir nueva receta" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="10.0" />
+                <Button mnemonicParsing="false" onAction="#anadirReceta" text="Añadir nueva receta" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="10.0" />
                 <ScrollPane fx:id="scrollCocina" fitToHeight="true" fitToWidth="true" layoutX="15.0" layoutY="15.0" pannable="true" vbarPolicy="ALWAYS" AnchorPane.topAnchor="50.0">
                     <VBox fx:id="Cocina" />
                 </ScrollPane>
