@@ -522,6 +522,8 @@ public class ControladorVP implements Initializable {
 
 
 
+
+
     /**
      * Usado por los metodos que cargan las pestañas, crea las
      * ImageView de los productos para mostrarlas
@@ -558,12 +560,12 @@ public class ControladorVP implements Initializable {
         AnchorPane.setLeftAnchor(scrollTienda, 0.0);
         AnchorPane.setRightAnchor(scrollTienda, 0.0);
 
-        AnchorPane.setTopAnchor(scrollAlmacen, 0.0);
+
         AnchorPane.setBottomAnchor(scrollAlmacen, 0.0);
         AnchorPane.setLeftAnchor(scrollAlmacen, 0.0);
         AnchorPane.setRightAnchor(scrollAlmacen, 0.0);
 
-        AnchorPane.setTopAnchor(scrollCocina, 0.0);
+
         AnchorPane.setBottomAnchor(scrollCocina, 0.0);
         AnchorPane.setLeftAnchor(scrollCocina, 0.0);
         AnchorPane.setRightAnchor(scrollCocina, 0.0);
