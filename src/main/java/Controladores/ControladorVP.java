@@ -397,10 +397,20 @@ public class ControladorVP implements Initializable {
             }
         });
 
+        Button boton1 = new Button();
+        boton1.setText("Eliminar");
+        boton1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                eliminar(boton1.getId());
+            }
+        });
 
         boton.setId((String) producto.get(1));
+        boton1.setId((String) producto.get(1));
 
         contenedor.getChildren().add(boton);
+        contenedor.getChildren().add(boton1);
 
         productosCocina.add(contenedor);
 
@@ -502,6 +512,41 @@ public class ControladorVP implements Initializable {
     public void cocinar(String nombre) {
         System.out.println("cocinar" + nombre);
     }
+
+
+    /**
+    * Para el boton eliminar en cocina
+    * @param nombre: el nombre del producto
+    * */
+    public void eliminar(String nombre){
+        try{
+            PreparedStatement st = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
+            st.setString(1, nombre);
+            ResultSet rs = st.executeQuery();
+            String idProducto = null;
+            if(rs.next()){
+                idProducto = rs.getString("ID");
+            }
+
+            PreparedStatement st2 = conexion.prepareStatement("DELETE FROM NECESITA WHERE PR_ID = ?");
+            st2.setString(1, idProducto);
+            st2.executeUpdate();
+
+            PreparedStatement st3 = conexion.prepareStatement("DELETE FROM PRODUCTOS WHERE ID = ?");
+            st3.setString(1, idProducto);
+            st3.executeUpdate();
+
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Receta eliminada correctamente");
+            alert.showAndWait();
+            cargar();
+        }
+        catch(SQLException e){
+            throw new IllegalStateException("No se ha podido eliminar la receta");
+        }
+    }
+
 
     @FXML
     public void anadir() {
