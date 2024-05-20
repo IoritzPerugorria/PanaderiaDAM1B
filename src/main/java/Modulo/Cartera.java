@@ -85,9 +85,11 @@ public class Cartera {
                 st.executeUpdate();
 
                 try{
-                    PreparedStatement st1 = conexion.prepareStatement("UPDATE USUARIO SET CARTERA = CARTERA + ? WHERE ROL = ALMACENERO OR ROL = PANADERO");
+                    PreparedStatement st1 = conexion.prepareStatement("UPDATE USUARIO SET CARTERA = CARTERA + ? WHERE ROL = ? OR ROL = ?");
                     precio = precio/2;
-                    st.setDouble(1, precio);
+                    st1.setDouble(1, precio);
+                    st1.setString(2, "ALMACENERO");
+                    st1.setString(3, "PANADERO");
                     st1.executeUpdate();
 
                 }
@@ -106,13 +108,13 @@ public class Cartera {
                 throw new IllegalStateException("Error al restar el precio de la cartera del cliente");
             }
         }
-        else if(getRol(usuario).equals(Rol.ALMACENERO) || getRol(usuario).equals(Rol.PANADERO)){
+        else if(getRol(usuario).equals(Rol.ALMACENERO) || getRol(usuario).equals(Rol.PANADERO) || getRol(usuario).equals(Rol.ADMINISTRADOR)){
             monedero = monedero;
         }
     }
 
     public void compraStockIngredientes(Double precio, Usuario usuario, String cantidad){
-        if(usuario.getRol().equals(Rol.ALMACENERO)){
+        if(usuario.getRol().equals(Rol.ALMACENERO) || getRol(usuario).equals(Rol.ALMACENERO)){
             Double cant = Double.parseDouble(cantidad);
             monedero = getMonedero(usuario) - precio * cant;
             Connection conexion = null;

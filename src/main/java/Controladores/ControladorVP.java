@@ -3,7 +3,9 @@ package Controladores;
 
 import Enumerados.Pestanas;
 import BBDD.ConexionBBDD;
+import Modulo.Cartera;
 import Modulo.Rol;
+import Modulo.Usuario;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -475,6 +477,18 @@ public class ControladorVP implements Initializable {
                     resultado = "error?";
                 }
             }
+            PreparedStatement ps3 = conexion.prepareStatement("SELECT PRECIO FROM PRODUCTOS WHERE NOMBRE = ?");
+            ps3.setString(1, nombre);
+            ResultSet rs1 = ps3.executeQuery();
+            Double precio = null;
+            if(rs1.next()){
+                precio = rs1.getDouble("PRECIO");
+            }
+            Usuario usuario1 = ControladorLogin.getUsuario();
+
+            Cartera cartera = new Cartera();
+            cartera.compra(precio, usuario1, cantidad);
+
         } catch (SQLException e) {
             resultado = "ERROR AL COMPRAR";
         } finally {
@@ -501,7 +515,7 @@ public class ControladorVP implements Initializable {
      * @param nombre: el nombre del ingrediente
      */
     public void comprarIngrediente(String nombre) {
-        System.out.println("ingrediente" + nombre);
+
     }
 
     /**
