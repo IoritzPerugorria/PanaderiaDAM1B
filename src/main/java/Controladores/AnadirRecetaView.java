@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -23,6 +24,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static BBDD.ConexionBBDD.conectar;
 
@@ -44,6 +46,7 @@ public class AnadirRecetaView {
 
     public AnadirRecetaView(){
         listaElegidos = new ArrayList<>();
+        ingredientes = new HashMap<>();
     }
 
     public void cargarComboBox(){
@@ -67,14 +70,69 @@ public class AnadirRecetaView {
 
     }
 
+    @FXML
     public void insertarReceta(){
+        String nombre = txtFldNom.getText();
+        Double precio = Double.parseDouble(txtFldPrecio.getText());
 
+        Connection conexion = null;
+        conexion = conectar(conexion);
+
+        try{
+            PreparedStatement st = conexion.prepareStatement("INSERT INTO PRODUCTOS(NOMBRE, PRECIO, STOCK, IMAGEN) VALUES (?, ?, ?, ?)");
+            st.setString(1, nombre);
+            st.setDouble(2, precio);
+            st.setInt(3, 0);
+            if(imagen != null){
+                try{
+                    st.setString(4, imagen);
+                    st.executeUpdate();
+                }
+                catch(SQLException e){
+                    st.setString(4, null);  //si no consigue introducirla, ese atributo se vuelve null
+                    st.executeUpdate();
+                    throw new IllegalStateException("Error al insertar imagen");
+                }
+            }
+
+            for (Map.Entry<String, Integer> entry : ingredientes.entrySet()) {
+                PreparedStatement st1 = conexion.prepareStatement("SELECT ID FROM INGREDIENTES WHERE NOMBRE = ?");
+                st1.setString(1, entry.getKey());
+                ResultSet rs1 = st1.executeQuery();
+                String idIngrediente = null;
+                if(rs1.next()){
+                    idIngrediente = rs1.getString("ID");
+                }
+                PreparedStatement st2 = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
+                st2.setString(1, nombre);
+                ResultSet rs2 = st2.executeQuery();
+                String idProducto = null;
+                if(rs2.next()){
+                    idProducto = rs2.getString("ID");
+                }
+
+                PreparedStatement st3 = conexion.prepareStatement("INSERT INTO NECESITA(PR_ID, ING_ID, CANTIDAD) VALUES (?, ? ,?)");
+                st3.setString(1, idProducto);
+                st3.setString(2, idIngrediente);
+                st3.setInt(3, entry.getValue());
+                st3.executeUpdate();
+
+            }
+
+        }
+        catch(SQLException e){
+            throw new IllegalStateException("No se ha podido insertar la receta");
+        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText("Receta introducida correctamente");
+        alert.showAndWait();
     }
+
 
     public void anadirIngredientes(){
         String ingre = cmbBoxIng.getValue();
         Integer cant = Integer.parseInt(txtFldCant.getText());
-        ingredientes = new HashMap<>();
+
         ingredientes.put(ingre, cant);
 
         listaElegidos.add(ingre);
