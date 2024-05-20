@@ -93,14 +93,17 @@ public class ControladorLogin implements Initializable {
                 String rolUsuario = listaDatosUsuarios.get(revision).get(2);
                 rol = Rol.valueOf(rolUsuario); //
 
+                ControladorVP controladorVP;
                 switch (rol){
                     case CLIENTE:
                         System.out.println("Iniciado sesion como CLIENTE");
                         usuario = new Usuario(txtFldCredencial1.getText(), rol);
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-                        scene = new Scene(fxmlLoader.load(), 1000, 1000);
+                        scene = new Scene(fxmlLoader.load(), 1000, 900);
                         stage.setTitle("Panaderia");
+                        controladorVP = fxmlLoader.getController();
+                        controladorVP.setRol(rol);
                         stage.setScene(scene);
                         break;
 
@@ -111,6 +114,8 @@ public class ControladorLogin implements Initializable {
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
                         scene = new Scene(fxmlLoader.load(), 1000, 1000);
                         stage.setTitle("Panaderia");
+                        controladorVP = fxmlLoader.getController();
+                        controladorVP.setRol(rol);
                         stage.setScene(scene);
                         break;
 
@@ -121,6 +126,8 @@ public class ControladorLogin implements Initializable {
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
                         scene = new Scene(fxmlLoader.load(), 1000, 1000);
                         stage.setTitle("Panaderia");
+                        controladorVP = fxmlLoader.getController();
+                        controladorVP.setRol(rol);
                         stage.setScene(scene);
                         break;
 
@@ -131,6 +138,8 @@ public class ControladorLogin implements Initializable {
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
                         scene = new Scene(fxmlLoader.load(), 1000, 1000);
                         stage.setTitle("Panaderia");
+                        controladorVP = fxmlLoader.getController();
+                        controladorVP.setRol(rol);
                         stage.setScene(scene);
                         break;
                 }
