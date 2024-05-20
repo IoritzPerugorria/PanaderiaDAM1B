@@ -330,10 +330,10 @@ public class ControladorVP implements Initializable {
 
             // Dependiendo de la pestana, añade el contenedor a una pestana un otra
             switch (pestana) {
-                case Pestanas.TIENDA:
+                case TIENDA:
                     productosTienda.add(contenedor);
                     break;
-                case Pestanas.ALMACENINGREDIENTES, Pestanas.ALMACENPRODUCTOS:
+                case ALMACENINGREDIENTES, ALMACENPRODUCTOS:
                     productosAlmacen.add(contenedor);
                     break;
             }
@@ -361,9 +361,9 @@ public class ControladorVP implements Initializable {
 
         ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
+        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.get(0)); //Obtener los ingredientes del producto
         for (ArrayList<Object> ingrediente : ingreCociona) {
-            ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.getFirst());
+            ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.get(0));
 
             Label nombreIngre = new Label((String) ingrediente.get(1));
             Label cantidadIngre = new Label("Necesarios: " + ingrediente.get(2));
@@ -397,10 +397,20 @@ public class ControladorVP implements Initializable {
             }
         });
 
+        Button boton1 = new Button();
+        boton1.setText("Eliminar");
+        boton1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                eliminar(boton1.getId());
+            }
+        });
 
         boton.setId((String) producto.get(1));
+        boton1.setId((String) producto.get(1));
 
         contenedor.getChildren().add(boton);
+        contenedor.getChildren().add(boton1);
 
         productosCocina.add(contenedor);
 
@@ -503,6 +513,41 @@ public class ControladorVP implements Initializable {
         System.out.println("cocinar" + nombre);
     }
 
+
+    /**
+    * Para el boton eliminar en cocina
+    * @param nombre: el nombre del producto
+    * */
+    public void eliminar(String nombre){
+        try{
+            PreparedStatement st = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
+            st.setString(1, nombre);
+            ResultSet rs = st.executeQuery();
+            String idProducto = null;
+            if(rs.next()){
+                idProducto = rs.getString("ID");
+            }
+
+            PreparedStatement st2 = conexion.prepareStatement("DELETE FROM NECESITA WHERE PR_ID = ?");
+            st2.setString(1, idProducto);
+            st2.executeUpdate();
+
+            PreparedStatement st3 = conexion.prepareStatement("DELETE FROM PRODUCTOS WHERE ID = ?");
+            st3.setString(1, idProducto);
+            st3.executeUpdate();
+
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("Receta eliminada correctamente");
+            alert.showAndWait();
+            cargar();
+        }
+        catch(SQLException e){
+            throw new IllegalStateException("No se ha podido eliminar la receta");
+        }
+    }
+
+
     @FXML
     public void anadir() {
         try {
@@ -520,6 +565,22 @@ public class ControladorVP implements Initializable {
         }
     }
 
+    @FXML
+    public void anadirReceta(){
+        try {
+
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadirReceta-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            stage.setTitle("Panaderia");
+            stage.setScene(scene);
+
+
+            stage.show();
+        } catch (IOException e) {
+            System.out.println("ERROR");
+        }
+    }
 
     /**
      * Usado por los metodos que cargan las pestañas, crea las
@@ -558,12 +619,12 @@ public class ControladorVP implements Initializable {
         AnchorPane.setLeftAnchor(scrollTienda, 0.0);
         AnchorPane.setRightAnchor(scrollTienda, 0.0);
 
-        AnchorPane.setTopAnchor(scrollAlmacen, 0.0);
+        AnchorPane.setTopAnchor(scrollCocina, 50.0);
         AnchorPane.setBottomAnchor(scrollAlmacen, 0.0);
         AnchorPane.setLeftAnchor(scrollAlmacen, 0.0);
         AnchorPane.setRightAnchor(scrollAlmacen, 0.0);
 
-        AnchorPane.setTopAnchor(scrollCocina, 0.0);
+        AnchorPane.setTopAnchor(scrollCocina, 50.0);
         AnchorPane.setBottomAnchor(scrollCocina, 0.0);
         AnchorPane.setLeftAnchor(scrollCocina, 0.0);
         AnchorPane.setRightAnchor(scrollCocina, 0.0);
