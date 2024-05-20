@@ -11,29 +11,23 @@
          <font>
             <Font size="20.0" />
          </font></Text>
-      <Button layoutX="316.0" layoutY="273.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Modificar" />
+      <Button layoutX="316.0" layoutY="273.0" mnemonicParsing="false" onAction="#modificarReceta" prefHeight="25.0" prefWidth="85.0" text="Modificar" />
       <HBox layoutX="20.0" layoutY="60.0" prefHeight="197.0" prefWidth="457.0">
-         <children>
-            <ListView prefHeight="197.0" prefWidth="232.0">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-            </ListView>
-            <VBox prefHeight="197.0" prefWidth="223.0">
-               <children>
-                  <Label text="Nombre:" />
-                  <TextField />
-                  <Label layoutX="10.0" layoutY="10.0" text="Precio" />
-                  <TextField layoutX="10.0" layoutY="27.0" />
-                  <Label layoutX="10.0" layoutY="52.0" text="Ingredientes:" />
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
-                     <content>
-                        <VBox prefHeight="200.0" prefWidth="100.0" />
-                     </content>
-                  </ScrollPane>
-               </children>
-            </VBox>
-         </children>
+         <ListView fx:id="listaRecetas" prefHeight="197.0" prefWidth="232.0">
+            <opaqueInsets>
+               <Insets/>
+            </opaqueInsets>
+         </ListView>
+         <VBox prefHeight="197.0" prefWidth="223.0">
+            <Label text="Nombre:"/>
+            <TextField fx:id="nombreReceta"/>
+            <Label layoutX="10.0" layoutY="10.0" text="Precio"/>
+            <TextField fx:id="precioReceta" layoutX="10.0" layoutY="27.0"/>
+            <Label layoutX="10.0" layoutY="52.0" text="Ingredientes:"/>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0">
+               <VBox fx:id="ingredientesRecetas" prefHeight="93.0" prefWidth="217.0"/>
+            </ScrollPane>
+         </VBox>
       </HBox>
    </children>
 </AnchorPane>
