@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
@@ -16,6 +17,17 @@
                 <Font size="69.0" />
             </font>
         </Label>
+      <HBox alignment="CENTER_RIGHT" prefHeight="153.0" prefWidth="597.0">
+         <children>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#editarPerfil" text="Editar Perfil" />
+                  <Button mnemonicParsing="false" onAction="#logout" text="Cerrar Sesion" textFill="RED" />
+               </children>
+            </VBox>
+            <ImageView fx:id="fotoPerfil" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </HBox>
     </HBox>
     <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
         <Tab fx:id="tiendaTab" disable="true" text="Tienda">
@@ -38,7 +50,7 @@
 
         <Tab fx:id="cocinaTab" disable="true" text="Cocina">
             <AnchorPane>
-                <Button fx:id="anadirRecet" mnemonicParsing="false" onAction="#anadirReceta" text="Añadir nueva receta" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                <Button fx:id="anadirRecet" mnemonicParsing="false" text="Añadir nueva receta" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                 <ScrollPane fx:id="scrollCocina" fitToHeight="true" fitToWidth="true" layoutX="15.0" layoutY="15.0" pannable="true" vbarPolicy="ALWAYS">
                     <VBox fx:id="Cocina" />
                 </ScrollPane>

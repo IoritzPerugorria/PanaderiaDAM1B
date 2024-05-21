@@ -59,20 +59,20 @@ public class ControladorVP implements Initializable {
 
     private Connection conexion; // La misma conexion se usa en tod0 el controlador para optimizar las cargas
 
-    private Rol rol;
+    private Usuario usuario;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         conexion = ConexionBBDD.conectar(conexion); // Abrir la conexion
     }
 
-    public void setRol(Rol rol){
-        this.rol = rol;
+    public void setRol(Usuario usuario){
+        this.usuario = usuario;
         this.cargar();
     }
 
     public void cargar() {
-        System.out.println(rol.toString());
+        System.out.println(usuario.getRol().toString());
         productosTienda.clear();
         productosAlmacen.clear();
         productosCocina.clear();
@@ -80,7 +80,7 @@ public class ControladorVP implements Initializable {
         ArrayList<ArrayList<Object>> productos;
         ArrayList<ArrayList<Object>> ingredientes;
 
-        switch (rol){
+        switch (usuario.getRol()){
             case CLIENTE:
                 this.tiendaTab.setDisable(false);
 
@@ -595,6 +595,35 @@ public class ControladorVP implements Initializable {
             System.out.println("ERROR");
         }
     }
+    @FXML
+    public void logout(){
+        System.out.println("s");
+        try{
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+            alerta.setTitle("Confirmacion");
+            alerta.setContentText("¿Seguro que quieres cerrar sesion?");
+            Optional<ButtonType> result = alerta.showAndWait();
+
+
+            if (result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()) {
+                Stage stageActual = (Stage) scrollTienda.getScene().getWindow();
+
+                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Login.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 400, 400);
+                Stage stage = new Stage();
+                stage.setTitle("Login");
+                stage.setScene(scene);
+                stage.show();
+
+                stageActual.close();
+            }
+        }
+        catch (IOException a){
+            System.out.println("Tan inutil soy que ni autodestruirme puedo");
+        }
+
+
+    }
 
     /**
      * Usado por los metodos que cargan las pestañas, crea las
@@ -643,4 +672,8 @@ public class ControladorVP implements Initializable {
         AnchorPane.setLeftAnchor(scrollCocina, 0.0);
         AnchorPane.setRightAnchor(scrollCocina, 0.0);
     }
+
+    public void editarPerfil(ActionEvent actionEvent) {
+    }
+
 }

@@ -97,49 +97,49 @@ public class ControladorLogin implements Initializable {
                 switch (rol){
                     case CLIENTE:
                         System.out.println("Iniciado sesion como CLIENTE");
-                        usuario = new Usuario(txtFldCredencial1.getText(), rol);
+                        usuario = new Usuario(txtFldCredencial1.getText());
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
                         scene = new Scene(fxmlLoader.load(), 1000, 900);
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
-                        controladorVP.setRol(rol);
+                        controladorVP.setRol(usuario);
                         stage.setScene(scene);
                         break;
 
                     case ALMACENERO:
                         System.out.println("Iniciado sesion como ALMACENERO");
-                        usuario = new Usuario(txtFldCredencial1.getText(), rol);
+                        usuario = new Usuario(txtFldCredencial1.getText());
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
                         scene = new Scene(fxmlLoader.load(), 1000, 1000);
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
-                        controladorVP.setRol(rol);
+                        controladorVP.setRol(usuario);
                         stage.setScene(scene);
                         break;
 
                     case PANADERO:
                         System.out.println("Iniciado sesion como PANADERO");
-                        usuario = new Usuario(txtFldCredencial1.getText(), rol);
+                        usuario = new Usuario(txtFldCredencial1.getText());
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
                         scene = new Scene(fxmlLoader.load(), 1000, 1000);
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
-                        controladorVP.setRol(rol);
+                        controladorVP.setRol(usuario);
                         stage.setScene(scene);
                         break;
 
                     case ADMINISTRADOR:
                         System.out.println("Iniciado sesion como ADMINISTRADOR");
-                        usuario = new Usuario(txtFldCredencial1.getText(), rol);
+                        usuario = new Usuario(txtFldCredencial1.getText());
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
                         scene = new Scene(fxmlLoader.load(), 1000, 1000);
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
-                        controladorVP.setRol(rol);
+                        controladorVP.setRol(usuario);
                         stage.setScene(scene);
                         break;
                 }
