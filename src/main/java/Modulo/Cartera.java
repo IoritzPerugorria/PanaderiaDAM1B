@@ -24,7 +24,7 @@ public class Cartera {
 
         try{
             PreparedStatement st = conexion.prepareStatement("SELECT CARTERA FROM USUARIO WHERE USUARIO = ?");
-            st.setString(1, usuario.getUsuario());
+            st.setString(1, usuario.getNombre());
             ResultSet rs = st.executeQuery();
             while(rs.next()){
                 monedero = rs.getDouble("CARTERA");
@@ -51,7 +51,7 @@ public class Cartera {
 
         try{
             PreparedStatement st = conexion.prepareStatement("SELECT ROL FROM USUARIO WHERE USUARIO = ?");
-            st.setString(1, usuario.getUsuario());
+            st.setString(1, usuario.getNombre());
             ResultSet rs = st.executeQuery();
             if(rs.next()){
                 rol = Rol.valueOf(rs.getString("ROL"));
@@ -83,7 +83,7 @@ public class Cartera {
             try{
                 PreparedStatement st = conexion.prepareStatement("UPDATE USUARIO SET CARTERA = ? WHERE USUARIO = ? ");
                 st.setDouble(1, monedero);
-                st.setString(2, usuario.getUsuario());
+                st.setString(2, usuario.getNombre());
                 st.executeUpdate();
 
                 try{
@@ -125,7 +125,7 @@ public class Cartera {
             try{
                 PreparedStatement st = conexion.prepareStatement("UPDATE USUARIO SET CARTERA = ? WHERE USUARIO = ? ");
                 st.setDouble(1, monedero);
-                st.setString(2, usuario.getUsuario());
+                st.setString(2, usuario.getNombre());
                 st.executeUpdate();
                 System.out.println("Stock comprado");
 

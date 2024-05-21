@@ -22,7 +22,7 @@ public class Usuario {
         this.cargarDatos();
     }
 
-    public String getUsuario() {
+    public String getNombre() {
         return usuario;
     }
 
@@ -42,13 +42,14 @@ public class Usuario {
         return fotoPerfil;
     }
 
+
     public void cargarDatos(){
 
         try {
             conexion = ConexionBBDD.conectar(conexion);
 
             PreparedStatement ps = conexion.prepareStatement("SELECT * FROM USUARIO WHERE USUARIO = ?");
-            ps.setString(1, this.getUsuario());
+            ps.setString(1, this.getNombre());
 
             ResultSet rs = ps.executeQuery();
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorEditar">
+    <VBox alignment="CENTER" prefWidth="400.0" spacing="15.0">
+        <opaqueInsets>
+            <Insets />
+        </opaqueInsets>
+        <Label text="Editar Informacion">
+            <font>
+                <Font size="36.0" />
+            </font>
+        </Label>
+        <Label contentDisplay="RIGHT" text="Nombre de Usuario">
+            <graphic>
+                <TextField fx:id="nombre" />
+            </graphic>
+        </Label>
+        <Separator prefHeight="1.0" prefWidth="400.0" />
+        <Label contentDisplay="RIGHT" text="Contraseña">
+            <graphic>
+                <PasswordField fx:id="contrasenaActual" />
+            </graphic>
+        </Label>
+        <Label contentDisplay="RIGHT" text="Nueva Contraseña">
+            <graphic>
+                <PasswordField fx:id="contrasenaNueva" />
+            </graphic>
+        </Label>
+        <Label contentDisplay="RIGHT" text="Confirmar Contraseña">
+            <graphic>
+                <PasswordField fx:id="contrasenaConfirmar" />
+            </graphic>
+        </Label>
+        <Separator prefWidth="200.0" />
+        <Label contentDisplay="RIGHT" text="Rol: ">
+            <graphic>
+                <Label fx:id="rol" text="el rol xd" />
+            </graphic>
+        </Label>
+        <Separator prefWidth="200.0" />
+        <Button mnemonicParsing="false" onAction="#actualizar" text="Actualizar Datos" />
+    </VBox>
+    <Separator orientation="VERTICAL" prefHeight="400.0" />
+    <VBox alignment="CENTER" prefWidth="200.0" spacing="20.0">
+        <ImageView fx:id="imagen" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../imagenes/a.jpg" />
+         </image></ImageView>
+        <Button mnemonicParsing="false" onAction="#cambiarImagen" text="Cambiar" />
+    </VBox>
+</HBox>

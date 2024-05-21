@@ -4,7 +4,6 @@ package Controladores;
 import Enumerados.Pestanas;
 import BBDD.ConexionBBDD;
 import Modulo.Cartera;
-import Modulo.Rol;
 import Modulo.Usuario;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,6 +32,8 @@ import java.util.*;
 
 public class ControladorVP implements Initializable {
 
+    @FXML
+    private ImageView fotoPerfil ;
     @FXML
     private Tab tiendaTab;
     @FXML
@@ -64,14 +65,19 @@ public class ControladorVP implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         conexion = ConexionBBDD.conectar(conexion); // Abrir la conexion
+
     }
 
     public void setRol(Usuario usuario){
         this.usuario = usuario;
+
         this.cargar();
     }
 
     public void cargar() {
+
+        fotoPerfil.setImage(this.cargarImage(usuario.getFotoPerfil()));
+
         System.out.println(usuario.getRol().toString());
         productosTienda.clear();
         productosAlmacen.clear();
@@ -248,7 +254,7 @@ public class ControladorVP implements Initializable {
             texto.setPromptText("Cantidad...");
             texto.setMaxWidth(100);
 
-            texto.textProperty().addListener(new ChangeListener<String>() {
+            texto.textProperty().addListener(new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observable, String oldValue,
                                     String newValue) {
@@ -367,7 +373,7 @@ public class ControladorVP implements Initializable {
 
         ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.get(0)); //Obtener los ingredientes del producto
+        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
         for (ArrayList<Object> ingrediente : ingreCociona) {
             ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.get(0));
 
@@ -405,7 +411,7 @@ public class ControladorVP implements Initializable {
 
         Button boton1 = new Button();
         boton1.setText("Eliminar");
-        boton1.setOnAction(new EventHandler<ActionEvent>() {
+        boton1.setOnAction(new EventHandler<>() {
             @Override
             public void handle(ActionEvent event) {
                 eliminar(boton1.getId());
@@ -521,7 +527,6 @@ public class ControladorVP implements Initializable {
     public void comprarIngrediente(String nombre, String cantidad) {
         PreparedStatement ps1;
         PreparedStatement ps2;
-        ResultSet rs;
 
         String resultado = "";
 
@@ -529,7 +534,7 @@ public class ControladorVP implements Initializable {
             ps1 = conexion.prepareStatement("SELECT STOCK FROM INGREDIENTES WHERE NOMBRE = ?");
             ps1.setString(1, nombre);
 
-            rs = ps1.executeQuery();
+            ps1.executeQuery();
 
             ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK + ? WHERE NOMBRE = ?");
             ps2.setString(1, cantidad);
@@ -724,7 +729,7 @@ public class ControladorVP implements Initializable {
      *              TODO: aplicar un escalado de verdad.
      */
     public ImageView cargarImagen(String ruta) {
-        ImageView imagenVista = null;
+        ImageView imagenVista;
         Image imagen;
         try {
              imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
@@ -732,7 +737,6 @@ public class ControladorVP implements Initializable {
 
         } catch (NullPointerException n) {
              imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
-
         }
 
         imagenVista = new ImageView(imagen);
@@ -741,6 +745,19 @@ public class ControladorVP implements Initializable {
 
 
         return imagenVista;
+    }
+
+    public Image cargarImage(String ruta) {
+        Image imagen;
+        try {
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
+
+
+        } catch (NullPointerException n) {
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
+        }
+
+        return imagen;
     }
 
     /**
@@ -764,7 +781,29 @@ public class ControladorVP implements Initializable {
         AnchorPane.setRightAnchor(scrollCocina, 0.0);
     }
 
-    public void editarPerfil(ActionEvent actionEvent) {
+    @FXML
+    public void editarPerfil() {
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("editar.fxml"));
+
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            Stage stage = new Stage();
+            stage.setTitle("Editar Perfil");
+            stage.setMaxWidth(600);
+            stage.setMaxHeight(400);
+            stage.setMinWidth(600);
+            stage.setMinHeight(400);
+
+            ControladorEditar editar = fxmlLoader.getController();
+            editar.inicializar(usuario, cargarImage(usuario.getFotoPerfil()));
+
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException i){
+            System.out.println(":(");
+        }
+
     }
 
 }
