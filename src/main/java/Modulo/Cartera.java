@@ -24,7 +24,7 @@ public class Cartera {
 
         try{
             PreparedStatement st = conexion.prepareStatement("SELECT CARTERA FROM USUARIO WHERE USUARIO = ?");
-            st.setString(1, usuario.getUsuario());
+            st.setString(1, usuario.getNombre());
             ResultSet rs = st.executeQuery();
             while(rs.next()){
                 monedero = rs.getDouble("CARTERA");
@@ -51,9 +51,11 @@ public class Cartera {
 
         try{
             PreparedStatement st = conexion.prepareStatement("SELECT ROL FROM USUARIO WHERE USUARIO = ?");
-            st.setString(1, usuario.getUsuario());
+            st.setString(1, usuario.getNombre());
             ResultSet rs = st.executeQuery();
-            rol = Rol.valueOf(rs.getString("ROL"));
+            if(rs.next()){
+                rol = Rol.valueOf(rs.getString("ROL"));
+            }
             return rol;
 
         }
@@ -81,7 +83,7 @@ public class Cartera {
             try{
                 PreparedStatement st = conexion.prepareStatement("UPDATE USUARIO SET CARTERA = ? WHERE USUARIO = ? ");
                 st.setDouble(1, monedero);
-                st.setString(2, usuario.getUsuario());
+                st.setString(2, usuario.getNombre());
                 st.executeUpdate();
 
                 try{
@@ -114,7 +116,7 @@ public class Cartera {
     }
 
     public void compraStockIngredientes(Double precio, Usuario usuario, String cantidad){
-        if(usuario.getRol().equals(Rol.ALMACENERO) || getRol(usuario).equals(Rol.ALMACENERO)){
+        if(usuario.getRol().equals(Rol.ALMACENERO) || getRol(usuario).equals(Rol.ADMINISTRADOR)){
             Double cant = Double.parseDouble(cantidad);
             monedero = getMonedero(usuario) - precio * cant;
             Connection conexion = null;
@@ -123,7 +125,7 @@ public class Cartera {
             try{
                 PreparedStatement st = conexion.prepareStatement("UPDATE USUARIO SET CARTERA = ? WHERE USUARIO = ? ");
                 st.setDouble(1, monedero);
-                st.setString(2, usuario.getUsuario());
+                st.setString(2, usuario.getNombre());
                 st.executeUpdate();
                 System.out.println("Stock comprado");
 

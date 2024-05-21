@@ -4,7 +4,6 @@ package Controladores;
 import Enumerados.Pestanas;
 import BBDD.ConexionBBDD;
 import Modulo.Cartera;
-import Modulo.Rol;
 import Modulo.Usuario;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -34,6 +33,8 @@ import java.util.*;
 public class ControladorVP implements Initializable {
 
     @FXML
+    private ImageView fotoPerfil ;
+    @FXML
     private Tab tiendaTab;
     @FXML
     private Tab almacenTab;
@@ -59,20 +60,25 @@ public class ControladorVP implements Initializable {
 
     private Connection conexion; // La misma conexion se usa en tod0 el controlador para optimizar las cargas
 
-    private Rol rol;
+    private Usuario usuario;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         conexion = ConexionBBDD.conectar(conexion); // Abrir la conexion
+
     }
 
-    public void setRol(Rol rol){
-        this.rol = rol;
+    public void setRol(Usuario usuario){
+        this.usuario = usuario;
+
         this.cargar();
     }
 
     public void cargar() {
-        System.out.println(rol.toString());
+
+        fotoPerfil.setImage(this.cargarImage(usuario.getFotoPerfil()));
+
+        System.out.println(usuario.getRol().toString());
         productosTienda.clear();
         productosAlmacen.clear();
         productosCocina.clear();
@@ -80,7 +86,7 @@ public class ControladorVP implements Initializable {
         ArrayList<ArrayList<Object>> productos;
         ArrayList<ArrayList<Object>> ingredientes;
 
-        switch (rol){
+        switch (usuario.getRol()){
             case CLIENTE:
                 this.tiendaTab.setDisable(false);
 
@@ -248,7 +254,7 @@ public class ControladorVP implements Initializable {
             texto.setPromptText("Cantidad...");
             texto.setMaxWidth(100);
 
-            texto.textProperty().addListener(new ChangeListener<String>() {
+            texto.textProperty().addListener(new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observable, String oldValue,
                                     String newValue) {
@@ -367,7 +373,7 @@ public class ControladorVP implements Initializable {
 
         ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.get(0)); //Obtener los ingredientes del producto
+        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
         for (ArrayList<Object> ingrediente : ingreCociona) {
             ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.get(0));
 
@@ -405,7 +411,7 @@ public class ControladorVP implements Initializable {
 
         Button boton1 = new Button();
         boton1.setText("Eliminar");
-        boton1.setOnAction(new EventHandler<ActionEvent>() {
+        boton1.setOnAction(new EventHandler<>() {
             @Override
             public void handle(ActionEvent event) {
                 eliminar(boton1.getId());
@@ -521,7 +527,6 @@ public class ControladorVP implements Initializable {
     public void comprarIngrediente(String nombre, String cantidad) {
         PreparedStatement ps1;
         PreparedStatement ps2;
-        ResultSet rs;
 
         String resultado = "";
 
@@ -529,7 +534,7 @@ public class ControladorVP implements Initializable {
             ps1 = conexion.prepareStatement("SELECT STOCK FROM INGREDIENTES WHERE NOMBRE = ?");
             ps1.setString(1, nombre);
 
-            rs = ps1.executeQuery();
+            ps1.executeQuery();
 
             ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK + ? WHERE NOMBRE = ?");
             ps2.setString(1, cantidad);
@@ -569,7 +574,44 @@ public class ControladorVP implements Initializable {
      * @param nombre: el nombre del producto
      */
     public void cocinar(String nombre) {
-        System.out.println("cocinar" + nombre);
+        try{
+            PreparedStatement ps = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            Integer idProducto = null;
+            if(rs.next()){
+                idProducto = rs.getInt("ID");
+            }
+
+            PreparedStatement ps1 = conexion.prepareStatement("SELECT ING_ID, CANTIDAD FROM NECESITA WHERE PR_ID = ?");
+            ps1.setInt(1, idProducto);
+            HashMap<Integer, Integer> ingredientes = new HashMap<>();
+            ResultSet rs1 = ps1.executeQuery();
+            while(rs1.next()){
+                ingredientes.put(rs1.getInt("ING_ID"), rs1.getInt("CANTIDAD"));
+            }
+
+            for (Map.Entry<Integer, Integer> entry : ingredientes.entrySet()) {
+                PreparedStatement ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK - ? WHERE ID = ?");
+                ps2.setInt(1, entry.getValue());
+                ps2.setInt(2, entry.getKey());
+                ps2.executeUpdate();
+            }
+            PreparedStatement ps3 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK + 1 WHERE ID = ?");
+            ps3.setInt(1, idProducto);
+            ps3.executeUpdate();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("La receta de " + nombre + " se ha cocinado correctamente");
+            alert.showAndWait();
+            this.cargar();
+
+        }
+        catch(SQLException e){
+            throw new IllegalStateException("No se ha podido cocinar la receta");
+        }
+
+
     }
 
 
@@ -579,6 +621,12 @@ public class ControladorVP implements Initializable {
     * */
     public void eliminar(String nombre){
         try{
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmación");
+        alert.setContentText("¿Seguro que quiere eliminar esta receta?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if(result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()){
             PreparedStatement st = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
             st.setString(1, nombre);
             ResultSet rs = st.executeQuery();
@@ -595,11 +643,14 @@ public class ControladorVP implements Initializable {
             st3.setString(1, idProducto);
             st3.executeUpdate();
 
+            Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+            alert1.setTitle("Mensaje");
+            alert1.setContentText("Receta eliminada correctamente");
+            alert1.showAndWait();
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Receta eliminada correctamente");
-            alert.showAndWait();
             cargar();
+        }
+
         }
         catch(SQLException e){
             throw new IllegalStateException("No se ha podido eliminar la receta");
@@ -640,6 +691,35 @@ public class ControladorVP implements Initializable {
             System.out.println("ERROR");
         }
     }
+    @FXML
+    public void logout(){
+        System.out.println("s");
+        try{
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+            alerta.setTitle("Confirmacion");
+            alerta.setContentText("¿Seguro que quieres cerrar sesion?");
+            Optional<ButtonType> result = alerta.showAndWait();
+
+
+            if (result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()) {
+                Stage stageActual = (Stage) scrollTienda.getScene().getWindow();
+
+                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Login.fxml"));
+                Scene scene = new Scene(fxmlLoader.load(), 400, 400);
+                Stage stage = new Stage();
+                stage.setTitle("Login");
+                stage.setScene(scene);
+                stage.show();
+
+                stageActual.close();
+            }
+        }
+        catch (IOException a){
+            System.out.println("Tan inutil soy que ni autodestruirme puedo");
+        }
+
+
+    }
 
     /**
      * Usado por los metodos que cargan las pestañas, crea las
@@ -649,7 +729,7 @@ public class ControladorVP implements Initializable {
      *              TODO: aplicar un escalado de verdad.
      */
     public ImageView cargarImagen(String ruta) {
-        ImageView imagenVista = null;
+        ImageView imagenVista;
         Image imagen;
         try {
              imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
@@ -657,7 +737,6 @@ public class ControladorVP implements Initializable {
 
         } catch (NullPointerException n) {
              imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
-
         }
 
         imagenVista = new ImageView(imagen);
@@ -666,6 +745,19 @@ public class ControladorVP implements Initializable {
 
 
         return imagenVista;
+    }
+
+    public Image cargarImage(String ruta) {
+        Image imagen;
+        try {
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
+
+
+        } catch (NullPointerException n) {
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
+        }
+
+        return imagen;
     }
 
     /**
@@ -688,4 +780,30 @@ public class ControladorVP implements Initializable {
         AnchorPane.setLeftAnchor(scrollCocina, 0.0);
         AnchorPane.setRightAnchor(scrollCocina, 0.0);
     }
+
+    @FXML
+    public void editarPerfil() {
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("editar.fxml"));
+
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            Stage stage = new Stage();
+            stage.setTitle("Editar Perfil");
+            stage.setMaxWidth(600);
+            stage.setMaxHeight(400);
+            stage.setMinWidth(600);
+            stage.setMinHeight(400);
+
+            ControladorEditar editar = fxmlLoader.getController();
+            editar.inicializar(usuario, cargarImage(usuario.getFotoPerfil()));
+
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException i){
+            System.out.println(":(");
+        }
+
+    }
+
 }
