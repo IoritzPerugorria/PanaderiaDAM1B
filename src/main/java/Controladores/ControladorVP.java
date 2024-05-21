@@ -315,7 +315,11 @@ public class ControladorVP implements Initializable {
                             editar(boton.getId());
                             break;
                         case ALMACENINGREDIENTES:
-                            comprarIngrediente(boton.getId());
+                            if (texto.getText().isBlank()) {
+                                comprarIngrediente(boton.getId(), "1");
+                            } else {
+                                comprarIngrediente(boton.getId(), texto.getText());
+                            }
                             break;
                         case COCINA:
                             cocinar(boton.getId());
@@ -514,7 +518,48 @@ public class ControladorVP implements Initializable {
      *
      * @param nombre: el nombre del ingrediente
      */
-    public void comprarIngrediente(String nombre) {
+    public void comprarIngrediente(String nombre, String cantidad) {
+        PreparedStatement ps1;
+        PreparedStatement ps2;
+        ResultSet rs;
+
+        String resultado = "";
+
+        try {
+            ps1 = conexion.prepareStatement("SELECT STOCK FROM INGREDIENTES WHERE NOMBRE = ?");
+            ps1.setString(1, nombre);
+
+            rs = ps1.executeQuery();
+
+            ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK + ? WHERE NOMBRE = ?");
+            ps2.setString(1, cantidad);
+            ps2.setString(2, nombre);
+            resultado = "Compra finalizada Satisfactoriamente";
+            ps2.executeUpdate();
+
+
+            PreparedStatement ps3 = conexion.prepareStatement("SELECT PRECIO FROM INGREDIENTES WHERE NOMBRE = ?");
+            ps3.setString(1, nombre);
+            ResultSet rs1 = ps3.executeQuery();
+
+            Double precio = null;
+            while(rs1.next()){
+                precio = rs1.getDouble("PRECIO");
+            }
+
+            Usuario usuario1 = ControladorLogin.getUsuario();
+            Cartera cartera = new Cartera();
+            cartera.compraStockIngredientes(precio, usuario1, cantidad);
+        }
+        catch (SQLException e) {
+        resultado = "ERROR AL COMPRAR STOCK";
+        } finally {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle(resultado);
+        alerta.setContentText(resultado);
+        alerta.showAndWait();
+        this.cargar();
+        }
 
     }
 
