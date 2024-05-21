@@ -569,7 +569,44 @@ public class ControladorVP implements Initializable {
      * @param nombre: el nombre del producto
      */
     public void cocinar(String nombre) {
-        System.out.println("cocinar" + nombre);
+        try{
+            PreparedStatement ps = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            Integer idProducto = null;
+            if(rs.next()){
+                idProducto = rs.getInt("ID");
+            }
+
+            PreparedStatement ps1 = conexion.prepareStatement("SELECT ING_ID, CANTIDAD FROM NECESITA WHERE PR_ID = ?");
+            ps1.setInt(1, idProducto);
+            HashMap<Integer, Integer> ingredientes = new HashMap<>();
+            ResultSet rs1 = ps1.executeQuery();
+            while(rs1.next()){
+                ingredientes.put(rs1.getInt("ING_ID"), rs1.getInt("CANTIDAD"));
+            }
+
+            for (Map.Entry<Integer, Integer> entry : ingredientes.entrySet()) {
+                PreparedStatement ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK - ? WHERE ID = ?");
+                ps2.setInt(1, entry.getValue());
+                ps2.setInt(2, entry.getKey());
+                ps2.executeUpdate();
+            }
+            PreparedStatement ps3 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK + 1 WHERE ID = ?");
+            ps3.setInt(1, idProducto);
+            ps3.executeUpdate();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setContentText("La receta de " + nombre + " se ha cocinado correctamente");
+            alert.showAndWait();
+            this.cargar();
+
+        }
+        catch(SQLException e){
+            throw new IllegalStateException("No se ha podido cocinar la receta");
+        }
+
+
     }
 
 
