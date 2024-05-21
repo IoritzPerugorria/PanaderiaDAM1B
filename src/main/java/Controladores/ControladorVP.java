@@ -579,6 +579,12 @@ public class ControladorVP implements Initializable {
     * */
     public void eliminar(String nombre){
         try{
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmación");
+        alert.setContentText("¿Seguro que quiere eliminar esta receta?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if(result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()){
             PreparedStatement st = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
             st.setString(1, nombre);
             ResultSet rs = st.executeQuery();
@@ -595,11 +601,14 @@ public class ControladorVP implements Initializable {
             st3.setString(1, idProducto);
             st3.executeUpdate();
 
+            Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+            alert1.setTitle("Mensaje");
+            alert1.setContentText("Receta eliminada correctamente");
+            alert1.showAndWait();
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Receta eliminada correctamente");
-            alert.showAndWait();
             cargar();
+        }
+
         }
         catch(SQLException e){
             throw new IllegalStateException("No se ha podido eliminar la receta");
