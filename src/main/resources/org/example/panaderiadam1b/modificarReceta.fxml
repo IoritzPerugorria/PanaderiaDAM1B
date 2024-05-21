@@ -5,29 +5,32 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorModificarReceta">
+<AnchorPane prefHeight="551.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorModificarReceta">
    <children>
       <Text layoutX="-1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modificar Receta" textAlignment="CENTER" wrappingWidth="499.0" y="20.0" AnchorPane.leftAnchor="-1.0" AnchorPane.topAnchor="20.0">
          <font>
             <Font size="20.0" />
          </font></Text>
-      <Button layoutX="316.0" layoutY="273.0" mnemonicParsing="false" onAction="#modificarReceta" prefHeight="25.0" prefWidth="85.0" text="Modificar" />
-      <HBox layoutX="20.0" layoutY="60.0" prefHeight="197.0" prefWidth="457.0">
-         <ListView fx:id="listaRecetas" prefHeight="197.0" prefWidth="232.0">
+      <Button layoutX="288.0" layoutY="306.0" mnemonicParsing="false" onAction="#modificarReceta" prefHeight="25.0" prefWidth="85.0" text="Modificar" />
+      <HBox layoutX="20.0" layoutY="60.0" prefHeight="232.0" prefWidth="618.0">
+         <ListView fx:id="listaRecetas" maxWidth="-Infinity" prefHeight="344.0" prefWidth="232.0">
             <opaqueInsets>
-               <Insets/>
+               <Insets />
             </opaqueInsets>
          </ListView>
-         <VBox prefHeight="197.0" prefWidth="223.0">
-            <Label text="Nombre:"/>
-            <TextField fx:id="nombreReceta"/>
-            <Label layoutX="10.0" layoutY="10.0" text="Precio"/>
-            <TextField fx:id="precioReceta" layoutX="10.0" layoutY="27.0"/>
-            <Label layoutX="10.0" layoutY="52.0" text="Ingredientes:"/>
-            <ScrollPane prefHeight="200.0" prefWidth="200.0">
-               <VBox fx:id="ingredientesRecetas" prefHeight="93.0" prefWidth="217.0"/>
-            </ScrollPane>
+         <VBox prefHeight="324.0" prefWidth="223.0">
+            <Label text="Nombre:" />
+            <TextField fx:id="nombreReceta" />
+            <Label layoutX="10.0" layoutY="10.0" text="Precio" />
+            <TextField fx:id="precioReceta" layoutX="10.0" layoutY="27.0" />
+            <Label layoutX="10.0" layoutY="52.0" text="Ingredientes:" />
+            <TextField fx:id="cantidadIngrediente" layoutX="10.0" layoutY="69.0" />
          </VBox>
+         <ListView fx:id="listaIngredientes" layoutX="10.0" layoutY="10.0" maxWidth="-Infinity" prefHeight="344.0" prefWidth="232.0">
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+         </ListView>
       </HBox>
    </children>
 </AnchorPane>
