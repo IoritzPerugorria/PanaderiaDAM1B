@@ -53,7 +53,9 @@ public class Cartera {
             PreparedStatement st = conexion.prepareStatement("SELECT ROL FROM USUARIO WHERE USUARIO = ?");
             st.setString(1, usuario.getUsuario());
             ResultSet rs = st.executeQuery();
-            rol = Rol.valueOf(rs.getString("ROL"));
+            if(rs.next()){
+                rol = Rol.valueOf(rs.getString("ROL"));
+            }
             return rol;
 
         }
@@ -114,7 +116,7 @@ public class Cartera {
     }
 
     public void compraStockIngredientes(Double precio, Usuario usuario, String cantidad){
-        if(usuario.getRol().equals(Rol.ALMACENERO) || getRol(usuario).equals(Rol.ALMACENERO)){
+        if(usuario.getRol().equals(Rol.ALMACENERO) || getRol(usuario).equals(Rol.ADMINISTRADOR)){
             Double cant = Double.parseDouble(cantidad);
             monedero = getMonedero(usuario) - precio * cant;
             Connection conexion = null;
