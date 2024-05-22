@@ -285,7 +285,7 @@ public class ControladorVP implements Initializable {
                     boton.setText("Comprar");
                     break;
                 case ALMACENPRODUCTOS:
-                    boton.setText("Editar");
+                    boton.setVisible(false);
                     break;
                 case ALMACENINGREDIENTES:
                     boton.setText("Comprar Ingrediente");
@@ -373,7 +373,7 @@ public class ControladorVP implements Initializable {
 
         ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
+        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.get(0)); //Obtener los ingredientes del producto
         for (ArrayList<Object> ingrediente : ingreCociona) {
             ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.get(0));
 
