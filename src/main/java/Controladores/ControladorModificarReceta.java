@@ -45,8 +45,8 @@ public class ControladorModificarReceta implements Initializable {
         //PARA MOSTRAR LAS RECETAS DE LA BASE DE DATOS
         try {
             conexion = ConexionBBDD.conectar ( conexion );
-            this.rellenarListaRecetas ( );
-            this.rellenarListaIngredientes ( );
+            this.rellenarListaRecetas ();
+
 
 
             //PARA DETECTAR Y RESPONDER EN BASE A LOS OBJETOS SELECCIONADOS
@@ -67,11 +67,14 @@ public class ControladorModificarReceta implements Initializable {
                         resultadoDatos.next ( );
                         nombreReceta.setText ( resultadoDatos.getString ( "NOMBRE" ) );
                         precioReceta.setText ( resultadoDatos.getString ( "PRECIO" ) );
-                    } catch (SQLException e) {
+                        this.rellenarListaIngredientes();
+                    }
+                    catch (SQLException e) {
                         throw new RuntimeException ( e );
                     }
                 }
-            } );
+            }
+            );
 
             listaIngredientes.setOnMouseClicked ( event -> {
                 Object ingredienteSeleccionado = listaIngredientes.getSelectionModel ( ).getSelectedItem ( );
@@ -108,22 +111,25 @@ public class ControladorModificarReceta implements Initializable {
     }
 
     private void rellenarListaIngredientes() throws SQLException {
+        listaIngredientes.getItems().removeAll(listaIngredientes.getItems());
         PreparedStatement aux1 = conexion.prepareStatement ( "SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
-        aux1.setString (1, nombreReceta.getText ());
-        ResultSet IDproducto = aux1.executeQuery ();
+        aux1.setString (1, nombreReceta.getText());
+        ResultSet resultadoIngredientes = aux1.executeQuery();
+        resultadoIngredientes.next();
+        int IDproducto = resultadoIngredientes.getInt(1);
 
 
 
-        PreparedStatement recogidaNombresIngredientes = conexion.prepareStatement("SELECT ING_ID,CANTIDAD FROM NECESITA WHERE PR_ID = ?");
-        //recogidaNombresIngredientes.setInt ( 1, IDproducto );
+        PreparedStatement recogidaNombresIngredientes = conexion.prepareStatement("SELECT I.NOMBRE,N.ING_ID,N.CANTIDAD FROM NECESITA AS N INNER JOIN INGREDIENTES AS I ON I.ID = N.ING_ID WHERE N.PR_ID = ?");
+        recogidaNombresIngredientes.setInt ( 1, IDproducto );
 
         ResultSet resultadoNombresIngredientes = recogidaNombresIngredientes.executeQuery();
         ArrayList<String> listaNombresIngredientes = new ArrayList<>();
         while (resultadoNombresIngredientes.next()){
             listaNombresIngredientes.add(resultadoNombresIngredientes.getString("I.NOMBRE"));
         }
-        for (int i = 0; i < listaNombresIngredientes.size(); i++) {
-            listaIngredientes.getItems().add(listaNombresIngredientes.get(i));
+        for (String listaNombresIngrediente : listaNombresIngredientes) {
+            listaIngredientes.getItems().add(listaNombresIngrediente);
         }
     }
 
