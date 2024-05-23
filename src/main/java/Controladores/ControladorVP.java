@@ -231,7 +231,8 @@ public class ControladorVP implements Initializable {
      */
     public void anadirProductosOIngredientes(ArrayList<Object> producto, Pestanas pestana) {
 
-        if (Integer.parseInt((String) producto.get(3)) != 0) {
+            if(!(pestana == Pestanas.TIENDA) || (Integer.parseInt((String) producto.get(3)) != 0)){
+
             ImageView imagenVista = this.cargarImagen((String) producto.get(4)); // Cargar imagen
 
             Label nombre = new Label((String) producto.get(1)); // Cargar nombre
@@ -268,6 +269,14 @@ public class ControladorVP implements Initializable {
             contenedor.setAlignment(Pos.CENTER);
 
             contenedor.setSpacing(60); //TODO ajustar dinamicamente el espaciado
+
+            if((pestana == Pestanas.ALMACENINGREDIENTES) && (Integer.parseInt((String) producto.get(3)) <= 5 && (Integer.parseInt((String) producto.get(3)) > 0))){
+                contenedor.setStyle("-fx-background-color: khaki;");
+            }
+            else if((pestana == Pestanas.ALMACENINGREDIENTES) && (Integer.parseInt((String) producto.get(3)) == 0)){
+                contenedor.setStyle("-fx-background-color: burlywood;");
+            }
+
 
 
             // Anadir los items al HBOX
@@ -349,7 +358,7 @@ public class ControladorVP implements Initializable {
                     productosAlmacen.add(contenedor);
                     break;
             }
-        }
+            }
     }
 
 
