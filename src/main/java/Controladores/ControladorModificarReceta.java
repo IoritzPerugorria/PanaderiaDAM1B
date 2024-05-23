@@ -32,7 +32,7 @@ public class ControladorModificarReceta implements Initializable {
     private VBox ingredientesRecetas;
     private ArrayList<HBox>ingredientes;
     Connection conexion;
-    String nombre
+    String nombre;
 
 
 

@@ -44,7 +44,15 @@
             </graphic>
         </Label>
         <Separator prefWidth="200.0" />
-        <Button mnemonicParsing="false" onAction="#actualizar" text="Actualizar Datos" />
+      <HBox alignment="CENTER" spacing="100.0">
+         <children>
+              <Button mnemonicParsing="false" onAction="#actualizar" text="Actualizar Datos" />
+            <Label fx:id="mensaje" text="Label" />
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
     </VBox>
     <Separator orientation="VERTICAL" prefHeight="400.0" />
     <VBox alignment="CENTER" prefWidth="200.0" spacing="20.0">
