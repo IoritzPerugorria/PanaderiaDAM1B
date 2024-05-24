@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 
 import static BBDD.ConexionBBDD.conectar;
 
@@ -91,7 +92,9 @@ public class AnadirNuevoController {
         if(archivo != null){
             imagen = archivo.getName();
             Path testFile = Path.of(archivo.getPath());
-            testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\\resources\\imagenes\\" + imagen));
+            File dest = new File(System.getProperty("user.dir") + "\\src\\main\\resources\\imagenes\\" + imagen);
+            Path pathdest = Path.of(dest.getPath());
+            testFile = Files.copy(testFile, pathdest);
         }
     }
 
