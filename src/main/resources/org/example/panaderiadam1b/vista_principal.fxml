@@ -25,7 +25,7 @@
          <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
             <children>
                   <ImageView fx:id="fotoPerfil" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-               <Label fx:id="rol" text="Label" />
+               <Label fx:id="rol" />
             </children>
          </VBox>
         </HBox>

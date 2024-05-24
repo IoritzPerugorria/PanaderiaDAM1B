@@ -48,6 +48,7 @@ public class ControladorEditar {
     private Connection conexion;
 
     public void inicializar(Usuario usuario){
+        this.mensaje.setText("");
         this.conexion = ConexionBBDD.conectar(conexion);
         this.usuario = usuario;
         this.nombre.setText(usuario.getNombre());
@@ -96,19 +97,13 @@ public class ControladorEditar {
             File archivo = cargador.showOpenDialog(node.getScene().getWindow()); //Abrir una ventana para escojer archivo
 
 
-            if (archivo != null) {
-                String rutaCompilada = getClass().getResource("/imagenes/").toString();
-                String ruta = getClass().getResource("/imagenes/").toString();
-
-                rutaCompilada = ruta.substring(6);
-                ruta = ruta.substring(6, 53);
-
-                ruta = ruta + "/src/main/resources/imagenes/";
+            if(archivo != null){
                 String imagen = archivo.getName();
                 Path testFile = Path.of(archivo.getPath());
-                testFile = Files.copy(testFile, Paths.get(ruta + imagen));
-                testFile = Files.copy(testFile, Paths.get(rutaCompilada + imagen));
-                System.out.println("yata");
+                File dest = new File(System.getProperty("user.dir") + "\\src\\main\\resources\\imagenes\\" + imagen);
+                Path pathdest = Path.of(dest.getPath());
+                testFile = Files.copy(testFile, pathdest);
+                this.actualizarImagen(imagen);
             }
         }
         catch (FileAlreadyExistsException i){
@@ -118,6 +113,19 @@ public class ControladorEditar {
             System.out.println("error");
         }
 
+    }
+
+    public void actualizarImagen(String nombre){
+        try{
+            PreparedStatement ps = conexion.prepareStatement("UPDATE USUARIO SET IMAGEN = ? WHERE USUARIO = ?");
+            ps.setString(1, nombre);
+            ps.setString(2, usuario.getNombre());
+            ps.executeUpdate();
+            usuario.setFotoPerfil(nombre);
+        }
+        catch (SQLException a){
+
+        }
     }
 
     public void actualizar() {

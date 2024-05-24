@@ -69,4 +69,8 @@ public class Usuario {
     public void setNombre(String text) {
         this.usuario = text;
     }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }
 }
