@@ -5,17 +5,17 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorLogin">
-   <VBox alignment="TOP_CENTER" layoutX="51.0" layoutY="14.0">
+<AnchorPane prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: whitesmoke;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorLogin">
+   <VBox alignment="TOP_CENTER" layoutX="51.0" layoutY="22.0" prefHeight="74.0" prefWidth="305.0">
       <children>
-         <Text cache="true" fill="#ffcc00" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="3.0" text="PANADERÍA" textAlignment="CENTER" wrappingWidth="185.0">
+         <Text cache="true" fill="#f0ba56" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.0" text="PANADERÍA" textAlignment="CENTER" wrappingWidth="185.0">
             <font>
-               <Font size="28.0" />
+               <Font size="32.0" />
             </font>
          </Text>
-         <Text cache="true" fill="#ffcc00" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="3.0" text="LA GRAN ARTESANA" textAlignment="CENTER" wrappingWidth="296.0">
+         <Text cache="true" fill="#f0ba56" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.0" text="LA GRAN ARTESANA" textAlignment="CENTER" wrappingWidth="296.0">
             <font>
-               <Font size="28.0" />
+               <Font size="32.0" />
             </font>
          </Text>
       </children>
