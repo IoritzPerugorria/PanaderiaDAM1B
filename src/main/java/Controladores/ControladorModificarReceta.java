@@ -32,6 +32,7 @@ public class ControladorModificarReceta implements Initializable {
         nombreReceta = new TextField();
         precioReceta = new TextField();
         txtfldCantidadIngrediente = new TextField();
+
     }
 
 
@@ -41,6 +42,9 @@ public class ControladorModificarReceta implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //PRIMERO DESHABILITAREMOS LOS NODOS HASTA QUE NO SE SELECCIONE UNA RECETA
+        this.deshabilitarNodosEscritura();
+
         //PARA MOSTRAR LAS RECETAS DE LA BASE DE DATOS
         try {
             conexion = ConexionBBDD.conectar ( conexion );
@@ -57,7 +61,16 @@ public class ControladorModificarReceta implements Initializable {
                 if ( recetaSeleccionada != null ) {
                     // Asumiendo que el Item seleccionado es del tipo String
                     String valorRecetaSeleccionada = (String) recetaSeleccionada;
-                    txtfldCantidadIngrediente.setText("");
+
+
+                    /**
+                    AL SELECCIONAR UNA RECETA, HABILITAREMOS LOS NODOS "nombreReceta" Y "precioReceta",
+                    PERO DESACTIVAREMOS POR EN ESE MOMENTO EL NODO "txtfldCantidadIngrediente",
+                    PORQUE EN DICHA RECETA TODAVIA NO SE HA SELECCIONADO NINGUN INGREDIENTE
+                     **/
+                    this.habilitarNodosEscrituraNombrePrecio();
+                    this.deshabilitarNodoEscrituraIngredientes();
+
 
                     // Buscar dicho ingrediente:
                     try {
@@ -81,6 +94,8 @@ public class ControladorModificarReceta implements Initializable {
 
                 if ( ingredienteSeleccionado != null ) {
                     String valorIngredienteSeleccionado = (String) ingredienteSeleccionado;
+                    /** EL NODO "txtfldCantidadIngrediente" UNICAMENTE SE HABILITARÁ CUANDO SE HAYA SELECCIONADO UN INGREDIENTE **/
+                    this.habilitarNodoEscrituraIngredientes();
 
                     try {
                         PreparedStatement ordenIdentificarIngrediente = conexion.prepareStatement("SELECT ID FROM INGREDIENTES WHERE NOMBRE = ?");
@@ -144,6 +159,27 @@ public class ControladorModificarReceta implements Initializable {
         for (String listaNombresIngrediente : listaNombresIngredientes) {
             listaIngredientes.getItems().add(listaNombresIngrediente);
         }
+    }
+
+    // METODOS RELACIONADOS CON LA ACCESIBILIDAD DE NODOS
+    private void deshabilitarNodosEscritura(){
+        nombreReceta.setDisable(true);
+        precioReceta.setDisable(true);
+        txtfldCantidadIngrediente.setDisable(true);
+    }
+
+    private void habilitarNodosEscrituraNombrePrecio(){
+        nombreReceta.setDisable(false);
+        precioReceta.setDisable(false);
+    }
+
+    private void deshabilitarNodoEscrituraIngredientes(){
+        txtfldCantidadIngrediente.setDisable(true);
+        txtfldCantidadIngrediente.setText("");
+    }
+
+    private void habilitarNodoEscrituraIngredientes(){
+        txtfldCantidadIngrediente.setDisable(false);
     }
 
 
