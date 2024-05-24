@@ -24,7 +24,7 @@
             <Label layoutX="10.0" layoutY="10.0" text="Precio" />
             <TextField fx:id="precioReceta" layoutX="10.0" layoutY="27.0" />
             <Label layoutX="10.0" layoutY="52.0" text="Ingredientes:" />
-            <TextField fx:id="cantidadIngrediente" layoutX="10.0" layoutY="69.0" />
+            <TextField fx:id="txtfldCantidadIngrediente" layoutX="10.0" layoutY="69.0" />
          </VBox>
          <ListView fx:id="listaIngredientes" layoutX="10.0" layoutY="10.0" maxWidth="-Infinity" prefHeight="344.0" prefWidth="232.0">
             <opaqueInsets>
