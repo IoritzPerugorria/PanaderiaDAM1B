@@ -5,8 +5,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.AnadirRecetaView">
+<AnchorPane prefHeight="400.0" prefWidth="607.0" style="-fx-background-color: whitesmoke;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.AnadirRecetaView">
    <children>
+      <Text cache="true" fill="#f0ba56" layoutX="158.0" layoutY="36.8984375" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="1.5" text="Añadir nueva receta" textAlignment="CENTER" wrappingWidth="296.0" AnchorPane.leftAnchor="158.0" AnchorPane.rightAnchor="153.0" AnchorPane.topAnchor="11.0">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Text>
+      <Separator layoutX="25.0" layoutY="46.0" prefHeight="20.0" prefWidth="549.0" />
       <VBox layoutX="27.0" layoutY="62.0" prefHeight="314.0" prefWidth="219.0">
          <children>
             <Label text="Nombre:">
@@ -41,11 +47,7 @@
                </VBox.margin>
             </ListView>
          </children></VBox>
-      <Label layoutX="220.0" layoutY="23.0" prefHeight="27.0" prefWidth="161.0" text="Añadir nueva receta" textAlignment="CENTER">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
+
       <VBox layoutX="246.0" layoutY="351.0" prefHeight="49.0" prefWidth="120.0">
          <children>
             <Button mnemonicParsing="false" onAction="#insertarReceta" prefHeight="25.0" prefWidth="113.0" text="Añadir receta">
