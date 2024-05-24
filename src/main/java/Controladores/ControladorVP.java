@@ -1,6 +1,5 @@
 package Controladores;
 
-
 import Enumerados.Pestanas;
 import BBDD.ConexionBBDD;
 import Modulo.Cartera;
@@ -40,6 +39,8 @@ public class ControladorVP implements Initializable {
     private Tab almacenTab;
     @FXML
     private Tab cocinaTab;
+    @FXML
+    private Label rol;
 
     @FXML
     private VBox Tienda = new VBox(); //Contendero vertical de la Tienda
@@ -75,7 +76,7 @@ public class ControladorVP implements Initializable {
     }
 
     public void cargar() {
-
+        rol.setText(usuario.getRol().toString());
         fotoPerfil.setImage(this.cargarImage(usuario.getFotoPerfil()));
 
         System.out.println(usuario.getRol().toString());
@@ -799,12 +800,12 @@ public class ControladorVP implements Initializable {
             Stage stage = new Stage();
             stage.setTitle("Editar Perfil");
             stage.setMaxWidth(600);
-            stage.setMaxHeight(400);
+            stage.setMaxHeight(500);
             stage.setMinWidth(600);
-            stage.setMinHeight(400);
+            stage.setMinHeight(500);
 
             ControladorEditar editar = fxmlLoader.getController();
-            editar.inicializar(usuario, cargarImage(usuario.getFotoPerfil()));
+            editar.inicializar(usuario);
 
             stage.setScene(scene);
             stage.show();

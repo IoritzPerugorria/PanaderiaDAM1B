@@ -65,4 +65,8 @@ public class Usuario {
 
 
     }
+
+    public void setNombre(String text) {
+        this.usuario = text;
+    }
 }
