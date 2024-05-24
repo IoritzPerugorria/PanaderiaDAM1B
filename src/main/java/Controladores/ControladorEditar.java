@@ -2,13 +2,23 @@ package Controladores;
 
 import BBDD.ConexionBBDD;
 import Modulo.Usuario;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,22 +37,15 @@ public class ControladorEditar {
     @FXML
     private Label rol;
     @FXML
-    private ImageView imagenPerfil;
-    @FXML
     private Label mensaje;
+    @FXML
+    private VBox contenedorImagen;
+
+    private ImageView foto;
 
     private Usuario usuario;
 
     private Connection conexion;
-
-    public void inicializar(Usuario usuario, Image laImagen){
-        this.conexion = ConexionBBDD.conectar(conexion);
-        this.usuario = usuario;
-        this.nombre.setText(usuario.getNombre());
-        this.rol.setText(usuario.getRol().toString());
-
-        this.imagenPerfil = new ImageView(laImagen);
-    }
 
     public void inicializar(Usuario usuario){
         this.conexion = ConexionBBDD.conectar(conexion);
@@ -58,13 +61,63 @@ public class ControladorEditar {
             imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
         }
 
-        imagenPerfil = new ImageView(imagen);
-        System.out.println(imagenPerfil.getImage());
+
+         foto = new ImageView(imagen);
+        foto.setFitHeight(100); // Ajustar altura
+        foto.setFitWidth(100); // Ajustar anchura
+        contenedorImagen.getChildren().add(foto);
+
+        Button botonFoto = new Button();
+        botonFoto.setText("Editar Foto");
+
+        botonFoto.setOnAction(new EventHandler<>() {
+            @Override
+            public void handle(ActionEvent event) {
+                cambiarImagen(event);
+            }
+        });
+
+        contenedorImagen.getChildren().add(botonFoto);
+
+
     }
 
     @FXML
-    public void cambiarImagen() {
-        System.out.println("bleh");
+    public void cambiarImagen(ActionEvent event){
+
+        try {
+            FileChooser cargador = new FileChooser();
+
+            cargador.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Imagenes", "*.png", "*.jpg") //Solo poder elejir archivos de imagenes.
+            );
+
+            Node node = (Node) event.getSource();
+            File archivo = cargador.showOpenDialog(node.getScene().getWindow()); //Abrir una ventana para escojer archivo
+
+
+            if (archivo != null) {
+                String rutaCompilada = getClass().getResource("/imagenes/").toString();
+                String ruta = getClass().getResource("/imagenes/").toString();
+
+                rutaCompilada = ruta.substring(6);
+                ruta = ruta.substring(6, 53);
+
+                ruta = ruta + "/src/main/resources/imagenes/";
+                String imagen = archivo.getName();
+                Path testFile = Path.of(archivo.getPath());
+                testFile = Files.copy(testFile, Paths.get(ruta + imagen));
+                testFile = Files.copy(testFile, Paths.get(rutaCompilada + imagen));
+                System.out.println("yata");
+            }
+        }
+        catch (FileAlreadyExistsException i){
+            System.out.println("hay que hacer esta parte");
+        }
+        catch (IOException e){
+            System.out.println("error");
+        }
+
     }
 
     public void actualizar() {

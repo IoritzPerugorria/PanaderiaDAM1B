@@ -791,9 +791,9 @@ public class ControladorVP implements Initializable {
             Stage stage = new Stage();
             stage.setTitle("Editar Perfil");
             stage.setMaxWidth(600);
-            stage.setMaxHeight(400);
+            stage.setMaxHeight(500);
             stage.setMinWidth(600);
-            stage.setMinHeight(400);
+            stage.setMinHeight(500);
 
             ControladorEditar editar = fxmlLoader.getController();
             editar.inicializar(usuario);

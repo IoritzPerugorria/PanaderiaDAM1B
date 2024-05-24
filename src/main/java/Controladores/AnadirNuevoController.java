@@ -91,7 +91,8 @@ public class AnadirNuevoController {
         if(archivo != null){
             imagen = archivo.getName();
             Path testFile = Path.of(archivo.getPath());
-            testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\\resources\\imagenes\\" + imagen));
+            testFile = Files.copy(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\\resources\\imagenes\\" + imagen));
+
         }
     }
 
