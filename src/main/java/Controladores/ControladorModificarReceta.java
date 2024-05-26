@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import java.net.URL;
@@ -11,6 +12,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 public class ControladorModificarReceta implements Initializable {
+    @FXML
+    private Button btnModificar;
     @FXML
     private ListView<String> listaRecetas;
     @FXML
@@ -21,14 +24,15 @@ public class ControladorModificarReceta implements Initializable {
     private TextField precioReceta;
     @FXML
     private TextField txtfldCantidadIngrediente;
+    @FXML
     private int ID_ING;
     private int ID_PR;
     Connection conexion;
     public ControladorModificarReceta(){
-        nombreReceta = new TextField();
-        precioReceta = new TextField();
-        txtfldCantidadIngrediente = new TextField();
-
+        this.nombreReceta = new TextField();
+        this.precioReceta = new TextField();
+        this.txtfldCantidadIngrediente = new TextField();
+        this.btnModificar = new Button();
     }
 
 
@@ -149,11 +153,13 @@ public class ControladorModificarReceta implements Initializable {
         nombreReceta.setDisable(true);
         precioReceta.setDisable(true);
         txtfldCantidadIngrediente.setDisable(true);
+        btnModificar.setDisable(true);
     }
 
     private void habilitarNodosEscrituraNombrePrecio(){
         nombreReceta.setDisable(false);
         precioReceta.setDisable(false);
+        btnModificar.setDisable(false);
     }
 
     private void deshabilitarNodoEscrituraIngredientes(){
