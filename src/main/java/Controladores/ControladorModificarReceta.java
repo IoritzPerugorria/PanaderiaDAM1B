@@ -2,9 +2,15 @@ package Controladores;
 import BBDD.ConexionBBDD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import org.example.panaderiadam1b.Main;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
@@ -96,7 +102,7 @@ public class ControladorModificarReceta implements Initializable {
                         ordenIdentificarIngrediente.setString ( 1, valorIngredienteSeleccionado );
                         ResultSet resultadoDatos = ordenIdentificarIngrediente.executeQuery ( );
                         resultadoDatos.next ( );
-                        lblIngredientes.setText("(" + resultadoDatos.getString("NOMBRE") + ")");
+                        lblIngredientes.setText("(" + resultadoDatos.getString("NOMBRE") + "):");
                         ID_ING = resultadoDatos.getInt ( "ID" );
 
                         PreparedStatement ordenIdentificarProducto = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
@@ -151,30 +157,6 @@ public class ControladorModificarReceta implements Initializable {
         for (String listaNombresIngrediente : listaNombresIngredientes) {
             listaIngredientes.getItems().add(listaNombresIngrediente);
         }
-    }
-
-    // METODOS RELACIONADOS CON LA ACCESIBILIDAD DE NODOS
-    private void deshabilitarNodosEscritura(){
-        nombreReceta.setDisable(true);
-        precioReceta.setDisable(true);
-        txtfldCantidadIngrediente.setDisable(true);
-        btnModificar.setDisable(true);
-        lblIngredientes.setText("(Ninguno seleccionado)");
-    }
-
-    private void habilitarNodosEscrituraNombrePrecio(){
-        nombreReceta.setDisable(false);
-        precioReceta.setDisable(false);
-        btnModificar.setDisable(false);
-    }
-
-    private void deshabilitarNodoEscrituraIngredientes(){
-        txtfldCantidadIngrediente.setDisable(true);
-        txtfldCantidadIngrediente.setText("");
-    }
-
-    private void habilitarNodoEscrituraIngredientes(){
-        txtfldCantidadIngrediente.setDisable(false);
     }
 
     // Metodo confirmación modificación receta:
@@ -232,6 +214,8 @@ public class ControladorModificarReceta implements Initializable {
                 }
             }
         }
+
+
         // EN CASO DE QUE EL CAMPO DE PRECIO O DE CANTIDAD DE INGREDIENTES SE HAYA ESCRITO CON UN FORMATO INCORRECTO
         catch (NumberFormatException e){
             Alert alerta = new Alert(Alert.AlertType.ERROR);
@@ -244,6 +228,21 @@ public class ControladorModificarReceta implements Initializable {
         }
     }
 
+    // MÉTODO PARA SALIR DEL MENÚ DE MODIFICACIÓN
+    @FXML
+    public void salirDeLaPantalla(ActionEvent actionEvent) throws IOException {
+        Node node = (Node) actionEvent.getSource();
+        Stage currentStage = (Stage) node.getScene().getWindow();
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 900);
+        stage.setTitle("Panaderia");
+        stage.setScene(scene);
+        currentStage.close();
+        stage.show();
+    }
+
+    // METODOS DE ACTUALIZACIÓN
     private void actualizarProducto(String nombre,double precio) throws SQLException {
         PreparedStatement ordenActualizacionProducto = conexion.prepareStatement("UPDATE PRODUCTOS SET NOMBRE = ?, PRECIO = ? WHERE ID = ?");
         ordenActualizacionProducto.setString(1,nombre);
@@ -259,4 +258,29 @@ public class ControladorModificarReceta implements Initializable {
         ordenActualizacionIngrediente.setInt(3,ID_ING);
         ordenActualizacionIngrediente.execute();
     }
+
+    // METODOS RELACIONADOS CON LA ACCESIBILIDAD DE NODOS
+    private void deshabilitarNodosEscritura(){
+        nombreReceta.setDisable(true);
+        precioReceta.setDisable(true);
+        txtfldCantidadIngrediente.setDisable(true);
+        btnModificar.setDisable(true);
+        lblIngredientes.setText("(Ninguno seleccionado)");
+    }
+
+    private void habilitarNodosEscrituraNombrePrecio(){
+        nombreReceta.setDisable(false);
+        precioReceta.setDisable(false);
+        btnModificar.setDisable(false);
+    }
+
+    private void deshabilitarNodoEscrituraIngredientes(){
+        txtfldCantidadIngrediente.setDisable(true);
+        txtfldCantidadIngrediente.setText("");
+    }
+
+    private void habilitarNodoEscrituraIngredientes(){
+        txtfldCantidadIngrediente.setDisable(false);
+    }
+
 }
