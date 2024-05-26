@@ -3,15 +3,15 @@ import BBDD.ConexionBBDD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 public class ControladorModificarReceta implements Initializable {
+    @FXML
+    private Label lblIngredientes;
     @FXML
     private Button btnModificar;
     @FXML
@@ -33,6 +33,7 @@ public class ControladorModificarReceta implements Initializable {
         this.precioReceta = new TextField();
         this.txtfldCantidadIngrediente = new TextField();
         this.btnModificar = new Button();
+        this.lblIngredientes = new Label("(Ninguno seleccionado)");
     }
 
 
@@ -91,22 +92,26 @@ public class ControladorModificarReceta implements Initializable {
                     this.habilitarNodoEscrituraIngredientes();
 
                     try {
-                        PreparedStatement ordenIdentificarIngrediente = conexion.prepareStatement("SELECT ID FROM INGREDIENTES WHERE NOMBRE = ?");
+                        PreparedStatement ordenIdentificarIngrediente = conexion.prepareStatement("SELECT ID,NOMBRE FROM INGREDIENTES WHERE NOMBRE = ?");
                         ordenIdentificarIngrediente.setString ( 1, valorIngredienteSeleccionado );
                         ResultSet resultadoDatos = ordenIdentificarIngrediente.executeQuery ( );
                         resultadoDatos.next ( );
+                        lblIngredientes.setText("(" + resultadoDatos.getString("NOMBRE") + ")");
                         ID_ING = resultadoDatos.getInt ( "ID" );
+
                         PreparedStatement ordenIdentificarProducto = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
                         ordenIdentificarProducto.setString ( 1, nombreReceta.getText());
                         ResultSet resultadoIdentificarProducto = ordenIdentificarProducto.executeQuery ( );
                         resultadoIdentificarProducto.next ( );
                         ID_PR = resultadoIdentificarProducto.getInt ( "ID" );
+
                         PreparedStatement ordenCantidadNecesariaIngredientes = conexion.prepareStatement ( "SELECT CANTIDAD FROM NECESITA WHERE ING_ID = ? AND PR_ID = ?");
                         ordenCantidadNecesariaIngredientes.setInt ( 1, ID_ING );
                         ordenCantidadNecesariaIngredientes.setInt ( 2, ID_PR );
                         ResultSet resultadoCantidadIngredientes = ordenCantidadNecesariaIngredientes.executeQuery ( );
                         resultadoCantidadIngredientes.next ( );
                         txtfldCantidadIngrediente.setText(resultadoCantidadIngredientes.getString("CANTIDAD"));
+
                     } catch (SQLException ex) {
                         throw  new RuntimeException ( ex );
                     }
@@ -154,6 +159,7 @@ public class ControladorModificarReceta implements Initializable {
         precioReceta.setDisable(true);
         txtfldCantidadIngrediente.setDisable(true);
         btnModificar.setDisable(true);
+        lblIngredientes.setText("(Ninguno seleccionado)");
     }
 
     private void habilitarNodosEscrituraNombrePrecio(){

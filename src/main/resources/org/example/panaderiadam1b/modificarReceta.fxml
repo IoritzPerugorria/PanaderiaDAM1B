@@ -19,11 +19,12 @@
             </opaqueInsets>
          </ListView>
          <VBox prefHeight="324.0" prefWidth="223.0">
-            <Label text="Nombre:" />
+            <Label alignment="CENTER" prefHeight="18.0" prefWidth="402.0" text="Nombre:" textAlignment="CENTER" />
             <TextField fx:id="nombreReceta" />
-            <Label layoutX="10.0" layoutY="10.0" text="Precio" />
+            <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="18.0" prefWidth="266.0" text="Precio:" textAlignment="CENTER" />
             <TextField fx:id="precioReceta" layoutX="10.0" layoutY="27.0" />
-            <Label layoutX="10.0" layoutY="52.0" text="Ingredientes:" />
+            <Label alignment="CENTER" layoutX="10.0" layoutY="52.0" prefHeight="18.0" prefWidth="235.0" text="Nº ingredientes necesarios" />
+            <Label fx:id="lblIngredientes" alignment="CENTER" layoutX="10.0" layoutY="96.0" prefHeight="18.0" prefWidth="269.0" text="(Ninguno seleccionado)" textAlignment="CENTER" />
             <TextField fx:id="txtfldCantidadIngrediente" layoutX="10.0" layoutY="69.0" />
          </VBox>
          <ListView fx:id="listaIngredientes" layoutX="10.0" layoutY="10.0" maxWidth="-Infinity" prefHeight="344.0" prefWidth="232.0">
