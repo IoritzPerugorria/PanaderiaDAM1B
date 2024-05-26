@@ -3,6 +3,7 @@ import BBDD.ConexionBBDD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import java.net.URL;
@@ -31,8 +32,7 @@ public class ControladorModificarReceta implements Initializable {
     }
 
 
-    public void modificarReceta(ActionEvent actionEvent) {
-    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -125,11 +125,13 @@ public class ControladorModificarReceta implements Initializable {
     }
     private void rellenarListaIngredientes() throws SQLException {
         listaIngredientes.getItems().removeAll(listaIngredientes.getItems());
+
         PreparedStatement aux1 = conexion.prepareStatement ( "SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
         aux1.setString (1, nombreReceta.getText());
         ResultSet resultadoIngredientes = aux1.executeQuery();
         resultadoIngredientes.next();
         int IDproducto = resultadoIngredientes.getInt(1);
+
         PreparedStatement recogidaNombresIngredientes = conexion.prepareStatement("SELECT I.NOMBRE,N.ING_ID,N.PR_ID FROM NECESITA AS N INNER JOIN INGREDIENTES AS I ON I.ID = N.ING_ID WHERE N.PR_ID = ?");
         recogidaNombresIngredientes.setInt ( 1, IDproducto );
         ResultSet resultadoNombresIngredientes = recogidaNombresIngredientes.executeQuery();
@@ -163,5 +165,86 @@ public class ControladorModificarReceta implements Initializable {
         txtfldCantidadIngrediente.setDisable(false);
     }
 
+    // Metodo confirmación modificación receta:
+    public void modificarReceta(ActionEvent actionEvent) {
+        try {
+            // SI EL CAMPO RECETA Y EL CAMPO PRECIO ESTAN RELLENADOS
+            if ((!nombreReceta.getText().isBlank()) && (!precioReceta.getText().isBlank())){
+                String nombre = nombreReceta.getText();
+                double precio = Integer.parseInt(precioReceta.getText());
 
+                // SI EL CAMPO INGREDIENTES NO SE HA RELLENADO, SOLO SE ACTUALIZARAN EL NOMBRE Y EL PRECIO
+                if (txtfldCantidadIngrediente.getText().isBlank()){
+                    this.actualizarProducto(nombre,precio);
+                }
+                // EN EL CASO DE QUE EL CAMPO INGREDIENTES SÍ SE HA RELLENADO, SE ACTUALIZARAN EL NOMBRE, EL PRECIO, Y LA CANTIDAD NECESARIA DE UN INGREDIENTE
+                else {
+                    int cantidadIngredientes = Integer.parseInt(txtfldCantidadIngrediente.getText());
+                    // SI LA CANTIDAD DEL INGREDIENTE NÓ ES NEGATIVA, SE PROCEDERÁ CON LA OPERACIÓN INDICADA PREVIAMENTE
+                    if (cantidadIngredientes >= 0){
+                        this.actualizarProducto(nombre,precio);
+                        this.actualizarIngrediente(cantidadIngredientes);
+                    }
+                    else {
+                        // SI LA CANTIDAD DEL INGREDIENTE SÍ ES NEGATIVA, SALTARÁ OTRO MENSAJE DE ERROR Y SE CANCELARA LA MODIFICACI'ON.
+                        Alert alerta = new Alert(Alert.AlertType.ERROR);
+                        alerta.setTitle("ERROR");
+                        alerta.setHeaderText("Modificación incorrecta");
+                        alerta.setContentText("La cantidad de ingredientes no puede ser negativa");
+                        alerta.showAndWait();
+                    }
+                }
+            }
+            // EN CASO DE QUE LOS CAMPOS NOMBRE Y PRECIOS ESTEN SIN RELLENAR, MOSTAREMOS UN MENSAJE EN CADA UNA DE LAS POSIBILIDADES
+            else {
+                if (nombreReceta.getText().isBlank() && precioReceta.getText().isBlank()){
+                    Alert alerta = new Alert(Alert.AlertType.ERROR);
+                    alerta.setTitle("ERROR");
+                    alerta.setHeaderText("Modificación incorrecta");
+                    alerta.setContentText("El campo del Nombre y Precio no pueden quedar vacias.");
+                    alerta.showAndWait();
+                }
+                else if (nombreReceta.getText().isBlank()){
+                    Alert alerta = new Alert(Alert.AlertType.ERROR);
+                    alerta.setTitle("ERROR");
+                    alerta.setHeaderText("Modificación incorrecta");
+                    alerta.setContentText("El campo del Nombre no puede quedar vacia.");
+                    alerta.showAndWait();
+                }
+                else {
+                    Alert alerta = new Alert(Alert.AlertType.ERROR);
+                    alerta.setTitle("ERROR");
+                    alerta.setHeaderText("Modificación incorrecta");
+                    alerta.setContentText("El campo del Precio no puede quedar vacia.");
+                    alerta.showAndWait();
+                }
+            }
+        }
+        // EN CASO DE QUE EL CAMPO DE PRECIO O DE CANTIDAD DE INGREDIENTES SE HAYA ESCRITO CON UN FORMATO INCORRECTO
+        catch (NumberFormatException e){
+            Alert alerta = new Alert(Alert.AlertType.ERROR);
+            alerta.setTitle("ERROR");
+            alerta.setHeaderText("Modificación incorrecta");
+            alerta.setContentText("Campo de Precio o Ingredientes no valido.");
+            alerta.showAndWait();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void actualizarProducto(String nombre,double precio) throws SQLException {
+        PreparedStatement ordenActualizacionProducto = conexion.prepareStatement("UPDATE PRODUCTOS SET NOMBRE = ?, PRECIO = ? WHERE ID = ?");
+        ordenActualizacionProducto.setString(1,nombre);
+        ordenActualizacionProducto.setDouble (2,precio);
+        ordenActualizacionProducto.setInt (3,ID_PR);
+        ordenActualizacionProducto.execute();
+    }
+
+    private void actualizarIngrediente(int cantidad) throws SQLException{
+        PreparedStatement ordenActualizacionIngrediente = conexion.prepareStatement("UPDATE NECESITA SET CANTIDAD = ? WHERE PR_ID = ? AND ING_ID = ?");
+        ordenActualizacionIngrediente.setInt(1,cantidad);
+        ordenActualizacionIngrediente.setInt(2,ID_PR);
+        ordenActualizacionIngrediente.setInt(3,ID_ING);
+        ordenActualizacionIngrediente.execute();
+    }
 }
