@@ -4,10 +4,16 @@ import java.sql.*;
 
 public class ConexionBBDD {
 
-    private static String url = "jdbc:mysql://10.168.58.3/BDPANADERIA";
-    private static String username = "root";
-    private static String password = "Dam1bSql01";
+    private static String cloudUrl = "jdbc:mysql://10.168.58.3/BDPANADERIA";
+    private static String cloudPassword = "Dam1bSql01";
+    private static String localUrl = "jdbc:mysql://localhost/BDPANADERIA";
     private static String localPassword = "root";
+
+    private static String url = "jdbc:mysql://10.168.58.3/BDPANADERIA";
+    private static String password = "Dam1bSql01";
+    private static String username = "root";
+
+
 
 
 
@@ -34,5 +40,15 @@ public class ConexionBBDD {
             throw new IllegalStateException("No se ha podido cerrar la conexion", e);
         }
         return connection;
+    }
+
+    public static void usarLocal(){
+        url = localUrl;
+        password = localPassword;
+    }
+
+    public static void usarServer(){
+        url = cloudUrl;
+        password = cloudPassword;
     }
 }

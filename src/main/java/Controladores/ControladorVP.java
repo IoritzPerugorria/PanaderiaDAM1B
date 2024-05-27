@@ -439,12 +439,12 @@ public class ControladorVP implements Initializable {
 
         Button botonCocinar = new Button(); // Boton de cocinar
         botonCocinar.setText("Cocinar");
-        botonCocinar.setOnAction(_ -> cocinar(botonCocinar.getId())); // Asigna el metodo de cocinar
+        botonCocinar.setOnAction(event -> cocinar(botonCocinar.getId())); // Asigna el metodo de cocinar
         botonCocinar.setStyle("-fx-background-color: #ffffff;");
 
         Button botonEliminar = new Button(); // Boton de eliminar
         botonEliminar.setText("Eliminar");
-        botonEliminar.setOnAction(_ -> eliminar(botonEliminar.getId())); // Asignar el metodo de eliminar
+        botonEliminar.setOnAction(event -> eliminar(botonEliminar.getId())); // Asignar el metodo de eliminar
         botonEliminar.setStyle("-fx-background-color: #ffffff;");
 
         // Asigna al ID del boton el nombre del producto, para uso posterior

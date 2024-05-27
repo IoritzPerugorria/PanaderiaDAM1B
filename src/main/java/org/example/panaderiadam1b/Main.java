@@ -15,8 +15,8 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 400, 400);
         stage.setTitle("Login");
-        stage.setMinHeight(400);
-        stage.setMaxHeight(400);
+        stage.setMinHeight(500);
+        stage.setMaxHeight(500);
         stage.setMinWidth(400);
         stage.setMaxWidth(400);
         stage.setScene(scene);

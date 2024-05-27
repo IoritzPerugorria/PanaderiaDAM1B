@@ -7,63 +7,55 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: whitesmoke;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorLogin">
    <VBox alignment="TOP_CENTER" layoutX="51.0" layoutY="22.0" prefHeight="74.0" prefWidth="305.0">
-      <children>
-         <Text cache="true" fill="#f0ba56" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.0" text="PANADERÍA" textAlignment="CENTER" wrappingWidth="185.0">
-            <font>
-               <Font size="32.0" />
-            </font>
-         </Text>
-         <Text cache="true" fill="#f0ba56" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.0" text="LA GRAN ARTESANA" textAlignment="CENTER" wrappingWidth="296.0">
-            <font>
-               <Font size="32.0" />
-            </font>
-         </Text>
-      </children>
+      <Text cache="true" fill="#f0ba56" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.0" text="PANADERÍA" textAlignment="CENTER" wrappingWidth="185.0">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Text>
+      <Text cache="true" fill="#f0ba56" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.0" text="LA GRAN ARTESANA" textAlignment="CENTER" wrappingWidth="296.0">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Text>
    </VBox>
    <VBox layoutX="63.0" layoutY="133.0">
-      <children>
-         <HBox prefHeight="16.0" prefWidth="200.0">
-            <children>
-               <Label text="Usuario">
-                  <font>
-                     <Font size="16.0" />
-                  </font>
-                  <HBox.margin>
-                     <Insets right="10.0" />
-                  </HBox.margin>
-               </Label>
-               <Text fx:id="txtCred1Obligatorio" fill="#ae0000" strokeType="OUTSIDE" strokeWidth="0.0" text="* Este campo es obligatorio" visible="false">
-                  <HBox.margin>
-                     <Insets top="5.0" />
-                  </HBox.margin>
-               </Text>
-            </children>
-         </HBox>
-         <TextField fx:id="txtFldCredencial1" prefHeight="25.0" prefWidth="250.0" />
-      </children></VBox>
+      <HBox prefHeight="16.0" prefWidth="200.0">
+         <Label text="Usuario">
+            <font>
+               <Font size="16.0" />
+            </font>
+            <HBox.margin>
+               <Insets right="10.0" />
+            </HBox.margin>
+         </Label>
+         <Text fx:id="txtCred1Obligatorio" fill="#ae0000" strokeType="OUTSIDE" strokeWidth="0.0" text="* Este campo es obligatorio" visible="false">
+            <HBox.margin>
+               <Insets top="5.0" />
+            </HBox.margin>
+         </Text>
+      </HBox>
+      <TextField fx:id="txtFldCredencial1" prefHeight="25.0" prefWidth="250.0" />
+   </VBox>
    <VBox layoutX="63.0" layoutY="200.0">
-      <children>
-         <HBox prefHeight="25.0" prefWidth="200.0">
-            <children>
-               <Label text="Contraseña">
-                  <font>
-                     <Font size="16.0" />
-                  </font>
-                  <HBox.margin>
-                     <Insets right="10.0" />
-                  </HBox.margin>
-               </Label>
-               <Text fx:id="txtCred2Obligatorio" fill="#ae0000" strokeType="OUTSIDE" strokeWidth="0.0" text="* Este campo es obligatorio" visible="false">
-                  <HBox.margin>
-                     <Insets top="5.0" />
-                  </HBox.margin>
-               </Text>
-            </children>
-         </HBox>
-         <PasswordField fx:id="txtFldCredencial2" prefHeight="25.0" prefWidth="250.0" />
-      </children>
+      <HBox prefHeight="25.0" prefWidth="200.0">
+         <Label text="Contraseña">
+            <font>
+               <Font size="16.0" />
+            </font>
+            <HBox.margin>
+               <Insets right="10.0" />
+            </HBox.margin>
+         </Label>
+         <Text fx:id="txtCred2Obligatorio" fill="#ae0000" strokeType="OUTSIDE" strokeWidth="0.0" text="* Este campo es obligatorio" visible="false">
+            <HBox.margin>
+               <Insets top="5.0" />
+            </HBox.margin>
+         </Text>
+      </HBox>
+      <PasswordField fx:id="txtFldCredencial2" prefHeight="25.0" prefWidth="250.0" />
    </VBox>
    <Text fx:id="txtCredsIncorrectas" fill="#ae0000" layoutX="99.0" layoutY="271.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Usuario o contraseña incorrectos" visible="false" />
+   <Button fx:id="botonBBDD" layoutX="128.0" layoutY="350.0" mnemonicParsing="false" onAction="#cambiarBBDD" text="Usando BBDD Hosteada" />
    <Button fx:id="btnLogin" layoutX="155.0" layoutY="282.0" mnemonicParsing="false" onAction="#login" prefHeight="37.0" prefWidth="89.0" text="Login">
       <font>
          <Font size="16.0" />

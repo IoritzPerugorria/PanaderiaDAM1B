@@ -4,11 +4,13 @@ package Controladores;
 import BBDD.ConexionBBDD;
 import Enumerados.Rol;
 import Modulo.Usuario;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ControladorLogin implements Initializable {
+    public Button botonBBDD;
     @FXML
     private Text txtCredsIncorrectas;
     @FXML
@@ -37,6 +40,8 @@ public class ControladorLogin implements Initializable {
     private Rol rol;
 
     private static Usuario usuario;
+
+    private boolean usaLocal = false;
 
 
     public ControladorLogin(){
@@ -241,4 +246,16 @@ public class ControladorLogin implements Initializable {
         return usuario;
     }
 
+    public void cambiarBBDD(ActionEvent actionEvent) {
+        if (usaLocal){
+            ConexionBBDD.usarServer();
+            usaLocal = false;
+            botonBBDD.setText("Usando BBDD Hosteada");
+        }
+        else{
+            ConexionBBDD.usarLocal();
+            usaLocal = true;
+            botonBBDD.setText("Usando BBDD Local");
+        }
+    }
 }
