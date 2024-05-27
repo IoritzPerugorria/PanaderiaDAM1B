@@ -94,7 +94,9 @@ public class AnadirNuevoController {
             Path testFile = Path.of(archivo.getPath());
             File dest = new File(System.getProperty("user.dir") + "\\src\\main\\resources\\imagenes\\" + imagen);
             Path pathdest = Path.of(dest.getPath());
-            testFile = Files.copy(testFile, pathdest);
+            if(Path.of(archivo.getPath()) != Path.of(dest.getPath())){
+                testFile = Files.copy(testFile, pathdest);
+            }
         }
     }
 

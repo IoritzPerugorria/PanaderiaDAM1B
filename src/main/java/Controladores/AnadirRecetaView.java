@@ -159,7 +159,12 @@ public class AnadirRecetaView {
         if(archivo != null){
             imagen = archivo.getName();
             Path testFile = Path.of(archivo.getPath());
-            testFile = Files.move(testFile, Paths.get("C:\\Users\\AlumTA\\Desktop\\PROG\\Proyectos intelliJ\\PanaderiaDAM1B\\src\\main\\resources\\imagenes\\" + imagen));
+            File dest = new File(System.getProperty("user.dir") + "\\src\\main\\resources\\imagenes\\" + imagen);
+            Path pathdest = Path.of(dest.getPath());
+            if(Path.of(archivo.getPath()) != Path.of(dest.getPath())){
+                testFile = Files.copy(testFile, pathdest);
+            }
+
         }
     }
 
