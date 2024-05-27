@@ -55,6 +55,8 @@ public class ControladorVP implements Initializable {
     private ScrollPane scrollAlmacen = new ScrollPane();
     @FXML
     private ScrollPane scrollCocina = new ScrollPane();
+    @FXML
+    private Label lblcartera;
 
     private Connection conexion; // La misma conexion se usa en tod0 el controlador para optimizar las cargas
     private Usuario usuario; // El usuario que esta logeado
@@ -83,6 +85,8 @@ public class ControladorVP implements Initializable {
         fotoPerfil.setImage(this.cargarImage(usuario.getFotoPerfil())); // Colocar foto y ajustar tamaño
         fotoPerfil.setFitWidth(100);
         fotoPerfil.setFitHeight(100);
+
+        lblcartera.setText(String.valueOf(usuario.getCartera()));
 
         // Vacia los tabs, en caso de que se actualizen los datos
         productosTienda.clear();

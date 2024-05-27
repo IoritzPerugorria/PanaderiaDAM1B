@@ -21,6 +21,12 @@
          </HBox.margin>
         </Text>
         <HBox alignment="CENTER_RIGHT" prefWidth="999999.0" spacing="50.0">
+         <HBox alignment="CENTER" prefHeight="168.0" prefWidth="111.0">
+            <children>
+               <Label prefHeight="18.0" prefWidth="50.0" text="Cartera: " />
+               <Label fx:id="lblcartera" />
+            </children>
+         </HBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                 <Button mnemonicParsing="false" onAction="#editarPerfil" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ffffff;" text="Editar Perfil" />
                 <Button mnemonicParsing="false" onAction="#logout" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ffffff;" text="Cerrar Sesion" textFill="RED" />
