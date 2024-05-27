@@ -45,6 +45,7 @@
         <Tab fx:id="almacenTab" disable="true" text="Almacen">
             <AnchorPane>
             <Button fx:id="anadirIngre" mnemonicParsing="false" onAction="#anadir" text=" Añadir ingrediente" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+            <Button layoutX="139.0" layoutY="10.0" mnemonicParsing="false" onAction="#accederMenuModificarReceta" text="Modificar Receta" />
                 <ScrollPane fx:id="scrollAlmacen" fitToHeight="true" fitToWidth="true" layoutX="15.0" layoutY="15.0" pannable="true" vbarPolicy="ALWAYS" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="50.0">
                     <VBox fx:id="Almacen" />
                 </ScrollPane>

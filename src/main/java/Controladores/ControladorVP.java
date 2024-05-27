@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -796,7 +797,7 @@ public class ControladorVP implements Initializable {
         try{
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("editar.fxml"));
 
-            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            Scene scene = new Scene(fxmlLoader.load(), 600, 305);
             Stage stage = new Stage();
             stage.setTitle("Editar Perfil");
             stage.setMaxWidth(600);
@@ -814,6 +815,19 @@ public class ControladorVP implements Initializable {
             System.out.println(":(");
         }
 
+    }
+
+    @FXML
+    private void accederMenuModificarReceta(ActionEvent actionEvent) throws IOException {
+        Node node = (Node) actionEvent.getSource();
+        Stage currentStage = (Stage) node.getScene().getWindow();
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("modificarReceta.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 660, 900);
+        stage.setTitle("Modificar Receta");
+        stage.setScene(scene);
+        currentStage.close();
+        stage.show();
     }
 
 }
