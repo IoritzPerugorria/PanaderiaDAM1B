@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" style="-fx-background-color: whitesmoke;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorVP">
+<VBox alignment="CENTER" prefHeight="800.0" prefWidth="1000.0" spacing="20.0" style="-fx-background-color: #f2dfa0;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorVP">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -20,10 +20,10 @@
             <Insets top="20.0" />
          </HBox.margin>
         </Text>
-        <HBox alignment="CENTER_RIGHT" prefWidth="999999.0">
+        <HBox alignment="CENTER_RIGHT" prefWidth="999999.0" spacing="50.0">
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
-                <Button mnemonicParsing="false" onAction="#editarPerfil" text="Editar Perfil" />
-                <Button mnemonicParsing="false" onAction="#logout" text="Cerrar Sesion" textFill="RED" />
+                <Button mnemonicParsing="false" onAction="#editarPerfil" style="-fx-background-color: #ffffff;" text="Editar Perfil" />
+                <Button mnemonicParsing="false" onAction="#logout" style="-fx-background-color: #ffffff;" text="Cerrar Sesion" textFill="RED" />
             </VBox>
          <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
             <children>
@@ -33,31 +33,31 @@
          </VBox>
         </HBox>
     </HBox>
-    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-        <Tab fx:id="tiendaTab" disable="true" text="Tienda">
+    <TabPane fx:id="tabPane" style="-fx-background-color: #fae6cd;" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <Tab fx:id="tiendaTab" disable="true" style="-fx-background-color: #ffffff;" text="Tienda">
             <AnchorPane>
                 <ScrollPane fx:id="scrollTienda" fitToHeight="true" fitToWidth="true" layoutX="15.0" layoutY="15.0" pannable="true" vbarPolicy="ALWAYS">
-                    <VBox fx:id="Tienda" />
+                    <VBox fx:id="Tienda" style="-fx-background-color: #fae6cd;" />
                 </ScrollPane>
             </AnchorPane>
         </Tab>
 
-        <Tab fx:id="almacenTab" disable="true" text="Almacen">
+        <Tab fx:id="almacenTab" disable="true" style="-fx-background-color: #ffffff;" text="Almacen">
             <AnchorPane>
-            <Button fx:id="anadirIngre" mnemonicParsing="false" onAction="#anadir" text=" Añadir ingrediente" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+            <Button fx:id="anadirIngre" mnemonicParsing="false" onAction="#anadir" style="-fx-background-color: #ffffff;" text=" Añadir ingrediente" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                 <ScrollPane fx:id="scrollAlmacen" fitToHeight="true" fitToWidth="true" layoutX="15.0" layoutY="15.0" pannable="true" vbarPolicy="ALWAYS" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="50.0">
-                    <VBox fx:id="Almacen" />
+                    <VBox fx:id="Almacen" style="-fx-background-color: #fae6cd;" />
                 </ScrollPane>
             </AnchorPane>
 
         </Tab>
 
-        <Tab fx:id="cocinaTab" disable="true" text="Cocina">
+        <Tab fx:id="cocinaTab" disable="true" style="-fx-background-color: #ffffff;" text="Cocina">
             <AnchorPane>
-                <Button mnemonicParsing="false" onAction="#anadirReceta" text="Añadir nueva receta" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-            <Button layoutX="144.0" layoutY="10.0" mnemonicParsing="false" onAction="#accederMenuModificarReceta" text="Modificar Receta" />
+                <Button mnemonicParsing="false" onAction="#anadirReceta" style="-fx-background-color: #ffffff;" text="Añadir nueva receta" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+            <Button layoutX="144.0" layoutY="10.0" mnemonicParsing="false" onAction="#accederMenuModificarReceta" style="-fx-background-color: #ffffff;" text="Modificar Receta" />
                 <ScrollPane fx:id="scrollCocina" fitToHeight="true" fitToWidth="true" layoutX="15.0" layoutY="15.0" pannable="true" vbarPolicy="ALWAYS">
-                    <VBox fx:id="Cocina" />
+                    <VBox fx:id="Cocina" style="-fx-background-color: #fae6cd;" />
                 </ScrollPane>
             </AnchorPane>
 

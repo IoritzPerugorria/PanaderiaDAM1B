@@ -489,7 +489,9 @@ public class ControladorVP implements Initializable {
 
 
     /**
-     * El metodo
+     * El metodo recibe como parametro el nombre de un porducto y una
+     * cantidad, y realiza una compra. Resta la cantidad al stock, y tambien
+     * ajusta la cartera del usuario inbolucrado
      */
     public void comprar(String nombre, String cantidad) {
 
@@ -500,48 +502,52 @@ public class ControladorVP implements Initializable {
         String resultado = "";
 
         try {
-            ps1 = conexion.prepareStatement("SELECT STOCK FROM PRODUCTOS WHERE NOMBRE = ?");
+            conexion.setAutoCommit(false); //Nada de lo que se haga se realizara hasta que el commit
+
+            // Realiza una consulta para comprobar el stock del producto
+            ps1 = conexion.prepareStatement("SELECT STOCK, PRECIO FROM PRODUCTOS WHERE NOMBRE = ?");
             ps1.setString(1, nombre);
-
             rs = ps1.executeQuery();
+
             while (rs.next()) {
-
-
-                System.out.println(rs.getInt("STOCK"));
-
-                if ((rs.getInt("STOCK") - Integer.parseInt(cantidad) < 0)) {
+                if ((rs.getInt("STOCK") - Integer.parseInt(cantidad) < 0)) { // En caso de que la cantidad deseada sea mayor al stock, se cancela la compra
                     resultado = "No hay Stock suficiente";
-                } else if (rs.getInt("STOCK") > 0) {
+                }
+                else if (rs.getInt("STOCK") > 0) { // Si el stock es mayor a cero
                     ps2 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK - ? WHERE NOMBRE = ?");
                     ps2.setString(1, cantidad);
                     ps2.setString(2, nombre);
-                    resultado = "Compra finalizada Satisfactoriamente";
+
+                    Double precio = rs.getDouble("PRECIO");
+                    Cartera cartera = new Cartera();
+                    cartera.compra(precio, usuario, cantidad); // Realiza la compra economicamente
+
                     ps2.executeUpdate();
-                } else {
+                    resultado = "Compra finalizada Satisfactoriamente";
+
+                    conexion.commit();
+                } else { // La verdad, no se en que caso puede darse este error, no ha pasado nunca y no se si pasara.
                     resultado = "error?";
                 }
             }
-            PreparedStatement ps3 = conexion.prepareStatement("SELECT PRECIO FROM PRODUCTOS WHERE NOMBRE = ?");
-            ps3.setString(1, nombre);
-            ResultSet rs1 = ps3.executeQuery();
-            Double precio = null;
-            if (rs1.next()) {
-                precio = rs1.getDouble("PRECIO");
-            }
-            Usuario usuario1 = ControladorLogin.getUsuario();
-
-            Cartera cartera = new Cartera();
-            cartera.compra(precio, usuario1, cantidad);
-
         } catch (SQLException e) {
-            resultado = "ERROR AL COMPRAR";
+            resultado = "Ha habido un error al comprar. Intentelo de nuevo mas tarde";
         } finally {
+            // Crea una alerta de confirmacion.
             Alert alerta = new Alert(Alert.AlertType.INFORMATION);
             alerta.setTitle(resultado);
             alerta.setContentText(resultado);
             alerta.show();
+            try{
+                conexion.setAutoCommit(true); //Se vuelve a activar el autocommit
+            }
+            catch (SQLException e){
+                System.out.println("Error extremo. Se cierra la pantalla por razones de seguridad");
+                Stage stageActual = (Stage) scrollTienda.getScene().getWindow();
+                stageActual.close();
+            }
         }
-        this.cargar();
+        this.cargar(); // Para actualizar los datos en pantalla
     }
 
     /**
@@ -693,7 +699,6 @@ public class ControladorVP implements Initializable {
     @FXML
     public void anadir() {
         try {
-
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadirNuevo-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
@@ -703,8 +708,8 @@ public class ControladorVP implements Initializable {
 
             AnadirNuevoController recargar = fxmlLoader.getController();
             recargar.setMainController(current);
-
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.out.println("ERROR");
         }
     }
@@ -712,7 +717,6 @@ public class ControladorVP implements Initializable {
     @FXML
     public void anadirReceta() {
         try {
-
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("anadirReceta-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
@@ -722,26 +726,31 @@ public class ControladorVP implements Initializable {
 
             AnadirRecetaView recargar = fxmlLoader.getController();
             recargar.setMainController(current);
-
-
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.out.println("ERROR");
         }
     }
 
+
+    /**
+     * El metodo primero pregunta al usuario si quiere cerrar sesion, y
+     * si la respuesta es afirmativa, abre una pantalla de inicio de sesion
+     * y cierra la actual.
+     */
     @FXML
     public void logout() {
-        System.out.println("s");
         try {
+            // Alerta para preguntar al usuario
             Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
             alerta.setTitle("Confirmacion");
             alerta.setContentText("¿Seguro que quieres cerrar sesion?");
             Optional<ButtonType> result = alerta.showAndWait();
 
-
             if (result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()) {
-                Stage stageActual = (Stage) scrollTienda.getScene().getWindow();
+                Stage stageActual = (Stage) scrollTienda.getScene().getWindow(); // Pantalla actual
 
+                // Crea la pantalla de login
                 FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Login.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 400, 400);
                 Stage stage = new Stage();
@@ -749,75 +758,17 @@ public class ControladorVP implements Initializable {
                 stage.setScene(scene);
                 stage.show();
 
-                stageActual.close();
+                stageActual.close(); // Cerrar pantalla actual
             }
         } catch (IOException a) {
-            System.out.println("Tan inutil soy que ni autodestruirme puedo");
+            System.out.println("Tan inutil soy que ni autodestruirme puedo"); // XD
         }
-
-
     }
 
     /**
-     * Usado por los metodos que cargan las pestañas, crea las
-     * ImageView de los productos para mostrarlas
-     *
-     * @param ruta: el nombre del archivo
-     *                           TODO: aplicar un escalado de verdad.
+     * El metodo abre la ventana de edicion, y manda el controlador
+     * de la ventana principal para tener acceso.
      */
-    public ImageView cargarImagen(String ruta) {
-        ImageView imagenVista;
-        Image imagen;
-        try {
-            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
-
-
-        } catch (NullPointerException n) {
-            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
-        }
-
-        imagenVista = new ImageView(imagen);
-        imagenVista.setFitHeight(100); // Ajustar altura
-        imagenVista.setFitWidth(100); // Ajustar anchura
-
-
-        return imagenVista;
-    }
-
-    public Image cargarImage(String ruta) {
-        Image imagen;
-        try {
-            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
-
-
-        } catch (NullPointerException n) {
-            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
-        }
-
-        return imagen;
-    }
-
-    /**
-     * Este metodo ajusta las anclas de los tabs para que los scrollpane
-     * de dentro se ajusten al tamaño del tab
-     */
-    public void ajustarAnclas() {
-        AnchorPane.setTopAnchor(scrollTienda, 0.0);
-        AnchorPane.setBottomAnchor(scrollTienda, 0.0);
-        AnchorPane.setLeftAnchor(scrollTienda, 0.0);
-        AnchorPane.setRightAnchor(scrollTienda, 0.0);
-
-        AnchorPane.setTopAnchor(scrollCocina, 50.0);
-        AnchorPane.setBottomAnchor(scrollAlmacen, 0.0);
-        AnchorPane.setLeftAnchor(scrollAlmacen, 0.0);
-        AnchorPane.setRightAnchor(scrollAlmacen, 0.0);
-
-        AnchorPane.setTopAnchor(scrollCocina, 50.0);
-        AnchorPane.setBottomAnchor(scrollCocina, 0.0);
-        AnchorPane.setLeftAnchor(scrollCocina, 0.0);
-        AnchorPane.setRightAnchor(scrollCocina, 0.0);
-    }
-
     @FXML
     public void editarPerfil() {
         try {
@@ -840,7 +791,65 @@ public class ControladorVP implements Initializable {
         } catch (IOException i) {
             System.out.println(":(");
         }
+    }
 
+
+    /**
+     * Usado por los metodos que cargan las pestañas, crea las
+     * ImageView de los productos para mostrarlas
+     *
+     * @param ruta: el nombre del archivo
+     *                           TODO: aplicar un escalado de verdad. Seguramente no se aplicara un escalado de verdad. Es complicao
+     */
+    public ImageView cargarImagen(String ruta) {
+        ImageView imagenVista;
+        Image imagen;
+        try {
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString()); //Obtiene la imagen de la carpeta imagenes
+        } catch (NullPointerException n) {
+            // En caso de que no encuentre la imagen, cargara una imagen predeterminada
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
+        }
+        imagenVista = new ImageView(imagen);
+        imagenVista.setFitHeight(100); // Ajustar altura
+        imagenVista.setFitWidth(100); // Ajustar anchura
+
+        return imagenVista;
+    }
+
+    /**
+     * Similar al de arriba, pero retorna un objeto Image para ser usado
+     * en un ImageView.
+     */
+    public Image cargarImage(String ruta) {
+        Image imagen;
+        try {
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
+        } catch (NullPointerException n) {
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
+        }
+        return imagen;
+    }
+
+    /**
+     * Este metodo ajusta las anclas de los tabs para que los scrollpane
+     * de dentro se ajusten al tamaño del tab
+     */
+    public void ajustarAnclas() {
+        AnchorPane.setTopAnchor(scrollTienda, 0.0);
+        AnchorPane.setBottomAnchor(scrollTienda, 0.0);
+        AnchorPane.setLeftAnchor(scrollTienda, 0.0);
+        AnchorPane.setRightAnchor(scrollTienda, 0.0);
+
+        AnchorPane.setTopAnchor(scrollCocina, 50.0);
+        AnchorPane.setBottomAnchor(scrollAlmacen, 0.0);
+        AnchorPane.setLeftAnchor(scrollAlmacen, 0.0);
+        AnchorPane.setRightAnchor(scrollAlmacen, 0.0);
+
+        AnchorPane.setTopAnchor(scrollCocina, 50.0);
+        AnchorPane.setBottomAnchor(scrollCocina, 0.0);
+        AnchorPane.setLeftAnchor(scrollCocina, 0.0);
+        AnchorPane.setRightAnchor(scrollCocina, 0.0);
     }
 
     public void setCurrentController(ControladorVP controller) {

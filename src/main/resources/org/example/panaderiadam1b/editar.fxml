@@ -10,11 +10,14 @@
         <opaqueInsets>
             <Insets />
         </opaqueInsets>
-        <Label text="Editar Informacion">
+        <Text cache="true" fill="#f0ba56" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.5" text="Editar Informacion" textAlignment="CENTER" wrappingWidth="402.0">
             <font>
                 <Font size="36.0" />
             </font>
-        </Label>
+            <HBox.margin>
+                <Insets top="20.0" />
+            </HBox.margin>
+        </Text>
         <Label contentDisplay="RIGHT" text="Nombre de Usuario">
             <graphic>
                 <TextField fx:id="nombre" />
