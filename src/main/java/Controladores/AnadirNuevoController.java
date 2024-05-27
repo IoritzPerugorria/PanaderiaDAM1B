@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 import static BBDD.ConexionBBDD.conectar;
+import static BBDD.ConexionBBDD.desconectar;
 
 public class AnadirNuevoController {
 
@@ -64,6 +65,7 @@ public class AnadirNuevoController {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Ingrediente insertado correctamente");
             alert.showAndWait();
+            conexion = desconectar(conexion);
         }
         catch(SQLException e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);

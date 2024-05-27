@@ -1,11 +1,10 @@
 package Modulo;
 
-import Controladores.ControladorLogin;
+import Enumerados.Rol;
 import javafx.scene.control.Alert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static BBDD.ConexionBBDD.conectar;

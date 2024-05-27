@@ -1,7 +1,7 @@
 package Modulo;
 
 import BBDD.ConexionBBDD;
-import javafx.scene.image.ImageView;
+import Enumerados.Rol;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

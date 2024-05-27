@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import static BBDD.ConexionBBDD.conectar;
+import static BBDD.ConexionBBDD.desconectar;
 
 public class AnadirRecetaView {
 
@@ -63,6 +64,7 @@ public class AnadirRecetaView {
             }
             ObservableList<String> listaingredientes = FXCollections.observableArrayList(lista);
             cmbBoxIng.setItems(listaingredientes);
+            conexion = desconectar(conexion);
         }
         catch(SQLException e){
             throw new IllegalStateException("No se ha podido cargar el combobox");
@@ -118,7 +120,7 @@ public class AnadirRecetaView {
                 st3.executeUpdate();
 
             }
-
+            conexion = desconectar(conexion);
         }
         catch(SQLException e){
             throw new IllegalStateException("No se ha podido insertar la receta");
