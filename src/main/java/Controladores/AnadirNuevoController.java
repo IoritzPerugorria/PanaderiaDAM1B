@@ -40,41 +40,48 @@ public class AnadirNuevoController {
     protected void anadirNuevo(){
         Connection conexion = null;
         conexion = conectar(conexion);
+        if(txtFldNom.getText().isEmpty() || txtFldCant.getText().isEmpty() || txtFldPrec.getText().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Todos los campos deben estar rellenados");
+        }
+        else{
+            String nombre = txtFldNom.getText();
+            int cant = Integer.parseInt(txtFldCant.getText());
+            Double precio = Double.parseDouble(txtFldPrec.getText());
 
-        String nombre = txtFldNom.getText();
-        int cant = Integer.parseInt(txtFldCant.getText());
-        Double precio = Double.parseDouble(txtFldPrec.getText());
 
+            try{
+                PreparedStatement st = conexion.prepareStatement("INSERT INTO INGREDIENTES(NOMBRE, PRECIO, STOCK, IMAGEN) VALUES (?, ?, ?, ?)");
+                st.setString(1, nombre);
+                st.setDouble(2, precio);
+                st.setInt(3, cant);
 
-        try{
-            PreparedStatement st = conexion.prepareStatement("INSERT INTO INGREDIENTES(NOMBRE, PRECIO, STOCK, IMAGEN) VALUES (?, ?, ?, ?)");
-            st.setString(1, nombre);
-            st.setDouble(2, precio);
-            st.setInt(3, cant);
-
-            if(imagen != null){  //si se ha seleccionado bien la imagen, intenta introducir su nombre de archivo a la base de datos
-                try{
-                    st.setString(4, imagen);
-                    st.executeUpdate();
+                if(imagen != null){  //si se ha seleccionado bien la imagen, intenta introducir su nombre de archivo a la base de datos
+                    try{
+                        st.setString(4, imagen);
+                        st.executeUpdate();
+                    }
+                    catch(SQLException e){
+                        st.setString(4, null);  //si no consigue introducirla, ese atributo se vuelve null
+                        st.executeUpdate();
+                        throw new IllegalStateException("Error al insertar imagen");
+                    }
                 }
-                catch(SQLException e){
-                    st.setString(4, null);  //si no consigue introducirla, ese atributo se vuelve null
-                    st.executeUpdate();
-                    throw new IllegalStateException("Error al insertar imagen");
-                }
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Ingrediente insertado correctamente");
+                alert.showAndWait();
+                controladorVP.cargar();
+                conexion = desconectar(conexion);
             }
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Ingrediente insertado correctamente");
-            alert.showAndWait();
-            controladorVP.cargar();
-            conexion = desconectar(conexion);
+            catch(SQLException e){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("Error al insertar ingrediente");
+                alert.showAndWait();
+                throw new IllegalStateException("Error al insertar ingrediente");
+            }
         }
-        catch(SQLException e){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("Error al insertar ingrediente");
-            alert.showAndWait();
-            throw new IllegalStateException("Error al insertar ingrediente");
-        }
+
     }
 
     /**
