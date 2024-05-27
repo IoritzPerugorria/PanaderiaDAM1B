@@ -4,10 +4,7 @@ import BBDD.ConexionBBDD;
 import Enumerados.Pestanas;
 import Modulo.Cartera;
 import Modulo.Usuario;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -78,7 +75,6 @@ public class ControladorVP implements Initializable {
      * del rol del usuario, manda a cargar las pestañas correspondientes. Antes tod0
      * lo que se encuentra en el metodo estaba en initialize, pero al requerir datos
      * del usuario, se separo en este metodo aparte, que se llama al tener el usuario.
-     *
      * Este metodo tambien se usa para actualizar las vistas.
      */
     public void cargar() {
@@ -208,7 +204,7 @@ public class ControladorVP implements Initializable {
      */
     public ArrayList<ArrayList<Object>> cargarDatos(int tipo) {
         Statement script;
-        ResultSet rs = null;
+        ResultSet rs;
 
         ArrayList<ArrayList<Object>> tabla = new ArrayList<>(); // Aqui se guardaran los datos.
 
@@ -218,7 +214,7 @@ public class ControladorVP implements Initializable {
             // Dependiendo del parametro de entrada, realiza un Select de ingredientes o productos.
             if (tipo == 1) {
                 rs = script.executeQuery("SELECT * FROM INGREDIENTES");
-            } else if (tipo == 0) {
+            } else {
                 rs = script.executeQuery("SELECT * FROM PRODUCTOS");
             }
 
@@ -283,13 +279,10 @@ public class ControladorVP implements Initializable {
             texto.setPromptText("Cantidad...");
             texto.setMaxWidth(100);
 
-            texto.textProperty().addListener(new ChangeListener<>() { // Esta hace que solo se puedan introducir numeros. Tampoco permite signo negativo.
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                    String newValue) {
-                    if (!newValue.matches("\\d*")) {
-                        texto.setText(newValue.replaceAll("\\D", ""));
-                    }
+            // Esta hace que solo se puedan introducir numeros. Tampoco permite signo negativo.
+            texto.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*")) {
+                    texto.setText(newValue.replaceAll("\\D", ""));
                 }
             });
 
@@ -332,42 +325,40 @@ public class ControladorVP implements Initializable {
                     break;
             }
 
-            boton.setOnAction(new EventHandler<>() { // Dependiendo de la pestaña, añade una funcionalidad al boton distinta.
-                @Override
-                public void handle(ActionEvent event) {
-                    switch (pestana) {
-                        case TIENDA:
-                            // Alerta para confirmar compra
-                            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-                            alerta.setTitle("Confirmacion");
-                            alerta.setContentText("Seguro que quieres comprar " + texto.getText() + " " + nombre.getText() + "?");
-                            Optional<ButtonType> result = alerta.showAndWait();
+            // Dependiendo de la pestaña, añade una funcionalidad al boton distinta.
+            boton.setOnAction(event -> {
+                switch (pestana) {
+                    case TIENDA:
+                        // Alerta para confirmar compra
+                        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+                        alerta.setTitle("Confirmacion");
+                        alerta.setContentText("Seguro que quieres comprar " + texto.getText() + " " + nombre.getText() + "?");
+                        Optional<ButtonType> result = alerta.showAndWait();
 
 
-                            if (result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()) {
-                                if (texto.getText().isBlank()) { //Si el textField esta vacio, se asumira que se compra 1 producto
-                                    comprar(boton.getId(), "1"); // llamada al metodo de comprar
-                                } else {
-                                    comprar(boton.getId(), texto.getText()); // llamada al metodo de comprar
-                                }
-
-                            }
-
-                            break;
-                        case ALMACENPRODUCTOS:
-                            editar(boton.getId()); // llamada al metodo de editar
-                            break;
-                        case ALMACENINGREDIENTES:
-                            if (texto.getText().isBlank()) { //Si el textField esta vacio, se asumira que se compra 1 ingrediente
-                                comprarIngrediente(boton.getId(), "1"); // llamada al metodo de comprarIngrediente
+                        if (result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()) {
+                            if (texto.getText().isBlank()) { //Si el textField esta vacio, se asumira que se compra 1 producto
+                                comprar(boton.getId(), "1"); // llamada al metodo de comprar
                             } else {
-                                comprarIngrediente(boton.getId(), texto.getText()); // llamada al metodo de comprarIngrediente
+                                comprar(boton.getId(), texto.getText()); // llamada al metodo de comprar
                             }
-                            break;
-                        case COCINA:
-                            cocinar(boton.getId()); // llamada al metodo de cocinar
-                            break;
-                    }
+
+                        }
+
+                        break;
+                    case ALMACENPRODUCTOS:
+                        editar(boton.getId()); // llamada al metodo de editar
+                        break;
+                    case ALMACENINGREDIENTES:
+                        if (texto.getText().isBlank()) { //Si el textField esta vacio, se asumira que se compra 1 ingrediente
+                            comprarIngrediente(boton.getId(), "1"); // llamada al metodo de comprarIngrediente
+                        } else {
+                            comprarIngrediente(boton.getId(), texto.getText()); // llamada al metodo de comprarIngrediente
+                        }
+                        break;
+                    case COCINA:
+                        cocinar(boton.getId()); // llamada al metodo de cocinar
+                        break;
                 }
             });
 
@@ -411,7 +402,7 @@ public class ControladorVP implements Initializable {
 
         ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.get(0)); //Obtener los ingredientes del producto
+        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
 
         for (ArrayList<Object> ingrediente : ingreCociona) { //Por cada ingrediente necesario...
             ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.get(0)); // Imagen del ingrediente
@@ -642,7 +633,7 @@ public class ControladorVP implements Initializable {
                     }
                 }
             }
-            if (stockNo == false) {
+            if (!stockNo) {
 
                 for (Map.Entry<Integer, Integer> entry : ingredientes.entrySet()) {
                     PreparedStatement ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK - ? WHERE ID = ?");
@@ -797,9 +788,9 @@ public class ControladorVP implements Initializable {
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
             Stage stage = new Stage();
             stage.setTitle("Editar Perfil");
-            stage.setMaxWidth(600);
+            stage.setMaxWidth(630);
             stage.setMaxHeight(500);
-            stage.setMinWidth(600);
+            stage.setMinWidth(630);
             stage.setMinHeight(500);
 
             ControladorEditar editar = fxmlLoader.getController();
@@ -881,6 +872,21 @@ public class ControladorVP implements Initializable {
     }
 
     public void accederMenuModificarReceta(ActionEvent actionEvent) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("modificarReceta.fxml"));
 
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            Stage stage = new Stage();
+            stage.setTitle("Modificar Receta");
+            stage.setMaxWidth(661);
+            stage.setMaxHeight(405);
+            stage.setMinWidth(661);
+            stage.setMinHeight(405);
+
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException i) {
+            System.out.println(":(");
+        }
     }
 }

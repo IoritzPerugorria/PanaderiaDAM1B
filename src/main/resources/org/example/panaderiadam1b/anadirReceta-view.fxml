@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="607.0" style="-fx-background-color: whitesmoke;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.AnadirRecetaView">
+<AnchorPane prefHeight="400.0" prefWidth="607.0" style="-fx-background-color: #f2dfa0;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.AnadirRecetaView">
    <children>
       <Text cache="true" fill="#f0ba56" layoutX="158.0" layoutY="36.8984375" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="1.5" text="Añadir nueva receta" textAlignment="CENTER" wrappingWidth="296.0" AnchorPane.leftAnchor="158.0" AnchorPane.rightAnchor="153.0" AnchorPane.topAnchor="11.0">
          <font>
@@ -36,7 +36,7 @@
                <VBox.margin>
                   <Insets top="15.0" />
                </VBox.margin></TextField>
-            <Button mnemonicParsing="false" onAction="#cargarImagen" text="Cargar Imagen">
+            <Button mnemonicParsing="false" onAction="#cargarImagen" style="-fx-background-color: ffffff;" text="Cargar Imagen">
                <VBox.margin>
                   <Insets top="15.0" />
                </VBox.margin>
@@ -50,7 +50,7 @@
 
       <VBox layoutX="246.0" layoutY="351.0" prefHeight="49.0" prefWidth="120.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#insertarReceta" prefHeight="25.0" prefWidth="113.0" text="Añadir receta">
+            <Button mnemonicParsing="false" onAction="#insertarReceta" prefHeight="25.0" prefWidth="113.0" style="-fx-background-color: ffffff;" text="Añadir receta">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -65,7 +65,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ComboBox fx:id="cmbBoxIng" onMouseClicked="#cargarComboBox" prefWidth="150.0">
+            <ComboBox fx:id="cmbBoxIng" onMouseClicked="#cargarComboBox" prefWidth="150.0" style="-fx-background-color: ffffff;">
                <VBox.margin>
                   <Insets top="15.0" />
                </VBox.margin>
@@ -83,7 +83,7 @@
                   <Insets top="15.0" />
                </VBox.margin>
             </TextField>
-            <Button mnemonicParsing="false" onAction="#anadirIngredientes" text="Añadir">
+            <Button mnemonicParsing="false" onAction="#anadirIngredientes" style="-fx-background-color: ffffff;" text="Añadir">
                <VBox.margin>
                   <Insets left="190.0" top="30.0" />
                </VBox.margin>

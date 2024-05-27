@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: whitesmoke;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorLogin">
+<AnchorPane prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #f2dfa0;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorLogin">
    <VBox alignment="TOP_CENTER" layoutX="51.0" layoutY="22.0" prefHeight="74.0" prefWidth="305.0">
       <Text cache="true" fill="#f0ba56" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.0" text="PANADERÍA" textAlignment="CENTER" wrappingWidth="185.0">
          <font>
@@ -55,8 +55,8 @@
       <PasswordField fx:id="txtFldCredencial2" prefHeight="25.0" prefWidth="250.0" />
    </VBox>
    <Text fx:id="txtCredsIncorrectas" fill="#ae0000" layoutX="99.0" layoutY="271.0" strokeType="OUTSIDE" strokeWidth="0.0" text="* Usuario o contraseña incorrectos" visible="false" />
-   <Button fx:id="botonBBDD" layoutX="128.0" layoutY="350.0" mnemonicParsing="false" onAction="#cambiarBBDD" text="Usando BBDD Hosteada" />
-   <Button fx:id="btnLogin" layoutX="155.0" layoutY="282.0" mnemonicParsing="false" onAction="#login" prefHeight="37.0" prefWidth="89.0" text="Login">
+   <Button fx:id="botonBBDD" layoutX="128.0" layoutY="350.0" mnemonicParsing="false" onAction="#cambiarBBDD" style="-fx-background-color: ffffff;" text="Usando BBDD Hosteada" />
+   <Button fx:id="btnLogin" layoutX="155.0" layoutY="282.0" mnemonicParsing="false" onAction="#login" prefHeight="37.0" prefWidth="89.0" style="-fx-background-color: ffffff;" text="Login">
       <font>
          <Font size="16.0" />
       </font>

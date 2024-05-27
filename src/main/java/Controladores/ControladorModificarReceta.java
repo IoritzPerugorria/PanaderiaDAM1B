@@ -233,13 +233,7 @@ public class ControladorModificarReceta implements Initializable {
     public void salirDeLaPantalla(ActionEvent actionEvent) throws IOException {
         Node node = (Node) actionEvent.getSource();
         Stage currentStage = (Stage) node.getScene().getWindow();
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 900);
-        stage.setTitle("Panaderia");
-        stage.setScene(scene);
         currentStage.close();
-        stage.show();
     }
 
     // METODOS DE ACTUALIZACIÓN

@@ -63,4 +63,5 @@
             </font>
          </Label>
       </children></VBox>
+   <Separator orientation="VERTICAL" prefHeight="400.0" prefWidth="30.0" visible="false" />
 </HBox>
