@@ -12,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -64,6 +63,7 @@ public class ControladorVP implements Initializable {
 
     private Usuario usuario;
 
+    ControladorVP current;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         conexion = ConexionBBDD.conectar(conexion); // Abrir la conexion
@@ -79,6 +79,8 @@ public class ControladorVP implements Initializable {
     public void cargar() {
         rol.setText(usuario.getRol().toString());
         fotoPerfil.setImage(this.cargarImage(usuario.getFotoPerfil()));
+        fotoPerfil.setFitWidth(100);
+        fotoPerfil.setFitHeight(100);
 
         System.out.println(usuario.getRol().toString());
         productosTienda.clear();
@@ -384,7 +386,7 @@ public class ControladorVP implements Initializable {
 
         ArrayList<VBox> contenedorIngredientes = new ArrayList<>();
 
-        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.get(0)); //Obtener los ingredientes del producto
+        ArrayList<ArrayList<Object>> ingreCociona = this.obtenerIngredientes((String) producto.getFirst()); //Obtener los ingredientes del producto
         for (ArrayList<Object> ingrediente : ingreCociona) {
             ImageView imagenVistaIngre = this.cargarImagen((String) ingrediente.get(0));
 
@@ -797,7 +799,7 @@ public class ControladorVP implements Initializable {
         try{
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("editar.fxml"));
 
-            Scene scene = new Scene(fxmlLoader.load(), 600, 305);
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
             Stage stage = new Stage();
             stage.setTitle("Editar Perfil");
             stage.setMaxWidth(600);
@@ -807,6 +809,7 @@ public class ControladorVP implements Initializable {
 
             ControladorEditar editar = fxmlLoader.getController();
             editar.inicializar(usuario);
+            editar.setMainController(current);
 
             stage.setScene(scene);
             stage.show();
@@ -817,17 +820,14 @@ public class ControladorVP implements Initializable {
 
     }
 
-    @FXML
-    private void accederMenuModificarReceta(ActionEvent actionEvent) throws IOException {
-        Node node = (Node) actionEvent.getSource();
-        Stage currentStage = (Stage) node.getScene().getWindow();
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("modificarReceta.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 660, 900);
-        stage.setTitle("Modificar Receta");
-        stage.setScene(scene);
-        currentStage.close();
-        stage.show();
+    public void setCurrentController(ControladorVP controller){
+        this.current = controller;
     }
 
+    public void actualizarFoto(Image fotoNueva) {
+        this.fotoPerfil.setImage(fotoNueva);
+    }
+
+    public void accederMenuModificarReceta(ActionEvent actionEvent) {
+    }
 }

@@ -104,6 +104,7 @@ public class ControladorLogin implements Initializable {
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
+                        controladorVP.setCurrentController(controladorVP);
                         stage.setScene(scene);
                         break;
 
@@ -116,6 +117,7 @@ public class ControladorLogin implements Initializable {
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
+                        controladorVP.setCurrentController(controladorVP);
                         stage.setScene(scene);
                         break;
 
@@ -128,6 +130,7 @@ public class ControladorLogin implements Initializable {
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
+                        controladorVP.setCurrentController(controladorVP);
                         stage.setScene(scene);
                         break;
 
@@ -140,6 +143,7 @@ public class ControladorLogin implements Initializable {
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
+                        controladorVP.setCurrentController(controladorVP);
                         stage.setScene(scene);
                         break;
                 }
