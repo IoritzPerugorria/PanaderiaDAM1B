@@ -51,6 +51,10 @@ public class AnadirRecetaView {
         ingredientes = new HashMap<>();
     }
 
+    /**
+     * Método que rellena el ComboBox
+     * con todos los ingredientes
+    * */
     public void cargarComboBox(){
         Connection conexion = null;
         conexion = conectar(conexion);
@@ -73,6 +77,10 @@ public class AnadirRecetaView {
 
     }
 
+    /**
+     * inserta en la base de datos la nueva receta
+     * con los datos introducidos en pantalla
+     */
     @FXML
     public void insertarReceta(){
         String nombre = txtFldNom.getText();
@@ -132,7 +140,10 @@ public class AnadirRecetaView {
         controladorVP.cargar();
     }
 
-
+    /**
+     * Introduce en el ListView en pantalla el ingrediente
+     * seleccionado en el comboBox al pulsar el boton Añadir
+     */
     public void anadirIngredientes(){
         String ingre = cmbBoxIng.getValue();
         Integer cant = Integer.parseInt(txtFldCant.getText());

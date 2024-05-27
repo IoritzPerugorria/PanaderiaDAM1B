@@ -29,7 +29,6 @@ public class AnadirNuevoController {
     @FXML
     private TextField txtFldPrec;
     private String imagen;
-    private int resul;
     ControladorVP controladorVP;
 
     /**

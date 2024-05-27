@@ -47,7 +47,10 @@ public class Usuario {
         return cartera;
     }
 
-
+    /**
+     * A partir del nombre del usuario se guardan los datos de este
+     * para generar un objeto Usuario en su constructor
+     */
     public void cargarDatos(){
 
         try {

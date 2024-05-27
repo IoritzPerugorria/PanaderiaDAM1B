@@ -14,10 +14,10 @@ public class Cartera {
     private Double monedero;
 
 
-    /*
+    /**
     * Método que resta el precio de la compra de la cartera del
     * usuario si es cliente y lo suma al del panadero y el almacenero.
-    * Si es cualquiera de los otros dos roles la cartera se mantiene igual
+    * Si es cualquiera de los otros roles la cartera se mantiene igual
     * */
     public void compra(Double precio, Usuario usuario, String cantidad){
         if(usuario.getRol().equals(Rol.CLIENTE)){
@@ -61,6 +61,10 @@ public class Cartera {
         }
     }
 
+    /**
+     * Metodo que, al comprar stock de un ingrediente,
+     * resta el precio de la cartera del usuario que lo ha comprado
+     */
     public void compraStockIngredientes(Double precio, Usuario usuario, String cantidad){
         if(usuario.getRol().equals(Rol.ALMACENERO) || usuario.getRol().equals(Rol.ADMINISTRADOR)){
             Double cant = Double.parseDouble(cantidad);
