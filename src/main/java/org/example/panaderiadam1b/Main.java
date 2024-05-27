@@ -1,13 +1,13 @@
 package org.example.panaderiadam1b;
 
-import Controladores.ControladorLogin;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.*;
+
 
 public class Main extends Application {
     @Override
@@ -15,6 +15,10 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 400, 400);
         stage.setTitle("Login");
+        stage.setMinHeight(400);
+        stage.setMaxHeight(400);
+        stage.setMinWidth(400);
+        stage.setMaxWidth(400);
         stage.setScene(scene);
         stage.show();
     }

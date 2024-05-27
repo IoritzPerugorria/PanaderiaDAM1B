@@ -103,6 +103,8 @@ public class ControladorLogin implements Initializable {
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
                         controladorVP.setCurrentController(controladorVP);
+                        stage.setMinHeight(500);
+                        stage.setMinWidth(700);
                         stage.setScene(scene);
                         break;
 
@@ -116,6 +118,8 @@ public class ControladorLogin implements Initializable {
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
                         controladorVP.setCurrentController(controladorVP);
+                        stage.setMinHeight(500);
+                        stage.setMinWidth(700);
                         stage.setScene(scene);
                         break;
 
@@ -129,6 +133,8 @@ public class ControladorLogin implements Initializable {
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
                         controladorVP.setCurrentController(controladorVP);
+                        stage.setMinHeight(500);
+                        stage.setMinWidth(700);
                         stage.setScene(scene);
                         break;
 
@@ -142,6 +148,8 @@ public class ControladorLogin implements Initializable {
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
                         controladorVP.setCurrentController(controladorVP);
+                        stage.setMinHeight(500);
+                        stage.setMinWidth(700);
                         stage.setScene(scene);
                         break;
                 }

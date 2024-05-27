@@ -5,45 +5,48 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorEditar">
+<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #f2dfa0;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorEditar">
     <VBox alignment="CENTER" prefWidth="400.0" spacing="15.0">
         <opaqueInsets>
             <Insets />
         </opaqueInsets>
-        <Label text="Editar Informacion">
+        <Text cache="true" fill="#f0ba56" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="2.5" text="Editar Perfil" textAlignment="CENTER" wrappingWidth="402.0">
             <font>
-                <Font size="36.0" />
+                <Font size="48.0" />
             </font>
-        </Label>
+            <HBox.margin>
+                <Insets top="20.0" />
+            </HBox.margin>
+        </Text>
         <Label contentDisplay="RIGHT" text="Nombre de Usuario">
             <graphic>
-                <TextField fx:id="nombre" />
+                <TextField fx:id="nombre" style="-fx-background-color: #ffffff;" />
             </graphic>
         </Label>
-        <Separator prefHeight="1.0" prefWidth="400.0" />
+        <Separator prefHeight="1.0" prefWidth="400.0" style="-fx-background-color: #806621;" visible="false" />
         <Label contentDisplay="RIGHT" text="Contraseña">
             <graphic>
-                <PasswordField fx:id="contrasenaActual" />
+                <PasswordField fx:id="contrasenaActual" style="-fx-background-color: #ffffff;" />
             </graphic>
         </Label>
         <Label contentDisplay="RIGHT" text="Nueva Contraseña">
             <graphic>
-                <PasswordField fx:id="contrasenaNueva" />
+                <PasswordField fx:id="contrasenaNueva" style="-fx-background-color: #ffffff;" />
             </graphic>
         </Label>
         <Label contentDisplay="RIGHT" text="Confirmar Contraseña">
             <graphic>
-                <PasswordField fx:id="contrasenaConfirmar" />
+                <PasswordField fx:id="contrasenaConfirmar" style="-fx-background-color: #ffffff;" />
             </graphic>
         </Label>
-        <Separator prefWidth="200.0" />
+        <Separator prefWidth="200.0" style="-fx-background-color: #806621;" visible="false" />
         <Label contentDisplay="RIGHT" text="Rol: ">
             <graphic>
                 <Label fx:id="rol" text="el rol" />
             </graphic>
         </Label>
-        <Separator prefWidth="200.0" />
-        <Button mnemonicParsing="false" onAction="#actualizar" text="Actualizar Datos" />
+        <Separator prefWidth="200.0" style="-fx-background-color: #806621;" visible="false" />
+        <Button mnemonicParsing="false" onAction="#actualizar" style="-fx-background-color: #ffffff;" text="Actualizar Datos" />
       <Label fx:id="mensaje" text="Mensaje" />
       <HBox alignment="CENTER" spacing="100.0">
          <VBox.margin>
@@ -51,7 +54,7 @@
          </VBox.margin>
       </HBox>
     </VBox>
-    <Separator orientation="VERTICAL" prefHeight="400.0" />
+    <Separator orientation="VERTICAL" prefHeight="400.0" prefWidth="0.0" style="-fx-background-color: #806621;" visible="false" />
     <VBox fx:id="contenedorImagen" alignment="CENTER" prefWidth="200.0" spacing="20.0">
       <children>
          <Label text="Foto de Perfil">

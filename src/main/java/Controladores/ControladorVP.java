@@ -34,6 +34,7 @@ public class ControladorVP implements Initializable {
     private final ArrayList<HBox> productosTienda = new ArrayList<>();
     private final ArrayList<HBox> productosAlmacen = new ArrayList<>();
     private final ArrayList<HBox> productosCocina = new ArrayList<>();
+
     private ControladorVP current;
     @FXML
     private ImageView fotoPerfil; // Foto de perfil
@@ -331,7 +332,6 @@ public class ControladorVP implements Initializable {
                     break;
             }
 
-
             boton.setOnAction(new EventHandler<>() { // Dependiendo de la pestaña, añade una funcionalidad al boton distinta.
                 @Override
                 public void handle(ActionEvent event) {
@@ -373,6 +373,7 @@ public class ControladorVP implements Initializable {
 
 
             boton.setId((String) producto.get(1)); // El ID del boton sera el nombre del producto/ingrediente
+            boton.setStyle("-fx-background-color: #ffffff;");
 
             contenedor.getChildren().add(boton); // Añade el boton al contenedor
 
@@ -439,10 +440,12 @@ public class ControladorVP implements Initializable {
         Button botonCocinar = new Button(); // Boton de cocinar
         botonCocinar.setText("Cocinar");
         botonCocinar.setOnAction(_ -> cocinar(botonCocinar.getId())); // Asigna el metodo de cocinar
+        botonCocinar.setStyle("-fx-background-color: #ffffff;");
 
         Button botonEliminar = new Button(); // Boton de eliminar
         botonEliminar.setText("Eliminar");
         botonEliminar.setOnAction(_ -> eliminar(botonEliminar.getId())); // Asignar el metodo de eliminar
+        botonEliminar.setStyle("-fx-background-color: #ffffff;");
 
         // Asigna al ID del boton el nombre del producto, para uso posterior
         botonCocinar.setId((String) producto.get(1));
