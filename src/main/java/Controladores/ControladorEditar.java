@@ -16,7 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.sql.Connection;
@@ -41,11 +41,15 @@ public class ControladorEditar {
     @FXML
     private VBox contenedorImagen;
 
+
     private ImageView foto;
 
     private Usuario usuario;
 
     private Connection conexion;
+    private ControladorVP controladorVP;
+
+    private Label labelFoto;
 
     public void inicializar(Usuario usuario){
         this.mensaje.setText("");
@@ -63,13 +67,15 @@ public class ControladorEditar {
         }
 
 
-         foto = new ImageView(imagen);
+        foto = new ImageView(imagen);
         foto.setFitHeight(100); // Ajustar altura
         foto.setFitWidth(100); // Ajustar anchura
         contenedorImagen.getChildren().add(foto);
 
         Button botonFoto = new Button();
         botonFoto.setText("Editar Foto");
+
+        labelFoto = new Label();
 
         botonFoto.setOnAction(new EventHandler<>() {
             @Override
@@ -79,38 +85,55 @@ public class ControladorEditar {
         });
 
         contenedorImagen.getChildren().add(botonFoto);
-
-
+        contenedorImagen.getChildren().add(labelFoto);
     }
 
     @FXML
     public void cambiarImagen(ActionEvent event){
-
+        String imagen = "";
+        
         try {
             FileChooser cargador = new FileChooser();
 
             cargador.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Imagenes", "*.png", "*.jpg") //Solo poder elejir archivos de imagenes.
+                new FileChooser.ExtensionFilter("Imagenes", "*.png", "*.jpg", "*.gif") //Solo poder elegir archivos de imagenes.
             );
 
             Node node = (Node) event.getSource();
             File archivo = cargador.showOpenDialog(node.getScene().getWindow()); //Abrir una ventana para escojer archivo
 
-
+            
+            
             if(archivo != null){
-                String imagen = archivo.getName();
+                imagen = archivo.getName();
                 Path testFile = Path.of(archivo.getPath());
                 File dest = new File(System.getProperty("user.dir") + "\\src\\main\\resources\\imagenes\\" + imagen);
                 Path pathdest = Path.of(dest.getPath());
-                testFile = Files.copy(testFile, pathdest);
+
+                String ruta = Objects.requireNonNull(getClass().getResource("/imagenes/")).toString();
+                String rutaCompilada = ruta.substring(6);
+
+                Files.copy(testFile, pathdest);
+                Files.copy(testFile, Paths.get(rutaCompilada + imagen));
                 this.actualizarImagen(imagen);
+
+                Image nuevaFoto = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + imagen)).toString());
+                foto.setImage(nuevaFoto);
+                controladorVP.actualizarFoto(nuevaFoto);
+
+                labelFoto.setText("Foto de perfil actualizada correctamente");
             }
         }
         catch (FileAlreadyExistsException i){
-            System.out.println("hay que hacer esta parte");
+            this.actualizarImagen(imagen);
+            Image nuevaFoto = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + imagen)).toString());
+            foto.setImage(nuevaFoto);
+            controladorVP.actualizarFoto(nuevaFoto);
+            labelFoto.setText("Foto de perfil actualizada correctamente");
         }
         catch (IOException e){
             System.out.println("error");
+            labelFoto.setText("Ha sucedido un error. Intentelo de nuevo mas tarde");
         }
 
     }
@@ -124,7 +147,8 @@ public class ControladorEditar {
             usuario.setFotoPerfil(nombre);
         }
         catch (SQLException a){
-
+            System.out.println("Algo ha ido mal");
+            labelFoto.setText("Ha sucedido un error. Intentelo de nuevo mas tarde");
         }
     }
 
@@ -191,5 +215,9 @@ public class ControladorEditar {
                 return 1;
             }
         }
+    }
+
+    public void setMainController(ControladorVP controller){
+        this.controladorVP = controller;
     }
 }
