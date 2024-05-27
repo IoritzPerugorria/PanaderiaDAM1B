@@ -2,13 +2,10 @@ package Controladores;
 import BBDD.ConexionBBDD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.example.panaderiadam1b.Main;
 
 import java.io.IOException;
 import java.net.URL;
@@ -62,7 +59,6 @@ public class ControladorModificarReceta implements Initializable {
                         if ( recetaSeleccionada != null ) {
                             // Asumiendo que el Item seleccionado es del tipo String
                             String valorRecetaSeleccionada = (String) recetaSeleccionada;
-
 
                             /**
                              AL SELECCIONAR UNA RECETA, HABILITAREMOS LOS NODOS "nombreReceta" Y "precioReceta",
@@ -128,7 +124,7 @@ public class ControladorModificarReceta implements Initializable {
         }
     }
     private void rellenarListaRecetas() throws SQLException {
-        PreparedStatement recogidaNombresRecetas = conexion.prepareStatement("SELECT NOMBRE FROM PRODUCTOS ");
+        PreparedStatement recogidaNombresRecetas = conexion.prepareStatement("SELECT NOMBRE FROM PRODUCTOS");
         ResultSet resultadoNombres = recogidaNombresRecetas.executeQuery();
         ArrayList<String> listaNombresRecetas = new ArrayList<>();
         while (resultadoNombres.next()){
@@ -154,6 +150,7 @@ public class ControladorModificarReceta implements Initializable {
         while (resultadoNombresIngredientes.next()){
             listaNombresIngredientes.add(resultadoNombresIngredientes.getString("I.NOMBRE"));
         }
+
         for (String listaNombresIngrediente : listaNombresIngredientes) {
             listaIngredientes.getItems().add(listaNombresIngrediente);
         }
@@ -165,7 +162,7 @@ public class ControladorModificarReceta implements Initializable {
             // SI EL CAMPO RECETA Y EL CAMPO PRECIO ESTAN RELLENADOS
             if ((!nombreReceta.getText().isBlank()) && (!precioReceta.getText().isBlank())){
                 String nombre = nombreReceta.getText();
-                double precio = Integer.parseInt(precioReceta.getText());
+                double precio = Double.parseDouble(precioReceta.getText());
 
                 // SI EL CAMPO INGREDIENTES NO SE HA RELLENADO, SOLO SE ACTUALIZARAN EL NOMBRE Y EL PRECIO
                 if (txtfldCantidadIngrediente.getText().isBlank()){
