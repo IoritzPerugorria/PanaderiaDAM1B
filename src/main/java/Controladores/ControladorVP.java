@@ -616,6 +616,8 @@ public class ControladorVP implements Initializable {
      * @param nombre: el nombre del producto
      */
     public void cocinar(String nombre) {
+        boolean stockNo = false;
+
         try {
             PreparedStatement ps = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
             ps.setString(1, nombre);
@@ -631,22 +633,37 @@ public class ControladorVP implements Initializable {
             ResultSet rs1 = ps1.executeQuery();
             while (rs1.next()) {
                 ingredientes.put(rs1.getInt("ING_ID"), rs1.getInt("CANTIDAD"));
+                PreparedStatement ps3 = conexion.prepareStatement("SELECT STOCK FROM INGREDIENTES WHERE ID = ?");
+                ps3.setString(1, rs1.getString("ING_ID"));
+                ResultSet resultadoStock = ps3.executeQuery();
+                while (resultadoStock.next()) {
+                    if (resultadoStock.getInt("Stock") < rs1.getInt("CANTIDAD")){
+                        stockNo = true;
+                    }
+                }
             }
+            if (stockNo == false) {
 
-            for (Map.Entry<Integer, Integer> entry : ingredientes.entrySet()) {
-                PreparedStatement ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK - ? WHERE ID = ?");
-                ps2.setInt(1, entry.getValue());
-                ps2.setInt(2, entry.getKey());
-                ps2.executeUpdate();
+                for (Map.Entry<Integer, Integer> entry : ingredientes.entrySet()) {
+                    PreparedStatement ps2 = conexion.prepareStatement("UPDATE INGREDIENTES SET STOCK = STOCK - ? WHERE ID = ?");
+                    ps2.setInt(1, entry.getValue());
+                    ps2.setInt(2, entry.getKey());
+                    ps2.executeUpdate();
+                }
+                PreparedStatement ps3 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK + 1 WHERE ID = ?");
+                ps3.setInt(1, idProducto);
+                ps3.executeUpdate();
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("La receta de " + nombre + " se ha cocinado correctamente");
+                alert.showAndWait();
+                this.cargar();
             }
-            PreparedStatement ps3 = conexion.prepareStatement("UPDATE PRODUCTOS SET STOCK = STOCK + 1 WHERE ID = ?");
-            ps3.setInt(1, idProducto);
-            ps3.executeUpdate();
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setContentText("La receta de " + nombre + " se ha cocinado correctamente");
-            alert.showAndWait();
-            this.cargar();
+            else{
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("No hay ingredientes suficientes para cocinar el producto");
+                alert.showAndWait();
+            }
 
         } catch (SQLException e) {
             throw new IllegalStateException("No se ha podido cocinar la receta");
