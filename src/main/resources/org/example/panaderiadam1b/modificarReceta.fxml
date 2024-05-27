@@ -5,26 +5,41 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="551.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorModificarReceta">
+<AnchorPane prefHeight="305.0" prefWidth="661.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controladores.ControladorModificarReceta">
    <children>
-      <Text layoutX="-1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Modificar Receta" textAlignment="CENTER" wrappingWidth="499.0" y="20.0" AnchorPane.leftAnchor="-1.0" AnchorPane.topAnchor="20.0">
+      <Text fill="#f0ba56" layoutX="183.0" layoutY="10.0" stroke="BLACK" strokeType="OUTSIDE" text="Modificar Receta" textAlignment="CENTER" wrappingWidth="296.0" y="20.0" AnchorPane.leftAnchor="183.0" AnchorPane.topAnchor="0.0">
          <font>
-            <Font size="20.0" />
+            <Font size="28.0" />
          </font></Text>
-      <Button layoutX="288.0" layoutY="306.0" mnemonicParsing="false" onAction="#modificarReceta" prefHeight="25.0" prefWidth="85.0" text="Modificar" />
+      <Separator layoutX="21.0" layoutY="40.0" prefHeight="3.0" prefWidth="618.0" />
+      <Label layoutX="99.0" layoutY="43.0" text="Recetas" />
+      <Label layoutX="499.0" layoutY="43.0" text="Ingredientes" />
       <HBox layoutX="20.0" layoutY="60.0" prefHeight="232.0" prefWidth="618.0">
          <ListView fx:id="listaRecetas" maxWidth="-Infinity" prefHeight="344.0" prefWidth="232.0">
             <opaqueInsets>
                <Insets />
             </opaqueInsets>
+            <HBox.margin>
+               <Insets />
+            </HBox.margin>
          </ListView>
-         <VBox prefHeight="324.0" prefWidth="223.0">
-            <Label text="Nombre:" />
-            <TextField fx:id="nombreReceta" />
-            <Label layoutX="10.0" layoutY="10.0" text="Precio" />
+         <VBox focusTraversable="true" prefHeight="324.0" prefWidth="223.0">
+            <Label alignment="CENTER" prefHeight="18.0" prefWidth="402.0" text="Nombre:" textAlignment="CENTER" />
+            <TextField fx:id="nombreReceta" prefWidth="144.0" />
+            <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="18.0" prefWidth="266.0" text="Precio:" textAlignment="CENTER" />
             <TextField fx:id="precioReceta" layoutX="10.0" layoutY="27.0" />
-            <Label layoutX="10.0" layoutY="52.0" text="Ingredientes:" />
+            <Label alignment="CENTER" layoutX="10.0" layoutY="52.0" prefHeight="18.0" prefWidth="235.0" text="Nº ingredientes necesarios" />
+            <Label fx:id="lblIngredientes" alignment="CENTER" layoutX="10.0" layoutY="96.0" prefHeight="18.0" prefWidth="269.0" text="(Ninguno seleccionado)" textAlignment="CENTER" />
             <TextField fx:id="txtfldCantidadIngrediente" layoutX="10.0" layoutY="69.0" />
+            <Button fx:id="btnModificar" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#modificarReceta" prefHeight="25.0" prefWidth="85.0" text="Modificar" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="55.0" top="10.0" />
+               </VBox.margin></Button>
+            <Button alignment="CENTER" contentDisplay="CENTER" layoutX="65.0" layoutY="165.0" mnemonicParsing="false" onAction="#salirDeLaPantalla" prefHeight="25.0" prefWidth="85.0" text="Salir" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets left="55.0" />
+               </VBox.margin>
+            </Button>
          </VBox>
          <ListView fx:id="listaIngredientes" layoutX="10.0" layoutY="10.0" maxWidth="-Infinity" prefHeight="344.0" prefWidth="232.0">
             <opaqueInsets>
