@@ -65,6 +65,13 @@ public class ControladorVP implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         conexion = ConexionBBDD.conectar(conexion); // Abrir la conexion
+
+        tiendaTab.getTabPane().setTabMinWidth(150);
+        almacenTab.getTabPane().setTabMinWidth(150);
+        cocinaTab.getTabPane().setTabMinWidth(150);
+        tiendaTab.getTabPane().setTabMinHeight(30);
+        almacenTab.getTabPane().setTabMinHeight(30);
+        cocinaTab.getTabPane().setTabMinHeight(30);
     }
 
     public void setRol(Usuario usuario) { // Recive el usuario desde el ControladorLogin, y lo guarda
@@ -524,6 +531,9 @@ public class ControladorVP implements Initializable {
                     resultado = "Compra finalizada Satisfactoriamente";
 
                     conexion.commit();
+
+                    usuario.cargarDatos();
+                    lblcartera.setText(String.valueOf(usuario.getCartera()));
                 } else { // La verdad, no se en que caso puede darse este error, no ha pasado nunca y no se si pasara.
                     resultado = "error?";
                 }
@@ -593,6 +603,9 @@ public class ControladorVP implements Initializable {
             Usuario usuario1 = ControladorLogin.getUsuario();
             Cartera cartera = new Cartera();
             cartera.compraStockIngredientes(precio, usuario1, cantidad);
+
+            usuario.cargarDatos();
+            lblcartera.setText(String.valueOf(usuario.getCartera()));
         } catch (SQLException e) {
             resultado = "ERROR AL COMPRAR STOCK";
         } finally {

@@ -56,9 +56,6 @@ public class Cartera {
                 throw new IllegalStateException("Error al restar el precio de la cartera del cliente");
             }
         }
-        else if(usuario.getRol().equals(Rol.ALMACENERO) || usuario.getRol().equals(Rol.PANADERO) || usuario.getRol().equals(Rol.ADMINISTRADOR)){
-            monedero = monedero;
-        }
     }
 
     /**
@@ -87,10 +84,10 @@ public class Cartera {
                 throw new IllegalStateException("Error al restar el precio de la cartera del almacenero");
             }
         }
-        else{
-            monedero = monedero;
-        }
     }
 
 
+    public double getMonedero() {
+        return monedero;
+    }
 }
