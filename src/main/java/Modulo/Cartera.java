@@ -13,7 +13,6 @@ import static BBDD.ConexionBBDD.conectar;
 public class Cartera {
 
     private Double monedero;
-    private Rol rol;
 
 
     /*
