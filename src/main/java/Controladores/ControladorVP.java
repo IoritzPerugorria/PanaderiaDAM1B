@@ -680,9 +680,11 @@ public class ControladorVP implements Initializable {
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
             stage.setTitle("Panaderia");
             stage.setScene(scene);
-
-
             stage.show();
+
+            AnadirNuevoController recargar = fxmlLoader.getController();
+            recargar.setMainController(current);
+
         } catch (IOException e) {
             System.out.println("ERROR");
         }
@@ -697,9 +699,12 @@ public class ControladorVP implements Initializable {
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
             stage.setTitle("Panaderia");
             stage.setScene(scene);
-
-
             stage.show();
+
+            AnadirRecetaView recargar = fxmlLoader.getController();
+            recargar.setMainController(current);
+
+
         } catch (IOException e) {
             System.out.println("ERROR");
         }

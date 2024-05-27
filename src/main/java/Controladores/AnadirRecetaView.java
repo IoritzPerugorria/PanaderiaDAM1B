@@ -44,6 +44,7 @@ public class AnadirRecetaView {
     private HashMap<String, Integer> ingredientes;
     private String imagen;
     private List<String> listaElegidos;
+    ControladorVP controladorVP;
 
     public AnadirRecetaView(){
         listaElegidos = new ArrayList<>();
@@ -128,6 +129,7 @@ public class AnadirRecetaView {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText("Receta introducida correctamente");
         alert.showAndWait();
+        controladorVP.cargar();
     }
 
 
@@ -168,6 +170,9 @@ public class AnadirRecetaView {
             }
 
         }
+    }
+    public void setMainController(ControladorVP controller){
+        this.controladorVP = controller;
     }
 
 }

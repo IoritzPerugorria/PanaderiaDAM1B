@@ -29,7 +29,8 @@ public class AnadirNuevoController {
     @FXML
     private TextField txtFldPrec;
     private String imagen;
-
+    private int resul;
+    ControladorVP controladorVP;
 
     /**
      * Método que inserta en la BBDD
@@ -44,6 +45,7 @@ public class AnadirNuevoController {
         String nombre = txtFldNom.getText();
         int cant = Integer.parseInt(txtFldCant.getText());
         Double precio = Double.parseDouble(txtFldPrec.getText());
+
 
         try{
             PreparedStatement st = conexion.prepareStatement("INSERT INTO INGREDIENTES(NOMBRE, PRECIO, STOCK, IMAGEN) VALUES (?, ?, ?, ?)");
@@ -65,6 +67,7 @@ public class AnadirNuevoController {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Ingrediente insertado correctamente");
             alert.showAndWait();
+            controladorVP.cargar();
             conexion = desconectar(conexion);
         }
         catch(SQLException e){
@@ -100,6 +103,10 @@ public class AnadirNuevoController {
                 testFile = Files.copy(testFile, pathdest);
             }
         }
+    }
+
+    public void setMainController(ControladorVP controller){
+        this.controladorVP = controller;
     }
 
 
