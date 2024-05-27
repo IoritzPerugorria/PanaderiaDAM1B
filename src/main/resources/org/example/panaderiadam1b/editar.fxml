@@ -10,11 +10,11 @@
         <opaqueInsets>
             <Insets />
         </opaqueInsets>
-        <Label text="Editar Informacion">
+        <Text cache="true" fill="#f0ba56" layoutX="158.0" layoutY="36.8984375" smooth="false" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="1.5" text="Editar información" textAlignment="CENTER" wrappingWidth="296.0" AnchorPane.leftAnchor="158.0" AnchorPane.rightAnchor="153.0" AnchorPane.topAnchor="11.0">
             <font>
                 <Font size="36.0" />
             </font>
-        </Label>
+        </Text>
         <Label contentDisplay="RIGHT" text="Nombre de Usuario">
             <graphic>
                 <TextField fx:id="nombre" />
