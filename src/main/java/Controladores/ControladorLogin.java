@@ -100,7 +100,7 @@ public class ControladorLogin implements Initializable {
                         usuario = new Usuario(txtFldCredencial1.getText());
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-                        scene = new Scene(fxmlLoader.load(), 1000, 900);
+                        scene = new Scene(fxmlLoader.load(), 1150, 900);
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
@@ -112,7 +112,7 @@ public class ControladorLogin implements Initializable {
                         usuario = new Usuario(txtFldCredencial1.getText());
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-                        scene = new Scene(fxmlLoader.load(), 1000, 900);
+                        scene = new Scene(fxmlLoader.load(), 1150, 900);
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
@@ -124,7 +124,7 @@ public class ControladorLogin implements Initializable {
                         usuario = new Usuario(txtFldCredencial1.getText());
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-                        scene = new Scene(fxmlLoader.load(), 1000, 900);
+                        scene = new Scene(fxmlLoader.load(), 1150, 900);
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
@@ -136,7 +136,7 @@ public class ControladorLogin implements Initializable {
                         usuario = new Usuario(txtFldCredencial1.getText());
 
                         fxmlLoader = new FXMLLoader(Main.class.getResource("vista_principal.fxml"));
-                        scene = new Scene(fxmlLoader.load(), 1000, 900);
+                        scene = new Scene(fxmlLoader.load(), 1150, 900);
                         stage.setTitle("Panaderia");
                         controladorVP = fxmlLoader.getController();
                         controladorVP.setRol(usuario);
