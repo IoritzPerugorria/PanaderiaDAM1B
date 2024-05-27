@@ -1,7 +1,7 @@
 package Controladores;
 
-import Enumerados.Pestanas;
 import BBDD.ConexionBBDD;
+import Enumerados.Pestanas;
 import Modulo.Cartera;
 import Modulo.Usuario;
 import javafx.beans.value.ChangeListener;
@@ -31,8 +31,12 @@ import java.util.*;
 
 public class ControladorVP implements Initializable {
 
+    private final ArrayList<HBox> productosTienda = new ArrayList<>();
+    private final ArrayList<HBox> productosAlmacen = new ArrayList<>();
+    private final ArrayList<HBox> productosCocina = new ArrayList<>();
+    private final ControladorVP current;
     @FXML
-    private ImageView fotoPerfil ;
+    private ImageView fotoPerfil; // Foto de perfil
     @FXML
     private Tab tiendaTab;
     @FXML
@@ -41,7 +45,6 @@ public class ControladorVP implements Initializable {
     private Tab cocinaTab;
     @FXML
     private Label rol;
-
     @FXML
     private VBox Tienda = new VBox(); //Contendero vertical de la Tienda
     @FXML
@@ -55,34 +58,36 @@ public class ControladorVP implements Initializable {
     @FXML
     private ScrollPane scrollCocina = new ScrollPane();
 
-    private final ArrayList<HBox> productosTienda = new ArrayList<>();
-    private final ArrayList<HBox> productosAlmacen = new ArrayList<>();
-    private final ArrayList<HBox> productosCocina = new ArrayList<>();
-
     private Connection conexion; // La misma conexion se usa en tod0 el controlador para optimizar las cargas
+    private Usuario usuario; // El usuario que esta logeado
 
-    private Usuario usuario;
 
-    ControladorVP current;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         conexion = ConexionBBDD.conectar(conexion); // Abrir la conexion
-
     }
 
-    public void setRol(Usuario usuario){
+    public void setRol(Usuario usuario) { // Recive el usuario desde el ControladorLogin, y lo guarda
         this.usuario = usuario;
-
-        this.cargar();
+        this.cargar(); // Se cargan las vistas
     }
 
+    /**
+     * Este metodo se encarga de inicializar los items globales, y luego, dependiendo
+     * del rol del usuario, manda a cargar las pestañas correspondientes. Antes tod0
+     * lo que se encuentra en el metodo estaba en initialize, pero al requerir datos
+     * del usuario, se separo en este metodo aparte, que se llama al tener el usuario.
+     *
+     * Este metodo tambien se usa para actualizar las vistas.
+     */
     public void cargar() {
-        rol.setText(usuario.getRol().toString());
-        fotoPerfil.setImage(this.cargarImage(usuario.getFotoPerfil()));
+        rol.setText(usuario.getRol().toString()); // El texto del Rol
+
+        fotoPerfil.setImage(this.cargarImage(usuario.getFotoPerfil())); // Colocar foto y ajustar tamaño
         fotoPerfil.setFitWidth(100);
         fotoPerfil.setFitHeight(100);
 
-        System.out.println(usuario.getRol().toString());
+        // Vacia los tabs, en caso de que se actualizen los datos
         productosTienda.clear();
         productosAlmacen.clear();
         productosCocina.clear();
@@ -90,60 +95,60 @@ public class ControladorVP implements Initializable {
         ArrayList<ArrayList<Object>> productos;
         ArrayList<ArrayList<Object>> ingredientes;
 
-        switch (usuario.getRol()){
+        switch (usuario.getRol()) { // Depende del rol del usuario, realiza unas acciones u otras
             case CLIENTE:
-                this.tiendaTab.setDisable(false);
+                this.tiendaTab.setDisable(false); // Se puede usar la tienda
 
-                productos = this.cargarDatos("producto");
+                productos = this.cargarDatos(0); // Carga todos los productos
 
                 for (ArrayList<Object> producto : productos) {
-                    this.anadirProductosOIngredientes(producto, Pestanas.TIENDA);
+                    this.anadirProductosOIngredientes(producto, Pestanas.TIENDA); //Por cada producto, crea un HBox con sus datos.
                 }
 
-                this.cargarTienda();
+                this.cargarTienda(); // Carga los HBox-es creados anteriormente en la pestaña tienda.
 
                 break;
             case PANADERO:
-                this.cocinaTab.setDisable(false);
+                this.cocinaTab.setDisable(false); // Se puede usar la cocina
 
-                productos = this.cargarDatos("producto");
+                productos = this.cargarDatos(0); // Carga todos los productos
 
                 for (ArrayList<Object> producto : productos) {
-                    this.anadirProductosCocina(producto);
+                    this.anadirProductosCocina(producto); //Por cada producto, crea un HBox con sus datos y sus ingredinetes necesarios.
                 }
 
-                this.cargarCocina();
+                this.cargarCocina(); // Carga los HBox-es creados anteriormente en la pestaña cocina.
 
                 break;
             case ALMACENERO:
-                this.almacenTab.setDisable(false);
+                this.almacenTab.setDisable(false); // Se puede usar el almacen
 
-                productos = this.cargarDatos("producto");
+                productos = this.cargarDatos(0); // Carga todos los productos
                 for (ArrayList<Object> producto : productos) {
-                    this.anadirProductosOIngredientes(producto, Pestanas.ALMACENPRODUCTOS);
+                    this.anadirProductosOIngredientes(producto, Pestanas.ALMACENPRODUCTOS); // Por cada producto, crea un HBox con sus datos
                 }
 
-                ingredientes = this.cargarDatos("ingrediente");
+                ingredientes = this.cargarDatos(0); // Carga todos los ingredientes
                 for (ArrayList<Object> ingrediente : ingredientes) {
-                    this.anadirProductosOIngredientes(ingrediente, Pestanas.ALMACENINGREDIENTES);
+                    this.anadirProductosOIngredientes(ingrediente, Pestanas.ALMACENINGREDIENTES); // Por cada ingredientes, crea un HBox con sus datos
                 }
 
-                this.cargarAlmacen();
+                this.cargarAlmacen(); // Carga los HBox-es creados anteriormente en la pestaña inventario.
 
                 break;
-            case ADMINISTRADOR:
+            case ADMINISTRADOR: // Si el rol es administrador, hace lo de los tres roles anteriores a la vez.
                 this.tiendaTab.setDisable(false);
                 this.almacenTab.setDisable(false);
                 this.cocinaTab.setDisable(false);
 
-                productos = this.cargarDatos("producto");
+                productos = this.cargarDatos(0);
                 for (ArrayList<Object> producto : productos) {
                     this.anadirProductosOIngredientes(producto, Pestanas.TIENDA);
                     this.anadirProductosCocina(producto);
                     this.anadirProductosOIngredientes(producto, Pestanas.ALMACENPRODUCTOS);
                 }
 
-                ingredientes = this.cargarDatos("ingrediente");
+                ingredientes = this.cargarDatos(1);
                 for (ArrayList<Object> ingrediente : ingredientes) {
                     this.anadirProductosOIngredientes(ingrediente, Pestanas.ALMACENINGREDIENTES);
                 }
@@ -155,10 +160,14 @@ public class ControladorVP implements Initializable {
                 break;
         }
 
-        this.ajustarAnclas(); //Ajustar las posiciones del scrollpane
+        this.ajustarAnclas(); //Ajustar las posiciones del scrollpane, para que se ajusten bien al tamaño de la ventana
 
     }
 
+    /**
+     * El metodo coloca todos los HBox-es que estan en
+     * prodcutosTienda, y los coloca en el VBox Tienda.
+     */
     public void cargarTienda() {
         Tienda.getChildren().clear();
 
@@ -168,6 +177,10 @@ public class ControladorVP implements Initializable {
 
     }
 
+    /**
+     * El metodo coloca todos los HBox-es que estan en
+     * productosAlmacen, y los coloca en el VBox Almacen.
+     */
     public void cargarAlmacen() {
         Almacen.getChildren().clear();
 
@@ -176,6 +189,10 @@ public class ControladorVP implements Initializable {
         }
     }
 
+    /**
+     * El metodo coloca todos los HBox-es que estan en
+     * productosCocina, y los coloca en el VBox Cocina.
+     */
     public void cargarCocina() {
         Cocina.getChildren().clear();
 
@@ -188,22 +205,23 @@ public class ControladorVP implements Initializable {
      * El metodo se conecta a la BBDD y extrae toda la informacion sobre
      * ingredientes o productos, dependiendo el parametro de entrada.
      */
-    public ArrayList<ArrayList<Object>> cargarDatos(String tipo) {
+    public ArrayList<ArrayList<Object>> cargarDatos(int tipo) {
         Statement script;
-        ResultSet rs;
+        ResultSet rs = null;
 
-        ArrayList<ArrayList<Object>> tabla = new ArrayList<>();
+        ArrayList<ArrayList<Object>> tabla = new ArrayList<>(); // Aqui se guardaran los datos.
 
         try {
             script = conexion.createStatement();
 
-            if (tipo.equals("ingrediente")) {
+            // Dependiendo del parametro de entrada, realiza un Select de ingredientes o productos.
+            if (tipo == 1) {
                 rs = script.executeQuery("SELECT * FROM INGREDIENTES");
-            } else {
+            } else if (tipo == 0) {
                 rs = script.executeQuery("SELECT * FROM PRODUCTOS");
             }
 
-            while (rs.next()) {
+            while (rs.next()) { //Itera los resultados. Crea un atributo por cada columna de la tabla, y los añade a una coleccion de Object.
                 ArrayList<Object> valores = new ArrayList<>();
 
                 String id = rs.getString("ID"); //ID
@@ -216,15 +234,16 @@ public class ControladorVP implements Initializable {
 
                 String imagen = (rs.getString("IMAGEN")); //Imagen
 
+                // Añade los atributos a una coleccion
                 valores.add(id);
                 valores.add(nombre);
                 valores.add(precio);
                 valores.add(stock);
                 valores.add(imagen);
 
-                tabla.add(valores);
+                tabla.add(valores); // Añade la coleccion a otra coleccion
             }
-        } catch (SQLException e) {
+        } catch (SQLException e) { // Si hay un porblema con la conexion.
             System.out.println("No se ha podido conectar a la BBDD");
         }
         return tabla;
@@ -235,7 +254,7 @@ public class ControladorVP implements Initializable {
      */
     public void anadirProductosOIngredientes(ArrayList<Object> producto, Pestanas pestana) {
 
-            if(!(pestana == Pestanas.TIENDA) || (Integer.parseInt((String) producto.get(3)) != 0)){
+        if (!(pestana == Pestanas.TIENDA) || (Integer.parseInt((String) producto.get(3)) != 0)) {
 
             ImageView imagenVista = this.cargarImagen((String) producto.get(4)); // Cargar imagen
 
@@ -274,13 +293,11 @@ public class ControladorVP implements Initializable {
 
             contenedor.setSpacing(60); //TODO ajustar dinamicamente el espaciado
 
-            if((pestana == Pestanas.ALMACENINGREDIENTES) && (Integer.parseInt((String) producto.get(3)) <= 5 && (Integer.parseInt((String) producto.get(3)) > 0))){
+            if ((pestana == Pestanas.ALMACENINGREDIENTES) && (Integer.parseInt((String) producto.get(3)) <= 5 && (Integer.parseInt((String) producto.get(3)) > 0))) {
                 contenedor.setStyle("-fx-background-color: khaki;");
-            }
-            else if((pestana == Pestanas.ALMACENINGREDIENTES) && (Integer.parseInt((String) producto.get(3)) == 0)){
+            } else if ((pestana == Pestanas.ALMACENINGREDIENTES) && (Integer.parseInt((String) producto.get(3)) == 0)) {
                 contenedor.setStyle("-fx-background-color: burlywood;");
             }
-
 
 
             // Anadir los items al HBOX
@@ -362,7 +379,7 @@ public class ControladorVP implements Initializable {
                     productosAlmacen.add(contenedor);
                     break;
             }
-            }
+        }
     }
 
 
@@ -400,6 +417,7 @@ public class ControladorVP implements Initializable {
         }
 
         HBox contenedor = new HBox(contenedorProd);
+        contenedor.setPrefWidth(999999999);
 
         contenedor.setAlignment(Pos.CENTER_LEFT);
         contenedor.setSpacing(30); //TODO ajustar dinamicamente el espaciado
@@ -504,7 +522,7 @@ public class ControladorVP implements Initializable {
             ps3.setString(1, nombre);
             ResultSet rs1 = ps3.executeQuery();
             Double precio = null;
-            if(rs1.next()){
+            if (rs1.next()) {
                 precio = rs1.getDouble("PRECIO");
             }
             Usuario usuario1 = ControladorLogin.getUsuario();
@@ -561,22 +579,21 @@ public class ControladorVP implements Initializable {
             ResultSet rs1 = ps3.executeQuery();
 
             Double precio = null;
-            while(rs1.next()){
+            while (rs1.next()) {
                 precio = rs1.getDouble("PRECIO");
             }
 
             Usuario usuario1 = ControladorLogin.getUsuario();
             Cartera cartera = new Cartera();
             cartera.compraStockIngredientes(precio, usuario1, cantidad);
-        }
-        catch (SQLException e) {
-        resultado = "ERROR AL COMPRAR STOCK";
+        } catch (SQLException e) {
+            resultado = "ERROR AL COMPRAR STOCK";
         } finally {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(resultado);
-        alerta.setContentText(resultado);
-        alerta.showAndWait();
-        this.cargar();
+            Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+            alerta.setTitle(resultado);
+            alerta.setContentText(resultado);
+            alerta.showAndWait();
+            this.cargar();
         }
 
     }
@@ -587,12 +604,12 @@ public class ControladorVP implements Initializable {
      * @param nombre: el nombre del producto
      */
     public void cocinar(String nombre) {
-        try{
+        try {
             PreparedStatement ps = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
             ps.setString(1, nombre);
             ResultSet rs = ps.executeQuery();
             Integer idProducto = null;
-            if(rs.next()){
+            if (rs.next()) {
                 idProducto = rs.getInt("ID");
             }
 
@@ -600,7 +617,7 @@ public class ControladorVP implements Initializable {
             ps1.setInt(1, idProducto);
             HashMap<Integer, Integer> ingredientes = new HashMap<>();
             ResultSet rs1 = ps1.executeQuery();
-            while(rs1.next()){
+            while (rs1.next()) {
                 ingredientes.put(rs1.getInt("ING_ID"), rs1.getInt("CANTIDAD"));
             }
 
@@ -619,8 +636,7 @@ public class ControladorVP implements Initializable {
             alert.showAndWait();
             this.cargar();
 
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             throw new IllegalStateException("No se ha podido cocinar la receta");
         }
 
@@ -629,43 +645,43 @@ public class ControladorVP implements Initializable {
 
 
     /**
-    * Para el boton eliminar en cocina
-    * @param nombre: el nombre del producto
-    * */
-    public void eliminar(String nombre){
-        try{
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmación");
-        alert.setContentText("¿Seguro que quiere eliminar esta receta?");
-        Optional<ButtonType> result = alert.showAndWait();
+     * Para el boton eliminar en cocina
+     *
+     * @param nombre: el nombre del producto
+     */
+    public void eliminar(String nombre) {
+        try {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmación");
+            alert.setContentText("¿Seguro que quiere eliminar esta receta?");
+            Optional<ButtonType> result = alert.showAndWait();
 
-        if(result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()){
-            PreparedStatement st = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
-            st.setString(1, nombre);
-            ResultSet rs = st.executeQuery();
-            String idProducto = null;
-            if(rs.next()){
-                idProducto = rs.getString("ID");
+            if (result.filter(buttonType -> buttonType == ButtonType.OK).isPresent()) {
+                PreparedStatement st = conexion.prepareStatement("SELECT ID FROM PRODUCTOS WHERE NOMBRE = ?");
+                st.setString(1, nombre);
+                ResultSet rs = st.executeQuery();
+                String idProducto = null;
+                if (rs.next()) {
+                    idProducto = rs.getString("ID");
+                }
+
+                PreparedStatement st2 = conexion.prepareStatement("DELETE FROM NECESITA WHERE PR_ID = ?");
+                st2.setString(1, idProducto);
+                st2.executeUpdate();
+
+                PreparedStatement st3 = conexion.prepareStatement("DELETE FROM PRODUCTOS WHERE ID = ?");
+                st3.setString(1, idProducto);
+                st3.executeUpdate();
+
+                Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+                alert1.setTitle("Mensaje");
+                alert1.setContentText("Receta eliminada correctamente");
+                alert1.showAndWait();
+
+                cargar();
             }
 
-            PreparedStatement st2 = conexion.prepareStatement("DELETE FROM NECESITA WHERE PR_ID = ?");
-            st2.setString(1, idProducto);
-            st2.executeUpdate();
-
-            PreparedStatement st3 = conexion.prepareStatement("DELETE FROM PRODUCTOS WHERE ID = ?");
-            st3.setString(1, idProducto);
-            st3.executeUpdate();
-
-            Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
-            alert1.setTitle("Mensaje");
-            alert1.setContentText("Receta eliminada correctamente");
-            alert1.showAndWait();
-
-            cargar();
-        }
-
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             throw new IllegalStateException("No se ha podido eliminar la receta");
         }
     }
@@ -691,7 +707,7 @@ public class ControladorVP implements Initializable {
     }
 
     @FXML
-    public void anadirReceta(){
+    public void anadirReceta() {
         try {
 
             Stage stage = new Stage();
@@ -709,10 +725,11 @@ public class ControladorVP implements Initializable {
             System.out.println("ERROR");
         }
     }
+
     @FXML
-    public void logout(){
+    public void logout() {
         System.out.println("s");
-        try{
+        try {
             Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
             alerta.setTitle("Confirmacion");
             alerta.setContentText("¿Seguro que quieres cerrar sesion?");
@@ -731,8 +748,7 @@ public class ControladorVP implements Initializable {
 
                 stageActual.close();
             }
-        }
-        catch (IOException a){
+        } catch (IOException a) {
             System.out.println("Tan inutil soy que ni autodestruirme puedo");
         }
 
@@ -744,17 +760,17 @@ public class ControladorVP implements Initializable {
      * ImageView de los productos para mostrarlas
      *
      * @param ruta: el nombre del archivo
-     *              TODO: aplicar un escalado de verdad.
+     *                           TODO: aplicar un escalado de verdad.
      */
     public ImageView cargarImagen(String ruta) {
         ImageView imagenVista;
         Image imagen;
         try {
-             imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/" + ruta)).toString());
 
 
         } catch (NullPointerException n) {
-             imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
+            imagen = new Image(Objects.requireNonNull(getClass().getResource("/imagenes/missing.png")).toString());
         }
 
         imagenVista = new ImageView(imagen);
@@ -801,7 +817,7 @@ public class ControladorVP implements Initializable {
 
     @FXML
     public void editarPerfil() {
-        try{
+        try {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("editar.fxml"));
 
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
@@ -818,14 +834,13 @@ public class ControladorVP implements Initializable {
 
             stage.setScene(scene);
             stage.show();
-        }
-        catch (IOException i){
+        } catch (IOException i) {
             System.out.println(":(");
         }
 
     }
 
-    public void setCurrentController(ControladorVP controller){
+    public void setCurrentController(ControladorVP controller) {
         this.current = controller;
     }
 
@@ -834,5 +849,6 @@ public class ControladorVP implements Initializable {
     }
 
     public void accederMenuModificarReceta(ActionEvent actionEvent) {
+
     }
 }

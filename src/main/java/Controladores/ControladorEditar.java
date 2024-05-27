@@ -220,4 +220,6 @@ public class ControladorEditar {
     public void setMainController(ControladorVP controller){
         this.controladorVP = controller;
     }
+
+
 }
