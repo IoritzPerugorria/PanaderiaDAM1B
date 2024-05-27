@@ -13,6 +13,7 @@ public class Usuario {
     private String usuario;
     private Rol rol;
     private String fotoPerfil;
+
     private double cartera;
 
     private Connection conexion;
@@ -40,6 +41,10 @@ public class Usuario {
 
     public String getFotoPerfil(){
         return fotoPerfil;
+    }
+
+    public double getCartera() {
+        return cartera;
     }
 
 
